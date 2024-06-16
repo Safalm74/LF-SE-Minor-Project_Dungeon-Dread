@@ -20,7 +20,7 @@ const heroSprite:HeroSprite={
         new Point(64,6),
         new Point(67,71),
         new Point(64,124),
-        new Point(59,172)
+        new Point(67,172)
     ]
     
 }

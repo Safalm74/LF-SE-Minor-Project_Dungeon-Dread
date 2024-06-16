@@ -39,7 +39,7 @@ function gameLoop(
             });
     }
 }
-
+export {hero}
 export default function gameMain(
     ctx: CanvasRenderingContext2D){
     stateConstants.ingame=true;

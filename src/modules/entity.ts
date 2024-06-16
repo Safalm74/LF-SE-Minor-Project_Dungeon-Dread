@@ -8,6 +8,7 @@ interface IEntity {
     width: number;
     height: number;
     spritePosition:number;
+    velocity:Point;
 }
 
 export default class Entity implements IEntity {
@@ -18,6 +19,7 @@ export default class Entity implements IEntity {
     width: number;
     height: number;
     spritePosition: number=0;
+    velocity: Point=new Point(0,0);;
     constructor(
         position: Point,
         team: "red" | "blue",

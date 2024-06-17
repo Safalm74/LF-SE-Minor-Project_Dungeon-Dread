@@ -1,25 +1,25 @@
 import { hero } from "../screens/game";
-import Point from "../modules/points";
-export default function eventhandler(){
-
+import { moveLeft,moveUp } from "./moveHandler";
+export default function eventhandler() {
     //Defining Event Handlers
     window.addEventListener(
         'keydown',
         (e) => {
+            hero.isMoving=true;
             switch (e.key.toLowerCase()) {
-                case "a" :
-                        hero.moveLeft(true);
+                case "a":
+                    moveLeft(true);
                     break;
                 case "d":
-                    hero.moveLeft(false);
+                    moveLeft(false);
                     break;
 
                 case "w":
-                    hero.moveUp(true);
+                    moveUp(true);
                     break;
 
                 case "s":
-                    hero.moveUp(false);
+                    moveUp(false);
                     break;
             }
         }
@@ -27,8 +27,7 @@ export default function eventhandler(){
     window.addEventListener(
         'keyup',
         () => {
-            hero.velocity=new Point(0,0);
-            hero.isMoving=false;
+            hero.isMoving = false;
         }
     );
 }

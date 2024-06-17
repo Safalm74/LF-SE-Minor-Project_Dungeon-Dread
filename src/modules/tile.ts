@@ -50,14 +50,7 @@ export default class Tile implements ITile {
                 );
                 break;
             case 'empty':
-                ctx.fillStyle = mapConstants.mapColor;
-                ctx.fillRect(
-                    this.position.x * this.tileSize,
-                    this.position.y * this.tileSize,
-                    this.tileSize,
-                    this.tileSize
-                )
-
+                
                 break;
             case 'stone':
                 ctx.drawImage(

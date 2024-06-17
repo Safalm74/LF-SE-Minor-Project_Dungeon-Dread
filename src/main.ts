@@ -1,3 +1,4 @@
+import mapConstants from "./constants/mapConstants";
 import gameMain from "./screens/game";
 import eventhandler from "./util/eventHandler";
 // initializing canvas
@@ -11,6 +12,7 @@ eventhandler();
 if (canvas) {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    canvas.style.backgroundColor=mapConstants.mapColor;
   
     //calling game
     gameMain(ctx);

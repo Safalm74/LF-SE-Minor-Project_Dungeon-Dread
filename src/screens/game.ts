@@ -18,15 +18,20 @@ const map = new Map(
     mapConstants.tileSize
 );
 
-//defining hero object
-const hero = new Hero(
-    new Point(getRandomInt(0, window.innerWidth), getRandomInt(0, window.innerHeight)),
-    "blue",
-    true,
-    120,
-    heroSprite.width,
-    heroSprite.height
-);
+let hero: Hero;
+function createHero() {
+    //defining hero object
+    hero = new Hero(
+        new Point(
+            window.innerWidth / 2, window.innerHeight / 2),
+        "blue",
+        true,
+        120,
+        35 * canvas.width / 1000,
+        44 * canvas?.width / 1000
+    );
+}
+
 
 //spwan Type1 enemies
 const gruntType1Array: GruntType1[] = []
@@ -35,15 +40,18 @@ function createType1() {
         () => {
             const gruntObj = new GruntType1(
                 new Point(
-                    getRandomInt(0, window.innerWidth),
-                    getRandomInt(0, window.innerHeight)),
+                    getRandomInt(mapConstants.tileSize + mapConstants.displayPosition.x, window.innerWidth - mapConstants.tileSize),
+                    getRandomInt(mapConstants.tileSize +mapConstants.displayPosition.y, window.innerHeight - mapConstants.tileSize * 2)),
                 "red",
                 true,
                 100,
-                gruntType1Sprite.width,
-                gruntType1Sprite.height
+                24 * canvas.width / 1000,
+                34 * canvas.width / 1000
             );
-            gruntType1Array.push(gruntObj);
+            if (gruntType1Array.length < 100) {
+
+                gruntType1Array.push(gruntObj);
+            }
 
         }
         ,
@@ -52,12 +60,14 @@ function createType1() {
 }
 //function that handles all display
 function displayAll(ctx: CanvasRenderingContext2D) {
+
+    //Map background
     ctx.drawImage(
         mapImage,
-        0,
-        0,
-        window.innerWidth,
-        window.innerHeight
+        mapConstants.displayPosition.x,
+        mapConstants.displayPosition.y,
+        window.innerWidth * 4,
+        window.innerHeight * 4
 
     );
 
@@ -98,10 +108,11 @@ function gameLoop(
 }
 
 
-export { hero }
+export { hero, gruntType1Array }
 export default function gameMain(
     ctx: CanvasRenderingContext2D) {
     stateConstants.ingame = true;
     createType1();
+    createHero();
     gameLoop(ctx);
 }

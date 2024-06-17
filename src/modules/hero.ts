@@ -1,9 +1,9 @@
 import Entity from "./entity";
 import hero from "../assets/entity/hero/hero.png";
 import heroSprite from "../sprites/hero";
-import Point from "./points";
 import mainConstants from "../constants/mainConstants";
 import Tile from "./tile";
+import mapConstants from "../constants/mapConstants";
 
 const heroImage = new Image;
 heroImage.src = hero;
@@ -11,13 +11,11 @@ heroImage.src = hero;
 
 export default class Hero extends Entity {
     isMoving: boolean = false;
-    acceleration: Point = new Point(1, 1);
-    speedLimit: number = 5;
-
+    speedLimit: number = 3;
 
     checkCollision() {
         let collided: boolean = false;
-        let collidedObj: Tile =mainConstants.collideableObjs[0];
+        let collidedObj: Tile = mainConstants.collideableObjs[0];
         mainConstants.collideableObjs.forEach(
             (obj) => {
                 if (
@@ -36,47 +34,79 @@ export default class Hero extends Entity {
 
     }
 
-    moveLeft(
-        left: boolean
-    ) {
-        const acc = left ? -1 * this.acceleration.x : this.acceleration.x;
-        if (Math.abs(this.velocity.x) < this.speedLimit) {
-            this.velocity.x += acc;
+    moveLeft(left: boolean) {
+        const velocity = left ? this.velocity.x : -1 * this.velocity.x;
+
+        this.lookingLeft = left;
+        const chkcls = this.checkCollision();
+        if (!chkcls.collided) {
+            mapConstants.displayPosition.x += velocity;
+            mapConstants.mapTileArray.forEach(
+                (objy) => {
+                    objy.forEach(
+                        (objx) => {
+                            objx.position.x += velocity;
+                        }
+                    );
+                }
+            );
+
         }
-        this.lookingLeft = left
+        else {
+            const positionOffsetY = chkcls.collidedObj.position.y < this.position.y ? 1 : -1
+            const positionOffsetX = chkcls.collidedObj.position.x < this.position.x ? 1 : -1
+            mapConstants.mapTileArray.forEach(
+                (objy) => {
+                    objy.forEach(
+                        (objx) => {
+                            objx.position.y -= positionOffsetY;
+                            objx.position.x -= positionOffsetX
+                        }
+                    );
+                }
+            );
+        }
 
     }
     moveUp(up: boolean) {
-        const acc = up ? -1 * this.acceleration.y : this.acceleration.y;
-        if (Math.abs(this.velocity.y) < this.speedLimit) {
-            this.velocity.y += acc;
+        const velocity = up ? this.velocity.y : -1 * this.velocity.y;
+        const chkcls = this.checkCollision();
+        if (!chkcls.collided) {
+            mapConstants.displayPosition.y += velocity;
+            mapConstants.mapTileArray.forEach(
+                (objy) => {
+                    objy.forEach(
+                        (objx) => {
+                            objx.position.y += velocity;
+                        }
+                    );
+                }
+            );
+
+        }
+        else {
+
+            const positionOffsetY = chkcls.collidedObj.position.y < this.position.y ? 1 : -1
+            const positionOffsetX = chkcls.collidedObj.position.x < this.position.x ? 1 : -1
+            mapConstants.mapTileArray.forEach(
+                (objy) => {
+                    objy.forEach(
+                        (objx) => {
+                            objx.position.y -= positionOffsetY;
+                            objx.position.x -= positionOffsetX
+                        }
+                    );
+                }
+            );
         }
 
     }
     draw(ctx: CanvasRenderingContext2D) {
-        const chkcls = this.checkCollision();
-        if (!chkcls.collided) {
-            if (
-                Math.abs(this.velocity.x) > 1 ||
-                Math.abs(this.velocity.y) > 2
-            ) {
-                this.position.x += this.velocity.x;
-                this.position.y += this.velocity.y;
-                this.isMoving = true;
-            }
-        }
-        else {
-
-            const positionOffsetX = chkcls.collidedObj.position.x < this.position.x ? 1 : -1
-            const positionOffsety = chkcls.collidedObj.position.y < this.position.y ? 1 : -1
-            this.position.x += positionOffsetX;
-            this.position.y += positionOffsety;
-        }
 
         const lookingDirection = this.lookingLeft ? heroSprite.positionLeft : heroSprite.positionRight;
         if (this.isMoving) {
             const staggerFrame = 5;
-            let position = Math.floor(this.spritePosition / staggerFrame) % 4;
+            let position = Math.floor(this.spritePosition / staggerFrame) % 6;
             ctx.drawImage(
                 heroImage,
                 lookingDirection[position].x,

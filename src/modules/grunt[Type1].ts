@@ -7,6 +7,9 @@ import Point from "./points";
 import { hero } from "../screens/game";
 import mainConstants from "../constants/mainConstants";
 import Tile from "./tile";
+import Hero from "./hero";
+import getRandomInt from "../util/randomNumber";
+import mapConstants from "../constants/mapConstants";
 
 const spwanImage = new Image;
 const gruntType1Image = new Image;
@@ -15,10 +18,13 @@ gruntType1Image.src = gruntType1;
 
 export default class GruntType1 extends Entity {
     isSpwaned: boolean = false;
+    attackInterval:any =null;
+
 
     checkCollision() {
         let collided: boolean = false;
-        let collidedObj: Tile = mainConstants.collideableObjs[0];
+        let collidedHero:boolean=false;
+        let collidedObj: Tile | Hero | GruntType1 = mainConstants.collideableObjs[0];
         mainConstants.collideableObjs.forEach(
             (obj) => {
                 if (
@@ -31,9 +37,30 @@ export default class GruntType1 extends Entity {
                     collidedObj = obj
                 }
             }
-
         );
-        return { collided, collidedObj };
+        if (
+            
+            hero.position.y + hero.height/2 >= this.position.y &&
+            hero.position.y <= this.position.y + this.height &&
+            hero.position.x + hero.width >= this.position.x &&
+            hero.position.x + hero.width <= this.position.x + hero.width + this.width
+        ) {
+
+            collidedHero = true;
+            collidedObj = hero;
+            if (!this.attackInterval){
+                this.attackInterval=setInterval(
+                    ()=>{
+                        hero.healthpoint -=2;
+                    },
+                    1200
+                );
+            }
+        }else{
+            clearInterval(this.attackInterval)
+            this.attackInterval=null;
+        }
+        return { collided, collidedObj ,collidedHero};
 
     }
 
@@ -47,14 +74,23 @@ export default class GruntType1 extends Entity {
             (this.position.x - hero.position.x) / distance,
             (this.position.y - hero.position.y) / distance)
         const magnitudeVelocity = Math.sqrt(2)
+
         this.velocity = new Point(
             -unitVector.x * magnitudeVelocity,
             -unitVector.y * magnitudeVelocity
         )
+        if (chkcls.collidedHero){  
+            this.velocity.x=0;
+            this.velocity.y=0;
+        }
         if (!chkcls.collided) {
-
             this.position.x += this.velocity.x;
             this.position.y += this.velocity.y;
+        }else {
+            const positionOffsetX = chkcls.collidedObj.position.x < this.position.x ? 1 : -1
+            const positionOffsety = chkcls.collidedObj.position.y < this.position.y ? 1 : -1
+            this.position.x += positionOffsetX;
+            this.position.y += positionOffsety;
         }
 
 
@@ -65,14 +101,19 @@ export default class GruntType1 extends Entity {
         this.update();
         const staggerFrame = 5;
         let position = Math.floor(this.spritePosition / staggerFrame) % 10;
+        ctx.fillText(
+            String(this.healthpoint),
+            this.position.x,
+            this.position.y
+        );
         ctx.drawImage(
             gruntType1Image,
             lookingDirection[position].x,
             lookingDirection[position].y,
             gruntType1Sprite.width,
             gruntType1Sprite.height,
-            this.position.x,
-            this.position.y,
+            this.position.x ,
+            this.position.y ,
             this.width,
             this.height
         );
@@ -83,6 +124,7 @@ export default class GruntType1 extends Entity {
     spwan(ctx: CanvasRenderingContext2D) {
         const staggerFrame = 10;
         let position = Math.floor(this.spritePosition / staggerFrame) % 10;
+       
         ctx.drawImage(
             spwanImage,
             spwanSprite.position[position].x,
@@ -99,7 +141,10 @@ export default class GruntType1 extends Entity {
         if (position >= 9) {
             this.isSpwaned = true;
             this.spritePosition = 0;
-            this.velocity = new Point(1, 1);
+            this.velocity = new Point(
+                getRandomInt(1,3),
+                 getRandomInt(1,3));
+            this.healthpoint=10;
         }
 
     }

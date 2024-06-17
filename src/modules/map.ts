@@ -20,8 +20,8 @@ export default class Map implements IMap {
 
     ) {
         this.tileSize = tileSize;
-        this.mapHeight = Math.floor(window.innerHeight / tileSize);
-        this.mapWidth = Math.floor(window.innerWidth / tileSize);
+        this.mapHeight = Math.floor(window.innerHeight*10 / tileSize);
+        this.mapWidth = Math.floor(window.innerWidth*10 / tileSize);
         this.initialize();
         this.collectCollideableobj();
 

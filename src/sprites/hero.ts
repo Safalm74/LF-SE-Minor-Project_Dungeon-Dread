@@ -14,13 +14,17 @@ const heroSprite:HeroSprite={
         new Point(6,6),
         new Point(6,71),
         new Point(6,124),
-        new Point(6,172)
+        new Point(6,172),
+        new Point(6,124),
+        new Point(6,71)
     ],
     positionLeft: [
         new Point(64,6),
         new Point(67,71),
         new Point(64,124),
-        new Point(67,172)
+        new Point(67,172),
+        new Point(64,124),
+        new Point(67,71)
     ]
     
 }

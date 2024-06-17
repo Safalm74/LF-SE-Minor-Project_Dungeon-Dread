@@ -1,6 +1,6 @@
-import mapConstants from "./constants/mapConstants";
 import gameMain from "./screens/game";
 import eventhandler from "./util/eventHandler";
+
 // initializing canvas
 const canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
 //getting canvas context for 2d rendering
@@ -12,7 +12,7 @@ eventhandler();
 if (canvas) {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    canvas.style.backgroundColor=mapConstants.mapColor;
+    canvas.style.background="linear-gradient(172.33deg, #30303A -1.75%, #20202E 83.53%, #050519 104.9%)";
   
     //calling game
     gameMain(ctx);

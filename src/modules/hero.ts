@@ -4,6 +4,7 @@ import heroSprite from "../sprites/hero";
 import mainConstants from "../constants/mainConstants";
 import Tile from "./tile";
 import mapConstants from "../constants/mapConstants";
+import Point from "./points";
 
 const heroImage = new Image;
 heroImage.src = hero;
@@ -60,7 +61,9 @@ export default class Hero extends Entity {
                     objy.forEach(
                         (objx) => {
                             objx.position.y -= positionOffsetY;
-                            objx.position.x -= positionOffsetX
+                            objx.position.x -= positionOffsetX;
+                           // mapConstants.displayPosition.x -= positionOffsetX;
+                           // mapConstants.displayPosition.y -= positionOffsetY;
                         }
                     );
                 }
@@ -93,7 +96,10 @@ export default class Hero extends Entity {
                     objy.forEach(
                         (objx) => {
                             objx.position.y -= positionOffsetY;
-                            objx.position.x -= positionOffsetX
+                            objx.position.x -= positionOffsetX;
+                           // mapConstants.displayPosition.x -= positionOffsetX;
+                           // mapConstants.displayPosition.y -= positionOffsetY;
+                      
                         }
                     );
                 }
@@ -105,7 +111,7 @@ export default class Hero extends Entity {
 
         const lookingDirection = this.lookingLeft ? heroSprite.positionLeft : heroSprite.positionRight;
         if (this.isMoving) {
-            const staggerFrame = 5;
+            const staggerFrame = 9;
             let position = Math.floor(this.spritePosition / staggerFrame) % 6;
             ctx.drawImage(
                 heroImage,

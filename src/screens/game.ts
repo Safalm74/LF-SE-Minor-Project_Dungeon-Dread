@@ -9,9 +9,23 @@ import GruntType1 from "../modules/grunt[Type1]";
 import gruntType1Sprite from "../sprites/grunt[Type1]Sptite";
 import gameMap from "../assets/map/map.png"
 import { canvas } from "../main";
+import progressBar from "../util/bar";
+import mainConstants from "../constants/mainConstants";
 //loading map background
 const mapImage = new Image;
 mapImage.src = gameMap;
+//checking time to set next wave
+let waveStartTime: Date;
+
+//function to return time difference and detect end of wave
+function remainingTime(){
+    const remainingTimems=(new Date).getTime() - waveStartTime.getTime()
+    if (remainingTimems>=mainConstants.waveIntervalTime) {
+        console.log('new wave')
+        waveStartTime = new Date;
+    }
+    return remainingTimems;
+}
 
 //loading map obsticles and bushes
 const map = new Map(
@@ -27,8 +41,8 @@ function createHero() {
         "blue",
         true,
         120,
-        35 * canvas.width / 1000,
-        44 * canvas?.width / 1000
+        35 * canvas.height / 600,
+        44 * canvas.height / 600
     );
 }
 
@@ -41,12 +55,12 @@ function createType1() {
             const gruntObj = new GruntType1(
                 new Point(
                     getRandomInt(mapConstants.tileSize + mapConstants.displayPosition.x, window.innerWidth - mapConstants.tileSize),
-                    getRandomInt(mapConstants.tileSize +mapConstants.displayPosition.y, window.innerHeight - mapConstants.tileSize * 2)),
+                    getRandomInt(mapConstants.tileSize + mapConstants.displayPosition.y, window.innerHeight - mapConstants.tileSize * 2)),
                 "red",
                 true,
                 100,
-                24 * canvas.width / 1000,
-                34 * canvas.width / 1000
+                24 * canvas.height / 700,
+                34 * canvas.height / 700
             );
             if (gruntType1Array.length < 100) {
 
@@ -60,7 +74,6 @@ function createType1() {
 }
 //function that handles all display
 function displayAll(ctx: CanvasRenderingContext2D) {
-
     //Map background
     ctx.drawImage(
         mapImage,
@@ -84,6 +97,24 @@ function displayAll(ctx: CanvasRenderingContext2D) {
             }
 
         }
+    );
+    progressBar(
+        ctx,
+        new Point(canvas.width * 0.05, canvas.height * 0.05),
+        hero.healthpoint,
+        mainConstants.heroTotalHealth,
+        canvas.width * 0.4,
+        canvas.height * 0.03,
+        'Life line'
+    )
+    progressBar(
+        ctx,
+        new Point(canvas.width * 0.95 - canvas.width * 0.4, canvas.height * 0.05),
+        mainConstants.waveIntervalTime-remainingTime(),
+        mainConstants.waveIntervalTime,
+        canvas.width * 0.4,
+        canvas.height * 0.03,
+        'Time remaining'
     );
 
 }
@@ -114,5 +145,9 @@ export default function gameMain(
     stateConstants.ingame = true;
     createType1();
     createHero();
+    waveStartTime = new Date;
+    //moving focustohero
+
+
     gameLoop(ctx);
 }

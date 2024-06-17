@@ -13,7 +13,7 @@ let mapTileArray: Tile[][] = [];
 const tileSize = 50;
 const mapWidth = Math.floor(window.innerWidth*10 / tileSize);
 const mapHeight = Math.floor(window.innerHeight*10 / tileSize);
-const mapColor = '#a9c0a6';
+const mapColor = '#radial-gradient(#a9c0a6,#000)';
 
 
 const mapConstants: MapConstants = {

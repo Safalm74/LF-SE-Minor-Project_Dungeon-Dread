@@ -1,18 +1,24 @@
 import mapConstants from "../constants/mapConstants";
 import stateConstants from "../constants/stateConstants";
 import Map from "../modules/map";
-import { canvas} from "../main";
 import Hero from "../modules/hero";
 import Point from "../modules/points";
 import getRandomInt from "../util/randomNumber";
 import heroSprite from "../sprites/hero";
 import GruntType1 from "../modules/grunt[Type1]";
 import gruntType1Sprite from "../sprites/grunt[Type1]Sptite";
+import gameMap from "../assets/map/map.png"
+import { canvas } from "../main";
+//loading map background
+const mapImage = new Image;
+mapImage.src = gameMap;
 
-
+//loading map obsticles and bushes
 const map = new Map(
     mapConstants.tileSize
 );
+
+//defining hero object
 const hero = new Hero(
     new Point(getRandomInt(0, window.innerWidth), getRandomInt(0, window.innerHeight)),
     "blue",
@@ -44,18 +50,20 @@ function createType1() {
         1500
     );
 }
-//main Loop function
-function gameLoop(
-    ctx: CanvasRenderingContext2D
-) {
-    // clearing screen 
-    ctx?.clearRect(
+//function that handles all display
+function displayAll(ctx: CanvasRenderingContext2D) {
+    ctx.drawImage(
+        mapImage,
         0,
         0,
-        canvas.width,
-        canvas.height);
+        window.innerWidth,
+        window.innerHeight
+
+    );
+
     map.draw(ctx);
     hero.draw(ctx);
+
     gruntType1Array.forEach(
         (obj) => {
             if (obj.isSpwaned) {
@@ -67,6 +75,19 @@ function gameLoop(
 
         }
     );
+
+}
+//main Loop function
+function gameLoop(
+    ctx: CanvasRenderingContext2D
+) {
+    // clearing screen 
+    ctx?.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height);
+    displayAll(ctx);
     //looping game
     if (stateConstants.ingame) {
         requestAnimationFrame(
@@ -75,6 +96,8 @@ function gameLoop(
             });
     }
 }
+
+
 export { hero }
 export default function gameMain(
     ctx: CanvasRenderingContext2D) {

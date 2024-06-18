@@ -5,7 +5,7 @@ import mainConstants from "../constants/mainConstants";
 import Tile from "./tile";
 import mapConstants from "../constants/mapConstants";
 import Point from "./points";
-
+import { gruntType1Array } from "../screens/game";
 const heroImage = new Image;
 heroImage.src = hero;
 
@@ -13,6 +13,10 @@ heroImage.src = hero;
 export default class Hero extends Entity {
     isMoving: boolean = false;
     speedLimit: number = 3;
+    weaponOffset: number = 10;
+    weaponPositions: Point[] = [
+        new Point(this.position.x + this.weaponOffset + this.width, this.position.y)
+    ];
 
     checkCollision() {
         let collided: boolean = false;
@@ -37,7 +41,6 @@ export default class Hero extends Entity {
 
     moveLeft(left: boolean) {
         const velocity = left ? this.velocity.x : -1 * this.velocity.x;
-
         this.lookingLeft = left;
         const chkcls = this.checkCollision();
         if (!chkcls.collided) {
@@ -51,19 +54,25 @@ export default class Hero extends Entity {
                     );
                 }
             );
+            //moving grunType1Array
+            gruntType1Array.forEach(
+                (obj) => {
+                    obj.velocity.x += velocity
+                }
+            );
 
         }
         else {
             const positionOffsetY = chkcls.collidedObj.position.y < this.position.y ? 1 : -1
             const positionOffsetX = chkcls.collidedObj.position.x < this.position.x ? 1 : -1
+            mapConstants.displayPosition.x -= positionOffsetX;
+            mapConstants.displayPosition.y -= positionOffsetY;
             mapConstants.mapTileArray.forEach(
                 (objy) => {
                     objy.forEach(
                         (objx) => {
                             objx.position.y -= positionOffsetY;
                             objx.position.x -= positionOffsetX;
-                           // mapConstants.displayPosition.x -= positionOffsetX;
-                           // mapConstants.displayPosition.y -= positionOffsetY;
                         }
                     );
                 }
@@ -91,15 +100,16 @@ export default class Hero extends Entity {
 
             const positionOffsetY = chkcls.collidedObj.position.y < this.position.y ? 1 : -1
             const positionOffsetX = chkcls.collidedObj.position.x < this.position.x ? 1 : -1
+            mapConstants.displayPosition.x -= positionOffsetX;
+            mapConstants.displayPosition.y -= positionOffsetY;
             mapConstants.mapTileArray.forEach(
                 (objy) => {
                     objy.forEach(
                         (objx) => {
                             objx.position.y -= positionOffsetY;
                             objx.position.x -= positionOffsetX;
-                           // mapConstants.displayPosition.x -= positionOffsetX;
-                           // mapConstants.displayPosition.y -= positionOffsetY;
-                      
+
+
                         }
                     );
                 }

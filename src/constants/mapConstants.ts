@@ -8,6 +8,7 @@ type MapConstants = {
     mapColor: string;
     mapTileArray: Tile[][];
     displayPosition:Point;
+    mapSizeMultiplier:number;
 }
 let mapTileArray: Tile[][] = [];
 const tileSize = 50;
@@ -22,6 +23,7 @@ const mapConstants: MapConstants = {
     mapHeight: mapHeight,
     mapColor: mapColor,
     mapTileArray: mapTileArray,
-    displayPosition: new Point(0,0)
+    displayPosition: new Point(0,0),
+    mapSizeMultiplier:5
 }
 export default mapConstants;

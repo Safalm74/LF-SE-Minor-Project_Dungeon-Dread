@@ -15,7 +15,12 @@ export default class Point implements Ipoint {
     distanceBetween(obj: Point) {
         return (Math.sqrt(
             (this.x - obj.x) ** 2 +
-            (this.y -obj.y)**2
+            (this.y - obj.y) ** 2
         ));
+    }
+    angle(obj: Point) {
+        const dx = (this.x - obj.x);
+        const dy = (this.y - obj.y);
+        return Math.atan(dy/dx);
     }
 }

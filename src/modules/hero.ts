@@ -64,24 +64,10 @@ export default class Hero extends Entity {
         const velocity = up ? this.velocity.y : -1 * this.velocity.y;
         const chkcls = this.checkCollision();
         if (!chkcls.collided) {
-            mapConstants.displayPosition.y += velocity;
-            mapConstants.mapTileArray.forEach(
-                (objy) => {
-                    objy.forEach(
-                        (objx) => {
-                            objx.position.y += velocity;
-                        }
-                    );
-                }
-            );
-            gruntType1Array.forEach(
-                (obj) => {
-                    obj.position.y += velocity
-                }
-            );
-
-
-        } else {
+            mainConstants.mapPosition.y += velocity;
+            ctx.translate(0, velocity);
+        }
+        else {
             const positionOffsetY = chkcls.collidedObj.position.y < this.position.y ? -1 : 1
             const positionOffsetX = chkcls.collidedObj.position.x < this.position.x ? -1 : 1
             mainConstants.mapPosition.x += positionOffsetX;
@@ -99,7 +85,7 @@ export default class Hero extends Entity {
         this.position.y = canvas.height / 2 - mainConstants.mapPosition.y;
         const lookingDirection = this.lookingLeft ? heroSprite.positionLeft : heroSprite.positionRight;
         if (this.isMoving) {
-            const staggerFrame = 9;
+            const staggerFrame = 5;
             let position = Math.floor(this.spritePosition / staggerFrame) % 6;
             ctx.drawImage(
                 heroImage,

@@ -17,34 +17,59 @@ export default class Pestol extends Gun {
     detectEnemy(obj: GruntType1) {
         const logicalCenter = this.position
 
-        if ((logicalCenter.distanceBetween(obj.position) < weaponRangeConstants.pestol) && !this.detectedEnemy) {
+        if (
+            (logicalCenter.distanceBetween(obj.position)
+                < weaponRangeConstants.pestol) && !this.detectedEnemy) {
+            console.log("zombie detected")
             this.detectedEnemy = true;
             this.trackingEnemyObj = obj
         }
         if (this.detectedEnemy && this.trackingEnemyObj) {
-            this.lookingAngle = logicalCenter.angle(this.trackingEnemyObj.position)
-           // console.log(this.lookingAngle)
+            this.lookingAngle = logicalCenter.angle(
+                new Point(
+                    this.trackingEnemyObj.position.x,
+                    this.trackingEnemyObj.position.y
+                )
+            )
+            if (this.position.distanceBetween(this.trackingEnemyObj.position)
+                > weaponRangeConstants.pestol) {
+                this.detectedEnemy = false;
+            }
 
         }
 
     }
 
-    draw(ctx: CanvasRenderingContext2D, angle: number) {
+    draw(ctx: CanvasRenderingContext2D) {
+
+        ctx.translate(this.position.x, this.position.y)
+        ctx.rotate(this.lookingAngle);
         let lookingDirectionPosition: Point;
         if (this.lookingLeft) {
             lookingDirectionPosition = pestolSprite.positionLeft[0];
-            this.shootingPoint = new Point(pestolSprite.positionLeft[1].x+this.position.x,pestolSprite.positionLeft[1].y + this.position.y) ;
+            this.shootingPoint = new Point(0,
+                this.height / 4);
         }
         else {
             lookingDirectionPosition = pestolSprite.positionRight[0];
-            this.shootingPoint = new Point(pestolSprite.positionRight[1].x+this.position.x,pestolSprite.positionRight[1].y + this.position.y) ;
+            this.shootingPoint = new Point(this.width,
+                this.height / 4);
         }
 
-        ctx.translate(this.position.x, this.position.y,)
-        if (this.lookingAngle<0){
-            lookingDirectionPosition=lookingDirectionPosition===pestolSprite.positionLeft[0]?pestolSprite.positionRight[0]: pestolSprite.positionLeft[0]
+
+        if (this.trackingEnemyObj && this.position.x > this.trackingEnemyObj!.position.x) {
+            lookingDirectionPosition = lookingDirectionPosition === pestolSprite.positionLeft[0] ?
+                pestolSprite.positionRight[0] :
+                pestolSprite.positionLeft[0]
+
+            this.shootingPoint.x =0; 
+
+
         }
-        ctx.rotate(this.lookingAngle);
+
+        ctx.fillRect(this.shootingPoint.x, this.shootingPoint.y, 100, 100)
+        ctx.fillStyle = "red";
+        ctx.fillRect(0, 0, 1000, 5)
         ctx.drawImage(
             gunImage,
             lookingDirectionPosition.x,

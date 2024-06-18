@@ -4,7 +4,8 @@ import pestolSprite from "../sprites/pestolSprite";
 import Point from "./points";
 import GruntType1 from "./grunt[Type1]";
 import weaponRangeConstants from "../constants/weaponRangeConstants";
-import { hero } from "../screens/game";
+import { bulletArray, hero } from "../screens/game";
+import Bullet from "./bullet";
 const gunImage = new Image;
 gunImage.src = gunSrc;
 
@@ -13,6 +14,8 @@ export default class Pestol extends Gun {
     trackingEnemyObj: GruntType1 | null = null;
     lookingAngle: number = 0;
     shootingPoint: Point = pestolSprite.positionRight[1];
+    fireRate: number = weaponRangeConstants.pestolFireRate;
+    fireInterval: any = null;
 
     detectEnemy(obj: GruntType1) {
         const logicalCenter = this.position
@@ -31,29 +34,36 @@ export default class Pestol extends Gun {
                     this.trackingEnemyObj.position.y
                 )
             )
+            //this.shoot();
+
             if (this.position.distanceBetween(this.trackingEnemyObj.position)
                 > weaponRangeConstants.pestol) {
                 this.detectedEnemy = false;
+                clearInterval(this.fireInterval);
+                this.fireInterval = null;
+
             }
 
         }
 
     }
+    shoot() {
+
+
+
+    }
 
     draw(ctx: CanvasRenderingContext2D) {
-
         ctx.translate(this.position.x, this.position.y)
         ctx.rotate(this.lookingAngle);
         let lookingDirectionPosition: Point;
         if (this.lookingLeft) {
             lookingDirectionPosition = pestolSprite.positionLeft[0];
-            this.shootingPoint = new Point(0,
-                this.height / 4);
+            this.shootingPoint = new Point(0, this.height / 4);
         }
         else {
             lookingDirectionPosition = pestolSprite.positionRight[0];
-            this.shootingPoint = new Point(this.width,
-                this.height / 4);
+            this.shootingPoint = new Point(this.width, this.height / 4);
         }
 
 
@@ -62,14 +72,46 @@ export default class Pestol extends Gun {
                 pestolSprite.positionRight[0] :
                 pestolSprite.positionLeft[0]
 
-            this.shootingPoint.x =0; 
+            this.shootingPoint.x = 0;
 
 
         }
+        // ctx.fillRect(
+        //     this.shootingPoint.x,
+        //     this.shootingPoint.y,
+        //     100,100
+        // )
+        if (!this.fireInterval && this.detectedEnemy) {
 
-        ctx.fillRect(this.shootingPoint.x, this.shootingPoint.y, 100, 100)
+            this.fireInterval = setInterval(
+                () => {
+                    if (this.trackingEnemyObj) {
+                        const endPoint = new Point(
+                            this.shootingPoint.x + Math.cos(this.lookingAngle) * 10,
+                            this.shootingPoint.y + Math.sin(this.lookingAngle) * 10);
+                        const bulletObj = new Bullet(
+                            this.shootingPoint,
+                            endPoint,
+                            weaponRangeConstants.pestolDamage,
+                            new Point(
+                                Math.cos(this.lookingAngle) * weaponRangeConstants.bulletVelocity,
+                                Math.sin(this.lookingAngle) * weaponRangeConstants.bulletVelocity
+                            ),
+                            this.position,
+                        );
+                        bulletArray.push(bulletObj)
+                        console.log(bulletArray);
+                    }
+                    ;
+
+                },
+                1000 / this.fireRate
+            );
+        }
+
+
         ctx.fillStyle = "red";
-        ctx.fillRect(0, 0, 1000, 5)
+        //ctx.fillRect(0, 0, 1000, 5)
         ctx.drawImage(
             gunImage,
             lookingDirectionPosition.x,
@@ -81,8 +123,10 @@ export default class Pestol extends Gun {
             this.width,
             this.height
         )
+
         ctx.rotate(-this.lookingAngle);
         ctx.translate(-this.position.x, -this.position.y,)
     }
+
 
 }

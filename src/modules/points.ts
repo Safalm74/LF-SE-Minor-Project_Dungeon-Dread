@@ -23,4 +23,10 @@ export default class Point implements Ipoint {
         const dy = (this.y - obj.y);
         return Math.atan(dy/dx);
     }
+    add(obj:Point){
+        return (new Point(this.x+obj.x,this.y+obj.y))
+    }
+    pointDifference(obj:Point){
+        return (new Point(this.x-obj.x,this.y-obj.y))
+    }
 }

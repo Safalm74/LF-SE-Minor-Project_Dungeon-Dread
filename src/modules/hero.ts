@@ -16,7 +16,12 @@ export default class Hero extends Entity {
     speedLimit: number = 3;
     weaponOffset: number = 10;
     weaponPositions: Point[] = [
-        new Point(this.position.x + this.weaponOffset + this.width, this.position.y)
+        new Point(this.position.x + this.weaponOffset + this.width, this.position.y),
+        new Point(this.position.x - this.weaponOffset, this.position.y),
+        new Point(this.position.x + this.weaponOffset + this.width, this.position.y + this.height / 2),
+        new Point(this.position.x - this.weaponOffset, this.position.y + this.height / 2),
+        new Point(this.position.x + this.weaponOffset + this.width, this.position.y),
+        new Point(this.position.x + this.weaponOffset + this.width, this.position.y),
     ];
 
     checkCollision() {
@@ -39,6 +44,17 @@ export default class Hero extends Entity {
         return { collided, collidedObj };
 
     }
+    updateWeaponPosition() {
+        this.weaponPositions = [
+            new Point(this.position.x + this.weaponOffset + this.width, this.position.y),
+            new Point(this.position.x - this.weaponOffset, this.position.y),
+            new Point(this.position.x + this.weaponOffset + this.width, this.position.y + this.height / 2),
+            new Point(this.position.x - this.weaponOffset, this.position.y + this.height / 2),
+            new Point(this.position.x + this.weaponOffset + this.width, this.position.y + this.height),
+            new Point(this.position.x - this.weaponOffset, this.position.y + this.height),
+        ];
+
+    }
     moveLeft(left: boolean, ctx: CanvasRenderingContext2D) {
         const velocity = left ? this.velocity.x : -1 * this.velocity.x;
         this.lookingLeft = left;
@@ -54,10 +70,9 @@ export default class Hero extends Entity {
             mainConstants.mapPosition.y += positionOffsetY;
             ctx.translate(positionOffsetX, positionOffsetY);
         }
+        this.updateWeaponPosition();
 
-        this.weaponPositions = [
-            new Point(this.position.x + this.weaponOffset + this.width, this.position.y)
-        ];
+
 
     }
     moveUp(up: boolean, ctx: CanvasRenderingContext2D) {
@@ -75,9 +90,7 @@ export default class Hero extends Entity {
             ctx.translate(positionOffsetX, positionOffsetY);
         }
 
-        this.weaponPositions = [
-            new Point(this.position.x + this.weaponOffset + this.width, this.position.y)
-        ];
+        this.updateWeaponPosition();
 
     }
     draw(ctx: CanvasRenderingContext2D) {

@@ -158,7 +158,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     );
 
     pestolObj.draw(ctx);
-    pestolObj.position = hero.weaponPositions[0];
+    pestolObj.position = hero.weaponPositions[5];
 
 
 }
@@ -171,8 +171,8 @@ function gameLoop(
     ctx?.clearRect(
         -mainConstants.mapPosition.x,
         -mainConstants.mapPosition.y,
-        mainConstants.mapPosition.x + canvas.width,
-        mainConstants.mapPosition.y + canvas.height);
+        canvas.width,
+        canvas.height);
     //eventlitner
     handleEvents();
     //displaying handles
@@ -217,7 +217,7 @@ export default function gameMain(
     );
     bulletArray.push(bulletObj);
     pestolObj = new Pestol(
-        hero.weaponPositions[0],
+        hero.weaponPositions[1],
         false,
         10,
         pestolSprite.width * hero.width * 0.01,

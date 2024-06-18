@@ -100,7 +100,7 @@ export default class Pestol extends Gun {
                             this.position,
                         );
                         bulletArray.push(bulletObj)
-                        console.log(bulletArray);
+                        //console.log(bulletArray);
                     }
                     ;
 

@@ -6,3 +6,6 @@
   font-family: 'GloriaHallelujah';
   src: url('./assets/FONTS/Gloria_Hallelujah/GloriaHallelujah-Regular.ttf');
 }
+body{
+  overflow: hidden;
+}

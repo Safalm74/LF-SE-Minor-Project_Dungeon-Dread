@@ -1,23 +1,23 @@
+import mainConstants from "../constants/mainConstants";
 import stateConstants from "../constants/stateConstants";
+import { ctx } from "../main";
 import { hero } from "../screens/game";
-import { moveLeft, moveUp } from "./moveHandler";
-
 
 function handleEvents() {
     if (stateConstants.btnPressed['a']) {
         hero.isMoving = true;
-        moveLeft(true);
+        hero.moveLeft(true,ctx);
     }
     if (stateConstants.btnPressed['d']) {
-        moveLeft(false);
         hero.isMoving = true;
+        hero.moveLeft(false,ctx);
     }
     if (stateConstants.btnPressed['w']) {
-        moveUp(true);
+        hero.moveUp(true,ctx);
         hero.isMoving = true;
     }
     if (stateConstants.btnPressed['s']) {
-        moveUp(false);
+        hero.moveUp(false,ctx);
         hero.isMoving = true;
     }
 }

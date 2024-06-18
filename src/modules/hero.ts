@@ -6,6 +6,7 @@ import Tile from "./tile";
 import mapConstants from "../constants/mapConstants";
 import Point from "./points";
 import { gruntType1Array } from "../screens/game";
+import { canvas } from "../main";
 const heroImage = new Image;
 heroImage.src = hero;
 
@@ -38,49 +39,28 @@ export default class Hero extends Entity {
         return { collided, collidedObj };
 
     }
-
-    moveLeft(left: boolean) {
+    moveLeft(left: boolean, ctx: CanvasRenderingContext2D) {
         const velocity = left ? this.velocity.x : -1 * this.velocity.x;
         this.lookingLeft = left;
         const chkcls = this.checkCollision();
         if (!chkcls.collided) {
-            mapConstants.displayPosition.x += velocity;
-            mapConstants.mapTileArray.forEach(
-                (objy) => {
-                    objy.forEach(
-                        (objx) => {
-                            objx.position.x += velocity;
-                        }
-                    );
-                }
-            );
-            //moving grunType1Array
-            gruntType1Array.forEach(
-                (obj) => {
-                    obj.velocity.x += velocity
-                }
-            );
-
+            mainConstants.mapPosition.x += velocity;
+            ctx.translate(velocity, 0);
         }
         else {
-            const positionOffsetY = chkcls.collidedObj.position.y < this.position.y ? 1 : -1
-            const positionOffsetX = chkcls.collidedObj.position.x < this.position.x ? 1 : -1
-            mapConstants.displayPosition.x -= positionOffsetX;
-            mapConstants.displayPosition.y -= positionOffsetY;
-            mapConstants.mapTileArray.forEach(
-                (objy) => {
-                    objy.forEach(
-                        (objx) => {
-                            objx.position.y -= positionOffsetY;
-                            objx.position.x -= positionOffsetX;
-                        }
-                    );
-                }
-            );
+            const positionOffsetY = chkcls.collidedObj.position.y < this.position.y ? -1 : 1
+            const positionOffsetX = chkcls.collidedObj.position.x < this.position.x ? -1 : 1
+            mainConstants.mapPosition.x += positionOffsetX;
+            mainConstants.mapPosition.y += positionOffsetY;
+            ctx.translate(positionOffsetX, positionOffsetY);
         }
 
+        this.weaponPositions = [
+            new Point(this.position.x + this.weaponOffset + this.width, this.position.y)
+        ];
+
     }
-    moveUp(up: boolean) {
+    moveUp(up: boolean, ctx: CanvasRenderingContext2D) {
         const velocity = up ? this.velocity.y : -1 * this.velocity.y;
         const chkcls = this.checkCollision();
         if (!chkcls.collided) {
@@ -94,31 +74,29 @@ export default class Hero extends Entity {
                     );
                 }
             );
-
-        }
-        else {
-
-            const positionOffsetY = chkcls.collidedObj.position.y < this.position.y ? 1 : -1
-            const positionOffsetX = chkcls.collidedObj.position.x < this.position.x ? 1 : -1
-            mapConstants.displayPosition.x -= positionOffsetX;
-            mapConstants.displayPosition.y -= positionOffsetY;
-            mapConstants.mapTileArray.forEach(
-                (objy) => {
-                    objy.forEach(
-                        (objx) => {
-                            objx.position.y -= positionOffsetY;
-                            objx.position.x -= positionOffsetX;
-
-
-                        }
-                    );
+            gruntType1Array.forEach(
+                (obj) => {
+                    obj.position.y += velocity
                 }
             );
+
+
+        } else {
+            const positionOffsetY = chkcls.collidedObj.position.y < this.position.y ? -1 : 1
+            const positionOffsetX = chkcls.collidedObj.position.x < this.position.x ? -1 : 1
+            mainConstants.mapPosition.x += positionOffsetX;
+            mainConstants.mapPosition.y += positionOffsetY;
+            ctx.translate(positionOffsetX, positionOffsetY);
         }
+
+        this.weaponPositions = [
+            new Point(this.position.x + this.weaponOffset + this.width, this.position.y)
+        ];
 
     }
     draw(ctx: CanvasRenderingContext2D) {
-
+        this.position.x = canvas.width / 2 - mainConstants.mapPosition.x;
+        this.position.y = canvas.height / 2 - mainConstants.mapPosition.y;
         const lookingDirection = this.lookingLeft ? heroSprite.positionLeft : heroSprite.positionRight;
         if (this.isMoving) {
             const staggerFrame = 9;

@@ -50,9 +50,16 @@ function createHero() {
     );
 }
 
+function removeDeadEnemy(){
+    gruntType1Array=gruntType1Array.filter(
+        (obj)=>{
+            return (obj.healthpoint>0);
+        }
+    );
+}
 
 //spwan Type1 enemies
-const gruntType1Array: GruntType1[] = []
+let gruntType1Array: GruntType1[] = []
 function createType1() {
     setInterval(
         () => {
@@ -106,7 +113,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     );
     progressBar(
         ctx,
-        new Point(canvas.width * 0.05, canvas.height * 0.05),
+        new Point(canvas.width * 0.05 -mainConstants.mapPosition.x, canvas.height * 0.05-mainConstants.mapPosition.y),
         hero.healthpoint,
         mainConstants.heroTotalHealth,
         canvas.width * 0.4,
@@ -115,7 +122,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     )
     progressBar(
         ctx,
-        new Point(canvas.width * 0.95 - canvas.width * 0.4, canvas.height * 0.05),
+        new Point(canvas.width * 0.95 - canvas.width * 0.4-mainConstants.mapPosition.x, canvas.height * 0.05-mainConstants.mapPosition.y),
         mainConstants.waveIntervalTime-remainingTime(),
         mainConstants.waveIntervalTime,
         canvas.width * 0.4,
@@ -123,7 +130,8 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         'Time remaining'
     );
 
-    pestolObj.draw(ctx,a/50);
+    pestolObj.draw(ctx);
+    pestolObj.position=hero.weaponPositions[0]
     a++;
 
 }
@@ -134,13 +142,18 @@ function gameLoop(
 ) {
     // clearing screen 
     ctx?.clearRect(
-        0,
-        0,
+        -mainConstants.mapPosition.x,
+        -mainConstants.mapPosition.y,
         canvas.width,
         canvas.height);
     //eventlitner
     handleEvents();
+    //displaying handles
     displayAll(ctx);
+
+    //remove dead enemies
+    removeDeadEnemy();
+
     gruntType1Array.forEach(
         (obj)=>{
              pestolObj.detectEnemy(obj)

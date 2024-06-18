@@ -8,7 +8,7 @@ import heroSprite from "../sprites/hero";
 import GruntType1 from "../modules/grunt[Type1]";
 import gruntType1Sprite from "../sprites/grunt[Type1]Sptite";
 import gameMap from "../assets/map/map.png"
-import { canvas } from "../main";
+import { canvas, ctx } from "../main";
 import progressBar from "../util/bar";
 import mainConstants from "../constants/mainConstants";
 import dropDownMsg from "../util/dropdownMsg";
@@ -32,8 +32,15 @@ let hero: Hero;
 function remainingTime() {
     const remainingTimems = (new Date).getTime() - waveStartTime.getTime()
     if (remainingTimems >= mainConstants.waveIntervalTime) {
-        //console.log('new wave')
+        stateConstants.wave++;
         waveStartTime = new Date;
+        mainConstants.dropdownInterval=true;
+        setTimeout(
+            ()=>{mainConstants.dropdownInterval=false;}
+            ,
+            5000
+        );
+        
     }
     return remainingTimems;
 }
@@ -132,6 +139,9 @@ function displayAll(ctx: CanvasRenderingContext2D) {
 
         }
     );
+    if(mainConstants.dropdownInterval){
+        dropDownMsg(ctx,`wave : ${stateConstants.wave}`);
+    }
     progressBar(
         ctx,
         new Point(canvas.width * 0.05 - mainConstants.mapPosition.x, canvas.height * 0.05 - mainConstants.mapPosition.y),
@@ -156,6 +166,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
             bulletObj.draw(ctx);
         }
     );
+
 
     pestolObj.draw(ctx);
     pestolObj.position = hero.weaponPositions[5];

@@ -7,6 +7,7 @@ type MainConstants={
     waveIntervalTime:number;
     maxEnemies:number;
     mapPosition:Point;
+    dropdownInterval:any;
 }
 
 const mainConstants: MainConstants={
@@ -14,7 +15,8 @@ const mainConstants: MainConstants={
     heroTotalHealth:120,
     waveIntervalTime:60*1000,
     maxEnemies:500,
-    mapPosition:new Point(0,0)
+    mapPosition:new Point(0,0),
+    dropdownInterval:null
 }
 
 export default mainConstants;

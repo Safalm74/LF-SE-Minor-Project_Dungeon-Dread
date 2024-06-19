@@ -6,6 +6,24 @@
   font-family: 'GloriaHallelujah';
   src: url('./assets/FONTS/Gloria_Hallelujah/GloriaHallelujah-Regular.ttf');
 }
+@font-face {
+  font-family: 'CurseOfTheZombie';
+  src: url('./assets/FONTS/curse_of_the_zombie/Curse\ of\ the\ Zombie.ttf');
+}
+
+@font-face {
+  font-family: 'ShadowOfTheDead';
+  src: url('./assets/FONTS/shadow_of_the_deads/Shadow\ of\ the\ Deads.ttf');
+}
+@font-face {
+  font-family: 'ShadowOfTheDeadOver';
+  src: url('./assets/FONTS/shadow_of_the_deads/Shadow\ of\ the\ Deads\ Over.ttf');
+}
+@font-face {
+  font-family: 'Eater';
+  src: url('./assets/FONTS/Eater/Eater-Regular.ttf');
+}
+
 body{
   overflow: hidden;
 }

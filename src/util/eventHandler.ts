@@ -1,24 +1,31 @@
-import mainConstants from "../constants/mainConstants";
 import stateConstants from "../constants/stateConstants";
 import { ctx } from "../main";
+import Point from "../modules/points";
 import { hero } from "../screens/game";
+import { btnsclicked } from "../screens/homeScreen";
 
 function handleEvents() {
     if (stateConstants.btnPressed['a']) {
         hero.isMoving = true;
-        hero.moveLeft(true,ctx);
+        hero.moveLeft(true, ctx);
     }
     if (stateConstants.btnPressed['d']) {
         hero.isMoving = true;
-        hero.moveLeft(false,ctx);
+        hero.moveLeft(false, ctx);
     }
     if (stateConstants.btnPressed['w']) {
-        hero.moveUp(true,ctx);
+        hero.moveUp(true, ctx);
         hero.isMoving = true;
     }
     if (stateConstants.btnPressed['s']) {
-        hero.moveUp(false,ctx);
+        hero.moveUp(false, ctx);
         hero.isMoving = true;
+    }
+    if(stateConstants.btnPressed[' ']){
+        hero.ability();
+    }
+    if(stateConstants.btnPressed['\n']){
+        console.log('enter')
     }
 }
 
@@ -30,7 +37,6 @@ export default function eventhandler() {
         'keydown',
         (e) => {
             stateConstants.btnPressed[e.key.toLowerCase()] = true
-
         }
     );
     window.addEventListener(
@@ -40,4 +46,21 @@ export default function eventhandler() {
             hero.isMoving = false;
         }
     );
+    window.addEventListener(
+        'click',
+        (e) => {
+            btnsclicked(
+                new Point(
+                    e.offsetX,
+                    e.offsetY),
+                    ctx
+                );
+        }
+    )
+    window.addEventListener(
+        'mouseover',
+        (e)=>{
+            console.log(e.offsetX,e.offsetY)
+        }
+    )
 }

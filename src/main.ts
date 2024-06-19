@@ -1,4 +1,4 @@
-import gameMain from "./screens/game";
+import homeScreen from "./screens/homeScreen";
 import eventhandler from "./util/eventHandler";
 
 // initializing canvas
@@ -13,9 +13,13 @@ if (canvas) {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     canvas.style.background="linear-gradient(172.33deg, #30303A -1.75%, #20202E 83.53%, #050519 104.9%)";
+
+
+    //calling Home Screen
+   homeScreen(ctx)
   
     //calling game
-    gameMain(ctx);
+  //  gameMain(ctx);
 }
 
 export { canvas ,ctx};

@@ -9,7 +9,7 @@ export default function progressBar(
     message: string=''
 ){
     //writing Message:
-    ctx.font ='2.4rem GloriaHallelujah';
+    ctx.font ='2rem ShadowOfTheDead';
     ctx.fillStyle="#4caf50"
     ctx.fillText(
         message,

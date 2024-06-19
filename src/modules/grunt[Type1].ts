@@ -9,7 +9,7 @@ import mainConstants from "../constants/mainConstants";
 import Tile from "./tile";
 import Hero from "./hero";
 import getRandomInt from "../util/randomNumber";
-import mapConstants from "../constants/mapConstants";
+
 
 const spwanImage = new Image;
 const gruntType1Image = new Image;

@@ -144,25 +144,34 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     if (mainConstants.dropdownInterval) {
         dropDownMsg(ctx, `wave : ${stateConstants.wave}`);
     }
-    const gradient=ctx.createRadialGradient(
-        hero.position.x+hero.width/2,
-        hero.position.y+hero.height/2,
+    //background gradient
+    const gradient = ctx.createRadialGradient(
+        hero.position.x + hero.width / 2,
+        hero.position.y + hero.height / 2,
         hero.width,
-        hero.position.x+hero.width/2,
-        hero.position.y+hero.height/2,
+        hero.position.x + hero.width / 2,
+        hero.position.y + hero.height / 2,
         1000
 
     );
-    gradient.addColorStop(0, "rgba(10,10,10,0)")
-    gradient.addColorStop(1, "rgba(0,0,0,0.99)")
-    ctx.fillStyle=gradient;
+    if (hero.healthpoint > 30) {
+
+        gradient.addColorStop(0, "rgba(10,10,10,0)")
+        gradient.addColorStop(1, "rgba(0,0,0,0.99)")
+    }
+    else {
+
+        gradient.addColorStop(0, "rgba(10,10,10,0)")
+        gradient.addColorStop(1, "rgba(200,0,0,0.99)")
+    }
+    ctx.fillStyle = gradient;
     ctx.fillRect(
         -mainConstants.mapPosition.x,
         -mainConstants.mapPosition.y,
         canvas.width,
         canvas.height
     )
-    
+
     progressBar(
         ctx,
         new Point(canvas.width * 0.05 - mainConstants.mapPosition.x, canvas.height * 0.05 - mainConstants.mapPosition.y),
@@ -275,6 +284,15 @@ export default function gameMain(
         pestolSprite.height * hero.width * 0.01
     );
     //moving focustohero
+    mainConstants.dropdownInterval = true;
+    setTimeout(
+        () => { mainConstants.dropdownInterval = false; }
+        ,
+        5000
+    );
+    if (mainConstants.dropdownInterval) {
+        dropDownMsg(ctx, `wave : ${stateConstants.wave}`);
+    }
 
 
     gameLoop(ctx);

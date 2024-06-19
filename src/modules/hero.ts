@@ -3,9 +3,7 @@ import hero from "../assets/entity/hero/hero.png";
 import heroSprite from "../sprites/hero";
 import mainConstants from "../constants/mainConstants";
 import Tile from "./tile";
-import mapConstants from "../constants/mapConstants";
 import Point from "./points";
-import { gruntType1Array } from "../screens/game";
 import { canvas } from "../main";
 const heroImage = new Image;
 heroImage.src = hero;
@@ -23,6 +21,9 @@ export default class Hero extends Entity {
         new Point(this.position.x + this.weaponOffset + this.width, this.position.y),
         new Point(this.position.x + this.weaponOffset + this.width, this.position.y),
     ];
+    ability(){
+        console.log('using ability');
+    }
 
     checkCollision() {
         let collided: boolean = false;

@@ -1,7 +1,7 @@
 import stateConstants from "../constants/stateConstants";
 import { ctx } from "../main";
 import Point from "../modules/points";
-import { hero } from "../screens/game";
+import { hero } from "../screens/gameScreen";
 import { btnsclicked } from "../screens/homeScreen";
 
 function handleEvents() {
@@ -57,10 +57,5 @@ export default function eventhandler() {
                 );
         }
     )
-    window.addEventListener(
-        'mouseover',
-        (e)=>{
-            console.log(e.offsetX,e.offsetY)
-        }
-    )
+    
 }

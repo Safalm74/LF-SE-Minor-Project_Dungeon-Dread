@@ -4,7 +4,7 @@ import backGround from "../assets/home/background.webp"
 import mainConstants from "../constants/mainConstants";
 import { canvas } from "../main";
 import Point from "../modules/points";
-import gameMain from "./game";
+import gameMain from "./gameScreen";
 
 const backGroundImage = new Image;
 backGroundImage.src = backGround;

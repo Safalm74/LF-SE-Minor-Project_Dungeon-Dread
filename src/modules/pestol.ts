@@ -2,20 +2,21 @@ import Gun from "./gun";
 import gunSrc from "../assets/weapon/gun/pestol.svg";
 import pestolSprite from "../sprites/pestolSprite";
 import Point from "./points";
-import GruntType1 from "./grunt[Type1]";
+import GruntType1 from "./gruntType1";
 import weaponRangeConstants from "../constants/weaponRangeConstants";
-import { bulletArray, hero } from "../screens/game";
+import { bulletArray } from "../screens/gameScreen";
 import Bullet from "./bullet";
 const gunImage = new Image;
 gunImage.src = gunSrc;
 
 export default class Pestol extends Gun {
     detectedEnemy: boolean = false;
-    trackingEnemyObj: GruntType1 | null = null;
+    trackingEnemyObj: any= null;
     lookingAngle: number = 0;
     shootingPoint: Point = pestolSprite.positionRight[1];
     fireRate: number = weaponRangeConstants.pestolFireRate;
     fireInterval: any = null;
+    mysprite=gunImage;
 
     detectEnemy(obj: GruntType1) {
         const logicalCenter = this.position
@@ -23,12 +24,13 @@ export default class Pestol extends Gun {
         if (
             (logicalCenter.distanceBetween(obj.position)
                 < weaponRangeConstants.pestol) && !this.detectedEnemy) {
-            console.log("zombie detected")
             this.detectedEnemy = true;
-            this.trackingEnemyObj = obj;
+            this.trackingEnemyObj = obj
             //trackingEnemyObjPosition.x=trackingEnemyObjPosition.x+this.trackingEnemyObj.width/2;
            // trackingEnemyObjPosition.y=trackingEnemyObjPosition.y+this.trackingEnemyObj.height/2;
         }
+        
+        
         if (this.detectedEnemy && this.trackingEnemyObj) {
             this.lookingAngle = logicalCenter.angle(
                 new Point(
@@ -38,15 +40,21 @@ export default class Pestol extends Gun {
             )
             this.shoot();
 
-            if (this.position.distanceBetween(this.trackingEnemyObj.position)
+            if (
+                this.position.distanceBetween(this.trackingEnemyObj.position)
                 > weaponRangeConstants.pestol) {
                 this.detectedEnemy = false;
                 clearInterval(this.fireInterval);
                 this.fireInterval = null;
-
             }
 
         }
+        if (this.trackingEnemyObj &&this.trackingEnemyObj.healthpoint<0){
+            this.detectedEnemy = false;
+            clearInterval(this.fireInterval);
+            this.fireInterval = null;
+        }
+        
 
     }
 

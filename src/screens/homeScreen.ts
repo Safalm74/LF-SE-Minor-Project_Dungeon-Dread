@@ -6,7 +6,7 @@ import { canvas } from "../main";
 import Point from "../modules/points";
 import Btn from "../util/btn";
 import aboutScreen from "./aboutScreen";
-import gameMain from "./game";
+import gameMain from "./gameScreen";
 
 const backGroundImage = new Image;
 backGroundImage.src = backGround;

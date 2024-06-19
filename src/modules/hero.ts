@@ -24,6 +24,15 @@ export default class Hero extends Entity {
     ability(){
         console.log('using ability');
     }
+    reheal(){
+        setInterval(()=>{
+            if(this.healthpoint<50){
+                this.healthpoint +=3
+            }
+
+        
+        },5000)
+    }
 
     checkCollision() {
         let collided: boolean = false;

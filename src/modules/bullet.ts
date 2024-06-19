@@ -1,5 +1,6 @@
 import Point from "./points";
-import GruntType1 from "./grunt[Type1]";
+import GruntType1 from "./gruntType1";
+import mainConstants from "../constants/mainConstants";
 
 interface IBullet {
     startPoint: Point;
@@ -49,6 +50,12 @@ export default class Bullet implements IBullet {
                 ) {
                     this.isHit = true;
                     obj.healthpoint -= this.damage;
+                    mainConstants.weaponArray.forEach(
+                        (obj)=>{
+                            obj.trackingEnemyObj=null;
+                            obj.detectedEnemy=false;
+                        }
+                    );
                 }
             }
         );

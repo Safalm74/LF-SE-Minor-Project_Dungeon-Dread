@@ -1,9 +1,8 @@
 import bushSprite from "../sprites/bushSprite";
 import bush from "../assets/map/bush.png";
 import stoneAndDrumSprite from "../sprites/stoneAndDrumSprite";
-import stoneAndDrum from "../assets/map/[stone,drum].png";
+import stoneAndDrum from "../assets/map/stoneandDrum.svg";
 import Point from "./points";
-import mapConstants from "../constants/mapConstants";
 
 const bushImage = new Image;
 bushImage.src = bush;
@@ -61,8 +60,8 @@ export default class Tile implements ITile {
                     stoneAndDrumSprite.stone.height,
                     this.position.x,
                     this.position.y,
-                    stoneAndDrumSprite.stone.width / 3,
-                    stoneAndDrumSprite.stone.height / 3
+                    stoneAndDrumSprite.stone.width / 30,
+                    stoneAndDrumSprite.stone.height / 30
                 );
                 break;
             case 'drum':

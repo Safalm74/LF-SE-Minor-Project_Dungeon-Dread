@@ -13,19 +13,19 @@ type SADSprite = {
 
 const stoneAndDrumSprite: SADSprite = {
     drum: {
-        width: 112,
-        height: 161,
+        width: 738,
+        height: 226,
         position: new Point(
-            14,
-            49
+            590,
+            2280
         )
     },
     stone: {
-        width: 136,
-        height: 164,
+        width: 1663,
+        height: 1487,
         position: new Point(
-            36,
-            552
+            577,
+            773
         )
     }
 

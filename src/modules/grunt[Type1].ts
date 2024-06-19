@@ -73,6 +73,10 @@ export default class GruntType1 extends Entity {
         const distance = Math.sqrt(
             (this.position.x - hero.position.x) ** 2 +
             (this.position.y - hero.position.y) ** 2);
+        if (distance>50){
+            clearInterval(this.attackInterval)
+
+        }
         const unitVector = new Point(
             (this.position.x - hero.position.x) / distance,
             (this.position.y - hero.position.y) / distance)

@@ -7,13 +7,14 @@ export default function dropDownMsg(
 ) {
     ctx.font = '10rem GloriaHallelujah';
     ctx.fillStyle = "#4caf50"
-    ctx.translate(-ctx.measureText(msg).width / 2, canvas.height / 2)
+    ctx.translate(-(ctx.measureText(msg).width / 2 + mainConstants.mapPosition.x), (canvas.height / 2 - mainConstants.mapPosition.y))
     ctx.fillText(
         msg,
         canvas.width / 2,
         0
     );
-    ctx.translate(ctx.measureText(msg).width / 2, -canvas.height / 2)
+
+    ctx.translate((ctx.measureText(msg).width / 2 + mainConstants.mapPosition.x), -(canvas.height / 2  -mainConstants.mapPosition.y))
 
 
 

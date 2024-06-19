@@ -4,11 +4,9 @@ import Map from "../modules/map";
 import Hero from "../modules/hero";
 import Point from "../modules/points";
 import getRandomInt from "../util/randomNumber";
-import heroSprite from "../sprites/hero";
 import GruntType1 from "../modules/grunt[Type1]";
-import gruntType1Sprite from "../sprites/grunt[Type1]Sptite";
 import gameMap from "../assets/map/map.png"
-import { canvas, ctx } from "../main";
+import { canvas } from "../main";
 import progressBar from "../util/bar";
 import mainConstants from "../constants/mainConstants";
 import dropDownMsg from "../util/dropdownMsg";
@@ -27,6 +25,7 @@ let gruntType1Array: GruntType1[] = [];
 let bulletArray: Bullet[] = [];
 //hero obj
 let hero: Hero;
+//gradient obj
 
 //function to return time difference and detect end of wave
 function remainingTime() {
@@ -145,6 +144,25 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     if (mainConstants.dropdownInterval) {
         dropDownMsg(ctx, `wave : ${stateConstants.wave}`);
     }
+    const gradient=ctx.createRadialGradient(
+        hero.position.x+hero.width/2,
+        hero.position.y+hero.height/2,
+        hero.width,
+        hero.position.x+hero.width/2,
+        hero.position.y+hero.height/2,
+        1000
+
+    );
+    gradient.addColorStop(0, "rgba(10,10,10,0)")
+    gradient.addColorStop(1, "rgba(0,0,0,0.99)")
+    ctx.fillStyle=gradient;
+    ctx.fillRect(
+        -mainConstants.mapPosition.x,
+        -mainConstants.mapPosition.y,
+        canvas.width,
+        canvas.height
+    )
+    
     progressBar(
         ctx,
         new Point(canvas.width * 0.05 - mainConstants.mapPosition.x, canvas.height * 0.05 - mainConstants.mapPosition.y),

@@ -52,6 +52,42 @@ export default class Pestol extends Gun {
 
 
     }
+    drawTest(ctx: CanvasRenderingContext2D) {
+
+        if (this.lookingLeft) {
+            this.shootingPoint = new Point(this.position.x, this.position.y + this.height / 4);
+        }
+        else {
+            this.shootingPoint = new Point(this.position.x + this.width, this.position.y + this.height / 4);
+        }
+
+
+        if (this.trackingEnemyObj && this.position.x > this.trackingEnemyObj!.position.x) {
+            this.shootingPoint.x = this.position.x;
+        }
+
+        this.shootingPoint.x = this.position.x +
+            (this.shootingPoint.x - this.position.x) *
+            Math.cos(this.lookingAngle) -
+            (this.shootingPoint.y - this.position.y) *
+            Math.sin(this.lookingAngle)
+        this.shootingPoint.y= this.position.y +
+            (this.shootingPoint.x - this.position.x) *
+            Math.sin(this.lookingAngle) +
+            (this.shootingPoint.y - this.position.y) *
+            Math.cos(this.lookingAngle)
+
+       // ctx.fillRect(this.shootingPoint.x, this.shootingPoint.y, 1000, 5);
+        if (this.trackingEnemyObj) {
+            ctx.beginPath();
+            ctx.moveTo(this.shootingPoint.x, this.shootingPoint.y);
+
+            ctx.lineTo(this.trackingEnemyObj.position.x, this.trackingEnemyObj.position.y)
+            ctx.stroke()
+
+        }
+
+    }
 
     draw(ctx: CanvasRenderingContext2D) {
         ctx.translate(this.position.x, this.position.y)

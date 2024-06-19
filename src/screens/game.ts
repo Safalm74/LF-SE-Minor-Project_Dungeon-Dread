@@ -169,7 +169,8 @@ function displayAll(ctx: CanvasRenderingContext2D) {
 
 
     pestolObj.draw(ctx);
-    pestolObj.position = hero.weaponPositions[5];
+    pestolObj.position = hero.weaponPositions[2];
+    pestolObj.drawTest(ctx);
 
 
 }
@@ -219,14 +220,7 @@ export default function gameMain(
     createType1();
     createHero();
     waveStartTime = new Date;
-    const bulletObj = new Bullet(
-        new Point(100, 100),
-        new Point(500, 500),
-        50,
-        new Point(3, 3),
-        new Point(0,0)
-    );
-    bulletArray.push(bulletObj);
+    //bulletArray.push(bulletObj);
     pestolObj = new Pestol(
         hero.weaponPositions[1],
         false,

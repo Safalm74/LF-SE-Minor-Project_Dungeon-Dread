@@ -3,24 +3,30 @@ import Point from "../modules/points";
 import mapConstants from "./mapConstants";
 import Pestol from "../modules/pestol";
 
-type MainConstants={
-    collideableObjs:Tile[];
-    heroTotalHealth:number;
-    waveIntervalTime:number;
-    maxEnemies:number;
-    mapPosition:Point;
-    dropdownInterval:any;
-    weaponArray:Pestol[];
+type MainConstants = {
+    collideableObjs: Tile[];
+    heroTotalHealth: number;
+    waveIntervalTime: number;
+    maxEnemies: number;
+    mapPosition: Point;
+    dropdownInterval: any;
+    weaponArray: null[] | Pestol[];
 }
 
-const mainConstants: MainConstants={
-    collideableObjs:[],
-    heroTotalHealth:120,
-    waveIntervalTime:60*1000,
-    maxEnemies:1000*mapConstants.mapSizeMultiplier,
-    mapPosition:new Point(0,0),
-    dropdownInterval:null,
-    weaponArray:[]
+const mainConstants: MainConstants = {
+    collideableObjs: [],
+    heroTotalHealth: 120,
+    waveIntervalTime: 15 * 1000,
+    maxEnemies: 500 * mapConstants.mapSizeMultiplier,
+    mapPosition: new Point(0, 0),
+    dropdownInterval: null,
+    weaponArray: [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null]
 }
 
 export default mainConstants;

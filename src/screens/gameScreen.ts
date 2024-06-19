@@ -14,6 +14,7 @@ import Pestol from "../modules/pestol";
 import pestolSprite from "../sprites/pestolSprite";
 import { handleEvents } from "../util/eventHandler";
 import Bullet from "../modules/bullet";
+import buyPannel from "./buyScreen";
 //loading map background
 const mapImage = new Image;
 mapImage.src = gameMap;
@@ -27,20 +28,13 @@ let bulletArray: Bullet[] = [];
 let hero: Hero;
 //weaponArray
 
+// create enemy interval
+let createEnemyInterval :any;
+
 //function to return time difference and detect end of wave
 function remainingTime() {
     const remainingTimems = (new Date).getTime() - waveStartTime.getTime()
-    if (remainingTimems >= mainConstants.waveIntervalTime) {
-        stateConstants.wave++;
-        waveStartTime = new Date;
-        mainConstants.dropdownInterval = true;
-        setTimeout(
-            () => { mainConstants.dropdownInterval = false; }
-            ,
-            5000
-        );
-
-    }
+    
     return remainingTimems;
 }
 
@@ -97,7 +91,7 @@ function removeBullet() {
 }
 //function that creates enemy every interval
 function createType1() {
-    setInterval(
+    createEnemyInterval=setInterval(
         () => {
 
             if (gruntType1Array.length < mainConstants.maxEnemies) {
@@ -147,7 +141,7 @@ function lowerInventory(ctx: CanvasRenderingContext2D) {
         )
         if (mainConstants.weaponArray[i]) {
             ctx.drawImage(
-                mainConstants.weaponArray[i].mysprite,
+                mainConstants.weaponArray[i]!.mysprite,
                 -mainConstants.mapPosition.x + canvas.width * ((0.2 + 0.1 * i) + 0.025),
                 -mainConstants.mapPosition.y + canvas.height * (0.8 + 0.03),
                 canvas.width * 0.05,
@@ -165,6 +159,7 @@ function lowerInventory(ctx: CanvasRenderingContext2D) {
 //function that handles all display
 function displayAll(ctx: CanvasRenderingContext2D) {
     //Map background
+   // console.log(gruntType1Array)
     ctx.drawImage(
         mapImage,
         mapConstants.displayPosition.x,
@@ -237,6 +232,11 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         canvas.height * 0.03,
         'Time remaining'
     );
+    if (remainingTime()>= mainConstants.waveIntervalTime) {
+        stateConstants.wave++;
+        buyPannel(ctx);
+
+    }
     //drawing bullets
     bulletArray.forEach(
         (bulletObj) => {
@@ -246,13 +246,18 @@ function displayAll(ctx: CanvasRenderingContext2D) {
 
     mainConstants.weaponArray.forEach(
         (obj, i) => {
-            obj.draw(ctx);
-            obj.position = hero.weaponPositions[i]
+            if (obj) {
+
+                obj.draw(ctx);
+                obj.position = hero.weaponPositions[i]
+
+            }
         }
     );
 
     //LowerInventory
     lowerInventory(ctx);
+
 
 
 }
@@ -303,6 +308,10 @@ export { hero, gruntType1Array, bulletArray }
 export default function gameMain(
     ctx: CanvasRenderingContext2D) {
     stateConstants.ingame = true;
+    bulletArray=[];
+    gruntType1Array=[];
+    clearInterval(createEnemyInterval);
+    createEnemyInterval=null;
     createType1();
     createHero();
     waveStartTime = new Date;
@@ -328,9 +337,9 @@ export default function gameMain(
         pestolSprite.width * hero.width * 0.01,
         pestolSprite.height * hero.width * 0.01
     );
-    mainConstants.weaponArray.push(pestolObj);
-    mainConstants.weaponArray.push(pestolObj2);
-    mainConstants.weaponArray.push(pestolObj3);
+    mainConstants.weaponArray[0] = (pestolObj);
+    mainConstants.weaponArray[1] = (pestolObj2);
+    mainConstants.weaponArray[2] = (pestolObj3);
     //moving focustohero
     mainConstants.dropdownInterval = true;
     setTimeout(
@@ -342,6 +351,7 @@ export default function gameMain(
         dropDownMsg(ctx, `wave : ${stateConstants.wave}`);
     }
 
+    //buyPannel(ctx);
 
     gameLoop(ctx);
 }

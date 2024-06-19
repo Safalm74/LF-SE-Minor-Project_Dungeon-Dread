@@ -40,27 +40,30 @@ function checkCollision(
 
 function btnsclicked(
     ClickedPosition: Point,
-    ctx:CanvasRenderingContext2D
+    ctx: CanvasRenderingContext2D
 ) {
-    if ( checkCollision(
-        ClickedPosition,
-        startBtnPosition,
-        startbtnSize
-    )){
+    if (
+        startbtnSize &&
+        checkCollision(
+            ClickedPosition,
+            startBtnPosition,
+            startbtnSize
+        )) {
         gameMain(ctx)
     }
-    if ( checkCollision(
-        ClickedPosition,
-        about,
-        aboutBtnSize
-    )){
+    if (aboutBtnSize &&
+        checkCollision(
+            ClickedPosition,
+            about,
+            aboutBtnSize
+        )) {
         aboutScreen(ctx)
     }
 
 
 
-       
-    
+
+
 }
 //function that handles all displays
 function displayAll(ctx: CanvasRenderingContext2D) {

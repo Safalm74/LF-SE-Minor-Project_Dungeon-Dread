@@ -1,5 +1,5 @@
 import homeScreen from "./screens/homeScreen";
-//import gameMain from "./screens/gameScreen";
+import gameMain from "./screens/gameScreen";
 import eventhandler from "./util/eventHandler";
 
 // initializing canvas
@@ -17,10 +17,10 @@ if (canvas) {
 
 
     //calling Home Screen
-   homeScreen(ctx)
+  // homeScreen(ctx)
   
     //calling game
-  //gameMain(ctx);
+  gameMain(ctx);
 }
 
 export { canvas ,ctx};

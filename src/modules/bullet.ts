@@ -50,12 +50,6 @@ export default class Bullet implements IBullet {
                 ) {
                     this.isHit = true;
                     obj.healthpoint -= this.damage;
-                    mainConstants.weaponArray.forEach(
-                        (obj)=>{
-                            obj.trackingEnemyObj=null;
-                            obj.detectedEnemy=false;
-                        }
-                    );
                 }
             }
         );

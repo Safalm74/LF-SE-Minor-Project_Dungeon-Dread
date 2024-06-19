@@ -34,13 +34,13 @@ function remainingTime() {
     if (remainingTimems >= mainConstants.waveIntervalTime) {
         stateConstants.wave++;
         waveStartTime = new Date;
-        mainConstants.dropdownInterval=true;
+        mainConstants.dropdownInterval = true;
         setTimeout(
-            ()=>{mainConstants.dropdownInterval=false;}
+            () => { mainConstants.dropdownInterval = false; }
             ,
             5000
         );
-        
+
     }
     return remainingTimems;
 }
@@ -75,13 +75,16 @@ function removeDeadEnemy() {
 function removeBullet() {
     bulletArray = bulletArray.filter(
         (obj) => {
+
+            obj.checkOnhit(gruntType1Array);
+
             return (
                 !((obj.endPoint.x >=
                     window.innerHeight *
                     mapConstants.mapSizeMultiplier) ||
-                (obj.startPoint.x <=
-                    0) ||
-                obj.isHit)
+                    (obj.startPoint.x <=
+                        0) ||
+                    obj.isHit)
             );
         }
     );
@@ -139,8 +142,8 @@ function displayAll(ctx: CanvasRenderingContext2D) {
 
         }
     );
-    if(mainConstants.dropdownInterval){
-        dropDownMsg(ctx,`wave : ${stateConstants.wave}`);
+    if (mainConstants.dropdownInterval) {
+        dropDownMsg(ctx, `wave : ${stateConstants.wave}`);
     }
     progressBar(
         ctx,
@@ -169,12 +172,21 @@ function displayAll(ctx: CanvasRenderingContext2D) {
 
 
     pestolObj.draw(ctx);
-    pestolObj.position = hero.weaponPositions[2];
+    pestolObj.position = hero.weaponPositions[0];
+
+    pestolObj2.draw(ctx);
+    pestolObj2.position = hero.weaponPositions[1];
+
+    pestolObj3.draw(ctx);
+    pestolObj3.position = hero.weaponPositions[2];
     //pestolObj.drawTest(ctx);
 
 
 }
 let pestolObj: Pestol;
+let pestolObj2: Pestol;
+let pestolObj3: Pestol;
+
 //main Loop function
 function gameLoop(
     ctx: CanvasRenderingContext2D
@@ -198,6 +210,8 @@ function gameLoop(
     gruntType1Array.forEach(
         (obj) => {
             pestolObj.detectEnemy(obj)
+            pestolObj3.detectEnemy(obj)
+            pestolObj2.detectEnemy(obj)
         }
     );
 
@@ -213,7 +227,7 @@ function gameLoop(
 }
 
 
-export { hero, gruntType1Array,bulletArray }
+export { hero, gruntType1Array, bulletArray }
 export default function gameMain(
     ctx: CanvasRenderingContext2D) {
     stateConstants.ingame = true;
@@ -222,7 +236,21 @@ export default function gameMain(
     waveStartTime = new Date;
     //bulletArray.push(bulletObj);
     pestolObj = new Pestol(
+        hero.weaponPositions[0],
+        false,
+        10,
+        pestolSprite.width * hero.width * 0.01,
+        pestolSprite.height * hero.width * 0.01
+    );
+    pestolObj2 = new Pestol(
         hero.weaponPositions[1],
+        true,
+        10,
+        pestolSprite.width * hero.width * 0.01,
+        pestolSprite.height * hero.width * 0.01
+    );
+    pestolObj3 = new Pestol(
+        hero.weaponPositions[2],
         false,
         10,
         pestolSprite.width * hero.width * 0.01,

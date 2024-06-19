@@ -25,7 +25,9 @@ export default class Pestol extends Gun {
                 < weaponRangeConstants.pestol) && !this.detectedEnemy) {
             console.log("zombie detected")
             this.detectedEnemy = true;
-            this.trackingEnemyObj = obj
+            this.trackingEnemyObj = obj;
+            //trackingEnemyObjPosition.x=trackingEnemyObjPosition.x+this.trackingEnemyObj.width/2;
+           // trackingEnemyObjPosition.y=trackingEnemyObjPosition.y+this.trackingEnemyObj.height/2;
         }
         if (this.detectedEnemy && this.trackingEnemyObj) {
             this.lookingAngle = logicalCenter.angle(
@@ -77,8 +79,11 @@ export default class Pestol extends Gun {
             this.fireInterval = setInterval(
                 () => {
                     if (this.trackingEnemyObj) {
-                        const vector = this.shootingPoint.pointDifference(this.trackingEnemyObj.position);
-                        const magnitude = this.shootingPoint.distanceBetween(this.trackingEnemyObj.position);
+                        const trackingEnemyObjPosition=new Point( // to aim at center of body of zombie
+                            this.trackingEnemyObj.position.x +this.width/2,
+                            this.trackingEnemyObj.position.y +this.height/2)
+                        const vector = this.shootingPoint.pointDifference(trackingEnemyObjPosition);
+                        const magnitude = this.shootingPoint.distanceBetween(trackingEnemyObjPosition);
                         const unitVector = new Point(
                             vector.x / magnitude, vector.y / magnitude
                         );

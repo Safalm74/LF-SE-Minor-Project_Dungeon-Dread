@@ -8,7 +8,7 @@ type WeaponRangeConstants={
 
 const weaponRangeConstants: WeaponRangeConstants={
     bulletSize:2,
-    bulletVelocity:3,
+    bulletVelocity:20,
     pestol:300,
     pestolFireRate:1,
     pestolDamage:5

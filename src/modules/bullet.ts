@@ -38,15 +38,13 @@ export default class Bullet implements IBullet {
         this.startPoint = this.startPoint.add(this.velocity);
         this.endPoint = this.endPoint.add(this.velocity);
         // //drawing
-        ctx.translate(this.gunPosition.x, this.gunPosition.y)
         ctx.beginPath();
-        ctx.fillStyle = "white";
-        // ctx.fillRect(this.endPoint.x, this.endPoint.y,100,100)
+        ctx.strokeStyle = "gold";
         ctx.moveTo(this.startPoint.x, this.startPoint.y);
         ctx.lineTo(this.endPoint.x, this.endPoint.y);
+        ctx.lineWidth=2;
         ctx.stroke();
 
-        ctx.translate(-this.gunPosition.x, -this.gunPosition.y)
     }
 
 }

@@ -170,7 +170,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
 
     pestolObj.draw(ctx);
     pestolObj.position = hero.weaponPositions[2];
-    pestolObj.drawTest(ctx);
+    //pestolObj.drawTest(ctx);
 
 
 }

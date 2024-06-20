@@ -9,6 +9,7 @@ import Bullet from "./bullet";
 const gunImage = new Image;
 gunImage.src = gunSrc;
 
+export {gunImage};
 export default class Pestol extends Gun {
     detectedEnemy: boolean = false;
     trackingEnemyObj: any= null;
@@ -167,6 +168,4 @@ export default class Pestol extends Gun {
         ctx.rotate(-this.lookingAngle);
         ctx.translate(-this.position.x, -this.position.y,)
     }
-
-
 }

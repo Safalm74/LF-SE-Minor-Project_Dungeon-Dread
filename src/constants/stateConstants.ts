@@ -4,6 +4,7 @@ type StateConstants = {
         [key:string]:boolean
     }
     wave:number;
+    buyScreenFlag:boolean;
 }
 
 const stateConstants: StateConstants = {
@@ -11,7 +12,8 @@ const stateConstants: StateConstants = {
     btnPressed:{
 
     },
-    wave:1
+    wave:1,
+    buyScreenFlag:false
 }
 
 export default stateConstants;

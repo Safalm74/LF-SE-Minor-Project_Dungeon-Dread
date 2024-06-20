@@ -1,6 +1,7 @@
 import stateConstants from "../constants/stateConstants";
 import { ctx } from "../main";
 import Point from "../modules/points";
+import { buyBtnsclicked } from "../screens/buyScreen";
 import { hero } from "../screens/gameScreen";
 import { btnsclicked } from "../screens/homeScreen";
 
@@ -21,10 +22,10 @@ function handleEvents() {
         hero.moveUp(false, ctx);
         hero.isMoving = true;
     }
-    if(stateConstants.btnPressed[' ']){
+    if (stateConstants.btnPressed[' ']) {
         hero.ability();
     }
-    if(stateConstants.btnPressed['\n']){
+    if (stateConstants.btnPressed['\n']) {
         console.log('enter')
     }
 }
@@ -53,9 +54,18 @@ export default function eventhandler() {
                 new Point(
                     e.offsetX,
                     e.offsetY),
-                    ctx
-                );
+                ctx
+            );
+
+            if (stateConstants.buyScreenFlag) {
+                buyBtnsclicked(
+                    new Point(
+                        e.offsetX,
+                        e.offsetY
+                    ),
+                    ctx);
+            }
         }
     )
-    
+
 }

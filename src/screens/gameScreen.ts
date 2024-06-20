@@ -29,12 +29,12 @@ let hero: Hero;
 //weaponArray
 
 // create enemy interval
-let createEnemyInterval :any;
+let createEnemyInterval: any;
 
 //function to return time difference and detect end of wave
 function remainingTime() {
     const remainingTimems = (new Date).getTime() - waveStartTime.getTime()
-    
+
     return remainingTimems;
 }
 
@@ -91,7 +91,7 @@ function removeBullet() {
 }
 //function that creates enemy every interval
 function createType1() {
-    createEnemyInterval=setInterval(
+    createEnemyInterval = setInterval(
         () => {
 
             if (gruntType1Array.length < mainConstants.maxEnemies) {
@@ -159,7 +159,7 @@ function lowerInventory(ctx: CanvasRenderingContext2D) {
 //function that handles all display
 function displayAll(ctx: CanvasRenderingContext2D) {
     //Map background
-   // console.log(gruntType1Array)
+    // console.log(gruntType1Array)
     ctx.drawImage(
         mapImage,
         mapConstants.displayPosition.x,
@@ -232,7 +232,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         canvas.height * 0.03,
         'Time remaining'
     );
-    if (remainingTime()>= mainConstants.waveIntervalTime) {
+    if (remainingTime() >= mainConstants.waveIntervalTime) {
         stateConstants.wave++;
         buyPannel(ctx);
 
@@ -261,9 +261,6 @@ function displayAll(ctx: CanvasRenderingContext2D) {
 
 
 }
-let pestolObj: Pestol;
-let pestolObj2: Pestol;
-let pestolObj3: Pestol;
 
 //main Loop function
 function gameLoop(
@@ -286,9 +283,15 @@ function gameLoop(
 
     gruntType1Array.forEach(
         (obj) => {
-            pestolObj.detectEnemy(obj)
-            pestolObj3.detectEnemy(obj)
-            pestolObj2.detectEnemy(obj)
+            mainConstants.weaponArray.forEach(
+                (wobj) => {
+                    if (wobj) {
+                        wobj.detectEnemy(obj)
+
+                    }
+
+                }
+            );
         }
     );
 
@@ -302,44 +305,56 @@ function gameLoop(
 
     //dropDownMsg(ctx,'New Wave');
 }
+function resetWaveChange() {
+    //clearing all damages
+    gruntType1Array.forEach(
+        (obj) => {
+
+            clearInterval(obj.attackInterval);
+
+        }
+
+    );
+    //reset health
+    hero.healthpoint=mainConstants.heroTotalHealth;
+
+    bulletArray = [];
+    gruntType1Array = [];
+    clearInterval(createEnemyInterval);
+    createEnemyInterval = null;
+    waveStartTime = new Date;
+    //if player has no gun
+    if (!mainConstants.weaponArray[0]) {
+        mainConstants.weaponArray[0] = new Pestol(
+            hero.weaponPositions[0],
+            false,
+            10,
+            pestolSprite.width * hero.width * 0.01,
+            pestolSprite.height * hero.width * 0.01
+        );
+    }
+    //clearing all shootings
+    mainConstants.weaponArray.forEach(
+        (obj) => {
+            if (obj) {
+                clearInterval(obj.fireInterval);
+            }
+        }
+    );
+
+}
 
 
 export { hero, gruntType1Array, bulletArray }
 export default function gameMain(
     ctx: CanvasRenderingContext2D) {
     stateConstants.ingame = true;
-    bulletArray=[];
-    gruntType1Array=[];
-    clearInterval(createEnemyInterval);
-    createEnemyInterval=null;
-    createType1();
+
     createHero();
-    waveStartTime = new Date;
-    //bulletArray.push(bulletObj);
-    pestolObj = new Pestol(
-        hero.weaponPositions[0],
-        false,
-        10,
-        pestolSprite.width * hero.width * 0.01,
-        pestolSprite.height * hero.width * 0.01
-    );
-    pestolObj2 = new Pestol(
-        hero.weaponPositions[1],
-        false,
-        10,
-        pestolSprite.width * hero.width * 0.01,
-        pestolSprite.height * hero.width * 0.01
-    );
-    pestolObj3 = new Pestol(
-        hero.weaponPositions[2],
-        false,
-        10,
-        pestolSprite.width * hero.width * 0.01,
-        pestolSprite.height * hero.width * 0.01
-    );
-    mainConstants.weaponArray[0] = (pestolObj);
-    mainConstants.weaponArray[1] = (pestolObj2);
-    mainConstants.weaponArray[2] = (pestolObj3);
+    resetWaveChange();
+
+    createType1();
+
     //moving focustohero
     mainConstants.dropdownInterval = true;
     setTimeout(
@@ -351,7 +366,7 @@ export default function gameMain(
         dropDownMsg(ctx, `wave : ${stateConstants.wave}`);
     }
 
-    //buyPannel(ctx);
-
+    // buyPannel(ctx);
+    ``
     gameLoop(ctx);
 }

@@ -7,6 +7,7 @@ import progressBar from "../util/bar";
 import lowerInventory from "../util/lowerInventory";
 import gameMain, { hero } from "./gameScreen";
 import pestolSprite from "../sprites/pestolSprite";
+import gunConstants from "../constants/gunConstants";
 
 let buyStartTime: Date;
 const buyTime = 5 * 1000;
@@ -25,9 +26,9 @@ function checkCollision(
     size: Point) {
     const width = size.x;
     const height = size.y;
-    cursorPosiiton=new Point(
-        cursorPosiiton.x-mainConstants.mapPosition.x,
-        cursorPosiiton.y-mainConstants.mapPosition.y
+    cursorPosiiton = new Point(
+        cursorPosiiton.x - mainConstants.mapPosition.x,
+        cursorPosiiton.y - mainConstants.mapPosition.y
     )
     if (
         cursorPosiiton.x > BtnPosition.x &&
@@ -77,14 +78,30 @@ let buyBtnsclicked = (
                 canvas.width * 0.05)
         );
         if (inventorPositionFlag) {
+            console.log(i)
             switch (i) {
                 case 0:
                     mainConstants.weaponArray[selectedPosition] = new Pestol(
                         hero.weaponPositions[selectedPosition],
                         false,
-                        10,
-                        pestolSprite.width * hero.width * 0.01,
-                        pestolSprite.height * hero.width * 0.01
+                        gunConstants.pistol.damage,
+                        gunConstants.pistol.width,
+                        gunConstants.pistol.height,
+                        gunConstants.pistol.fireRate,
+                        gunConstants.pistol.cost,
+                        gunConstants.pistol.image
+                    );
+                    break;
+                case 1:
+                    mainConstants.weaponArray[selectedPosition] = new Pestol(
+                        hero.weaponPositions[selectedPosition],
+                        false,
+                        gunConstants.smg.damage,
+                        gunConstants.smg.width,
+                        gunConstants.smg.height,
+                        gunConstants.smg.fireRate,
+                        gunConstants.smg.cost,
+                        gunConstants.smg.image
                     );
                     break;
             }
@@ -131,8 +148,16 @@ function buyPannelLoop(ctx: CanvasRenderingContext2D) {
     }
     //buy box for pestol
     ctx.drawImage(
-        gunImage,
+        gunConstants.pistol.image,
         -mainConstants.mapPosition.x + canvas.width * ((0.2) + 0.025),
+        -mainConstants.mapPosition.y + canvas.height * (0.1 + 0.03),
+        canvas.width * 0.05,
+        canvas.width * 0.05
+    );
+    //buy box for smg
+    ctx.drawImage(
+        gunConstants.smg.image,
+        -mainConstants.mapPosition.x + canvas.width * ((0.3) + 0.025),
         -mainConstants.mapPosition.y + canvas.height * (0.1 + 0.03),
         canvas.width * 0.05,
         canvas.width * 0.05
@@ -162,6 +187,14 @@ function buyPannelLoop(ctx: CanvasRenderingContext2D) {
         gameMain(ctx);
 
     }
+    ctx.strokeStyle = "gold";
+
+    ctx.strokeRect(
+        -mainConstants.mapPosition.x + canvas.width * ((0.2 + 0.1 * selectedPosition) + 0.025),
+        -mainConstants.mapPosition.y + canvas.height * (0.8 + 0.03),
+        canvas.width * 0.05,
+        canvas.width * 0.05
+    )
     if (!stateConstants.ingame) {
         requestAnimationFrame(
             () => {

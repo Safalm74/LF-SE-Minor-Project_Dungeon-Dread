@@ -26,7 +26,7 @@ export default function lowerInventory(ctx: CanvasRenderingContext2D) {
         )
         if (mainConstants.weaponArray[i]) {
             ctx.drawImage(
-                mainConstants.weaponArray[i]!.mysprite,
+                mainConstants.weaponArray[i]!.gunImage,
                 -mainConstants.mapPosition.x + canvas.width * ((0.2 + 0.1 * i) + 0.025),
                 -mainConstants.mapPosition.y + canvas.height * (0.8 + 0.03),
                 canvas.width * 0.05,

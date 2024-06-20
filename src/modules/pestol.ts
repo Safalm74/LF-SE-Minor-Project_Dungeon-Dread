@@ -15,9 +15,7 @@ export default class Pestol extends Gun {
     trackingEnemyObj: any= null;
     lookingAngle: number = 0;
     shootingPoint: Point = pestolSprite.positionRight[1];
-    fireRate: number = weaponRangeConstants.pestolFireRate;
     fireInterval: any = null;
-    mysprite=gunImage;
 
     detectEnemy(obj: GruntType1) {
         const logicalCenter = this.position
@@ -154,7 +152,7 @@ export default class Pestol extends Gun {
         ctx.fillStyle = "red";
         //ctx.fillRect(0, 0, 1000, 5)
         ctx.drawImage(
-            gunImage,
+            this.gunImage,
             lookingDirectionPosition.x,
             lookingDirectionPosition.y,
             pestolSprite.width,

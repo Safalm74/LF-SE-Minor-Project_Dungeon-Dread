@@ -11,10 +11,12 @@ import progressBar from "../util/bar";
 import mainConstants from "../constants/mainConstants";
 import dropDownMsg from "../util/dropdownMsg";
 import Pestol from "../modules/pestol";
-import pestolSprite from "../sprites/pestolSprite";
 import { handleEvents } from "../util/eventHandler";
 import Bullet from "../modules/bullet";
 import buyPannel from "./buyScreen";
+import heroConstants from "../constants/heroConstants";
+import gunConstants from "../constants/gunConstants";
+//import heroConstants from "../constants/heroCopnstants";
 //loading map background
 const mapImage = new Image;
 mapImage.src = gameMap;
@@ -51,9 +53,9 @@ function createHero() {
             window.innerWidth / 2, window.innerHeight / 2),
         "blue",
         true,
-        120,
-        35 * canvas.height / 600,
-        44 * canvas.height / 600
+        mainConstants.heroTotalHealth,
+        heroConstants.width,
+        heroConstants.height
     );
     hero.reheal();
 }
@@ -141,7 +143,7 @@ function lowerInventory(ctx: CanvasRenderingContext2D) {
         )
         if (mainConstants.weaponArray[i]) {
             ctx.drawImage(
-                mainConstants.weaponArray[i]!.mysprite,
+                mainConstants.weaponArray[i]!.gunImage,
                 -mainConstants.mapPosition.x + canvas.width * ((0.2 + 0.1 * i) + 0.025),
                 -mainConstants.mapPosition.y + canvas.height * (0.8 + 0.03),
                 canvas.width * 0.05,
@@ -328,9 +330,12 @@ function resetWaveChange() {
         mainConstants.weaponArray[0] = new Pestol(
             hero.weaponPositions[0],
             false,
-            10,
-            pestolSprite.width * hero.width * 0.01,
-            pestolSprite.height * hero.width * 0.01
+            gunConstants.pistol.damage,
+            gunConstants.pistol.width,
+            gunConstants.pistol.height,
+            gunConstants.pistol.fireRate,
+            gunConstants.pistol.cost,
+            gunConstants.pistol.image
         );
     }
     //clearing all shootings
@@ -366,7 +371,7 @@ export default function gameMain(
         dropDownMsg(ctx, `wave : ${stateConstants.wave}`);
     }
 
-    // buyPannel(ctx);
+   // buyPannel(ctx);
     ``
     gameLoop(ctx);
 }

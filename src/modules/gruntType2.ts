@@ -1,5 +1,6 @@
 import Entity from "./entity";
 import spwan from "../assets/entity/enemy/spwan.png"
+import gruntType1 from "../assets/entity/enemy/grunts/type1.png"
 import spwanSprite from "../sprites/spwanSprite";
 import gruntType1Sprite from "../sprites/grunt[Type1]Sptite";
 import Point from "./points";
@@ -8,19 +9,22 @@ import mainConstants from "../constants/mainConstants";
 import Tile from "./tile";
 import Hero from "./hero";
 import getRandomInt from "../util/randomNumber";
-import gruntType3Sprite from "../sprites/grunt[Type3]sprite";
 
 
 const spwanImage = new Image;
+const gruntType1Image = new Image;
 spwanImage.src = spwan;
+gruntType1Image.src = gruntType1;
 
-export default class GruntType1 extends Entity {
+export default class GruntType2 extends Entity {
     isSpwaned: boolean = false;
     attackInterval: any = null;
+
+
     checkCollision() {
         let collided: boolean = false;
         let collidedHero: boolean = false;
-        let collidedObj: Tile | Hero  = mainConstants.collideableObjs[0];
+        let collidedObj: Tile | Hero = mainConstants.collideableObjs[0];
         mainConstants.collideableObjs.forEach(
             (obj) => {
                 if (
@@ -49,10 +53,10 @@ export default class GruntType1 extends Entity {
                     () => {
                         if (hero.healthpoint > 0) {
 
-                            hero.healthpoint -= this.damage;
+                            hero.healthpoint -= 2;
                         }
                     },
-                    1000/this.attackRate
+                    1200
                 );
             }
         } else {
@@ -72,24 +76,25 @@ export default class GruntType1 extends Entity {
         if (distance>50){
             clearInterval(this.attackInterval)
             this.attackInterval=null;
+
         }
         const unitVector = new Point(
             (this.position.x - hero.position.x) / distance,
             (this.position.y - hero.position.y) / distance)
-        const magnitudeVelocity = Math.sqrt(
-            this.velocity.x*this.velocity.x +
-            this.velocity.y*this.velocity.y
-        )
+        const magnitudeVelocity = Math.sqrt(2)
 
-        const resultantVelocity = new Point(
+        this.velocity = new Point(
             -unitVector.x * magnitudeVelocity,
             -unitVector.y * magnitudeVelocity
         )
-        if (!chkcls.collidedHero && !chkcls.collided ) {
-            this.position.x += resultantVelocity.x;
-            this.position.y += resultantVelocity.y;
+        if (chkcls.collidedHero) {
+            this.velocity.x = 0;
+            this.velocity.y = 0;
         }
-        if(chkcls.collided){
+        if (!chkcls.collided) {
+            this.position.x += this.velocity.x;
+            this.position.y += this.velocity.y;
+        } else {
             const positionOffsetX = chkcls.collidedObj.position.x < this.position.x ? 1 : -1
             const positionOffsety = chkcls.collidedObj.position.y < this.position.y ? 1 : -1
             this.position.x += positionOffsetX;
@@ -100,31 +105,21 @@ export default class GruntType1 extends Entity {
     }
 
     draw(ctx: CanvasRenderingContext2D) {
-        let gruntSprite;
-        switch (this.gruntType){
-            case 1:
-                gruntSprite=gruntType1Sprite;
-                break;
-            case 3:
-                gruntSprite=gruntType3Sprite;
-                break;
-        }
-        const lookingDirection = this.lookingLeft ? gruntSprite!.positionLeft : gruntSprite!.positionRight;
+        const lookingDirection = this.lookingLeft ? gruntType1Sprite.positionLeft : gruntType1Sprite.positionRight;
         this.update();
         const staggerFrame = 5;
-        let position = Math.floor(this.spritePosition / staggerFrame) % gruntSprite!.positionLeft.length;
+        let position = Math.floor(this.spritePosition / staggerFrame) % 10;
         ctx.drawImage(
-            this.gruntImage,
+            gruntType1Image,
             lookingDirection[position].x,
             lookingDirection[position].y,
-            gruntType3Sprite.width,
-            gruntType3Sprite.height,
+            gruntType1Sprite.width,
+            gruntType1Sprite.height,
             this.position.x,
             this.position.y,
             this.width,
-            this.height,
+            this.height
         );
-        
         this.spritePosition++
     }
 
@@ -149,6 +144,10 @@ export default class GruntType1 extends Entity {
         if (position >= 9) {
             this.isSpwaned = true;
             this.spritePosition = 0;
+            this.velocity = new Point(
+                getRandomInt(1, 3),
+                getRandomInt(1, 3));
+            this.healthpoint = 10;
         }
 
     }

@@ -1,5 +1,6 @@
 import Entity from "./entity";
 import spwan from "../assets/entity/enemy/spwan.png"
+import gruntType1 from "../assets/entity/enemy/grunts/type1.png"
 import spwanSprite from "../sprites/spwanSprite";
 import gruntType1Sprite from "../sprites/grunt[Type1]Sptite";
 import Point from "./points";
@@ -8,19 +9,24 @@ import mainConstants from "../constants/mainConstants";
 import Tile from "./tile";
 import Hero from "./hero";
 import getRandomInt from "../util/randomNumber";
-import gruntType3Sprite from "../sprites/grunt[Type3]sprite";
+import gruntConstants from "../constants/gruntConstants";
+import gruntType4Sprite from "../sprites/grunt[Type4]Sprite";
 
 
 const spwanImage = new Image;
+const gruntType1Image = new Image;
 spwanImage.src = spwan;
+gruntType1Image.src = gruntType1;
 
-export default class GruntType1 extends Entity {
+export default class GruntType4 extends Entity {
     isSpwaned: boolean = false;
     attackInterval: any = null;
+    isAttacking: boolean = false;
+
     checkCollision() {
         let collided: boolean = false;
         let collidedHero: boolean = false;
-        let collidedObj: Tile | Hero  = mainConstants.collideableObjs[0];
+        let collidedObj: Tile | Hero = mainConstants.collideableObjs[0];
         mainConstants.collideableObjs.forEach(
             (obj) => {
                 if (
@@ -44,20 +50,6 @@ export default class GruntType1 extends Entity {
 
             collidedHero = true;
             collidedObj = hero;
-            if (!this.attackInterval) {
-                this.attackInterval = setInterval(
-                    () => {
-                        if (hero.healthpoint > 0) {
-
-                            hero.healthpoint -= this.damage;
-                        }
-                    },
-                    1000/this.attackRate
-                );
-            }
-        } else {
-            clearInterval(this.attackInterval)
-            this.attackInterval = null;
         }
         return { collided, collidedObj, collidedHero };
 
@@ -69,27 +61,32 @@ export default class GruntType1 extends Entity {
         const distance = Math.sqrt(
             (this.position.x - hero.position.x) ** 2 +
             (this.position.y - hero.position.y) ** 2);
-        if (distance>50){
+        if (distance > 50) {
             clearInterval(this.attackInterval)
-            this.attackInterval=null;
+            this.attackInterval = null;
+
         }
         const unitVector = new Point(
             (this.position.x - hero.position.x) / distance,
             (this.position.y - hero.position.y) / distance)
-        const magnitudeVelocity = Math.sqrt(
-            this.velocity.x*this.velocity.x +
-            this.velocity.y*this.velocity.y
-        )
+        const magnitudeVelocity = Math.sqrt(2)
 
-        const resultantVelocity = new Point(
+        this.velocity = new Point(
             -unitVector.x * magnitudeVelocity,
             -unitVector.y * magnitudeVelocity
         )
-        if (!chkcls.collidedHero && !chkcls.collided ) {
-            this.position.x += resultantVelocity.x;
-            this.position.y += resultantVelocity.y;
+        if (!chkcls.collidedHero) {
+            this.position.x += this.velocity.x;
+            this.position.y += this.velocity.y;
+            this.isAttacking=false;
         }
-        if(chkcls.collided){
+        else {
+            this.isAttacking = true;
+        }
+        if (!chkcls.collided) {
+            this.position.x += this.velocity.x;
+            this.position.y += this.velocity.y;
+        } else {
             const positionOffsetX = chkcls.collidedObj.position.x < this.position.x ? 1 : -1
             const positionOffsety = chkcls.collidedObj.position.y < this.position.y ? 1 : -1
             this.position.x += positionOffsetX;
@@ -100,38 +97,62 @@ export default class GruntType1 extends Entity {
     }
 
     draw(ctx: CanvasRenderingContext2D) {
-        let gruntSprite;
-        switch (this.gruntType){
-            case 1:
-                gruntSprite=gruntType1Sprite;
-                break;
-            case 3:
-                gruntSprite=gruntType3Sprite;
-                break;
-        }
-        const lookingDirection = this.lookingLeft ? gruntSprite!.positionLeft : gruntSprite!.positionRight;
         this.update();
-        const staggerFrame = 5;
-        let position = Math.floor(this.spritePosition / staggerFrame) % gruntSprite!.positionLeft.length;
-        ctx.drawImage(
-            this.gruntImage,
-            lookingDirection[position].x,
-            lookingDirection[position].y,
-            gruntType3Sprite.width,
-            gruntType3Sprite.height,
-            this.position.x,
-            this.position.y,
-            this.width,
-            this.height,
-        );
-        
+        if (this.isAttacking) {
+
+            const lookingDirection = this.lookingLeft ?
+                gruntType4Sprite.attackLeft :
+                gruntType4Sprite.attackRight;
+            const staggerFrame = 10;
+            const position = Math.floor(this.spritePosition /
+                staggerFrame) %
+                gruntType4Sprite.attackLeft.length;
+
+            
+            if (position == 2) {
+                hero.healthpoint -= this.damage;
+            }
+            ctx.drawImage(
+                gruntConstants.type3.image,
+                lookingDirection[position].position.x,
+                lookingDirection[position].position.y,
+                lookingDirection[position].width,
+                lookingDirection[position].height,
+                this.position.x,
+                this.position.y,
+                lookingDirection[position].width,
+                lookingDirection[position].height
+            );
+
+        }
+        else {
+
+            const lookingDirection = this.lookingLeft ?
+                gruntType4Sprite.positionLeft :
+                gruntType4Sprite.positionRight;
+            const staggerFrame = 8;
+            const position = Math.floor(this.spritePosition /
+                staggerFrame) %
+                gruntType4Sprite.positionLeft.length;
+            ctx.drawImage(
+                gruntConstants.type3.image,
+                lookingDirection[position].x,
+                lookingDirection[position].y,
+                gruntType4Sprite.width,
+                gruntType4Sprite.height,
+                this.position.x,
+                this.position.y,
+                gruntType4Sprite.width,
+                gruntType4Sprite.height
+            );
+        }
         this.spritePosition++
     }
 
 
     spwan(ctx: CanvasRenderingContext2D) {
         const staggerFrame = 10;
-        let position = Math.floor(this.spritePosition / staggerFrame) % 10;
+        const position = Math.floor(this.spritePosition / staggerFrame) % 10;
 
         ctx.drawImage(
             spwanImage,

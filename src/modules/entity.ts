@@ -7,8 +7,12 @@ interface IEntity {
     healthpoint: number;
     width: number;
     height: number;
-    spritePosition:number;
-    velocity:Point;
+    spritePosition: number;
+    velocity: Point;
+    damage: number;
+    attackRate: number;
+    gruntImage: HTMLImageElement;
+    gruntType:number;
 }
 
 export default class Entity implements IEntity {
@@ -18,21 +22,35 @@ export default class Entity implements IEntity {
     healthpoint: number;
     width: number;
     height: number;
-    spritePosition: number=0;
-    velocity: Point=new Point(5,5);;
+    spritePosition: number = 0;
+    velocity: Point;
+    damage: number;
+    attackRate: number;
+    gruntImage: HTMLImageElement;
+    gruntType:number;
     constructor(
         position: Point,
         team: "red" | "blue",
         lookingLeft: boolean,
         healthpoint: number,
         width: number,
-        height: number
+        height: number,
+        damage: number = 0,
+        attackrate: number = 0,
+        gruntImage: HTMLImageElement = new Image,
+        gruntType:number=0,
+        velocity:Point = new Point(5, 5)
     ) {
         this.position = position;
         this.team = team;
         this.lookingLeft = lookingLeft;
         this.healthpoint = healthpoint;
-        this.width=width;
-        this.height=height;
+        this.width = width;
+        this.height = height;
+        this.damage = damage;
+        this.attackRate = attackrate;
+        this.gruntImage=gruntImage;
+        this.gruntType=gruntType;
+        this.velocity=velocity
     }
 }

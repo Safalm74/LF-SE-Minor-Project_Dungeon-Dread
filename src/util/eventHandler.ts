@@ -62,8 +62,8 @@ export default function eventhandler() {
                     new Point(
                         e.offsetX,
                         e.offsetY
-                    ),
-                    ctx);
+                    )
+                );
             }
         }
     )

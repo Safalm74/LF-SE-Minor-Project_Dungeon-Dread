@@ -16,6 +16,9 @@ import Bullet from "../modules/bullet";
 import buyPannel from "./buyScreen";
 import heroConstants from "../constants/heroConstants";
 import gunConstants from "../constants/gunConstants";
+import gruntConstants from "../constants/gruntConstants";
+import GruntType4 from "../modules/gruntType4";
+import gruntType4Sprite from "../sprites/grunt[Type4]Sprite";
 //import heroConstants from "../constants/heroCopnstants";
 //loading map background
 const mapImage = new Image;
@@ -23,7 +26,7 @@ mapImage.src = gameMap;
 //checking time to set next wave
 let waveStartTime: Date;
 //spwan Type1 enemies
-let gruntType1Array: GruntType1[] = [];
+let gruntType1Array: (GruntType1|GruntType4)[] = [];
 //Bullet array
 let bulletArray: Bullet[] = [];
 //hero obj
@@ -95,20 +98,73 @@ function removeBullet() {
 function createType1() {
     createEnemyInterval = setInterval(
         () => {
-
             if (gruntType1Array.length < mainConstants.maxEnemies) {
-                const gruntObj = new GruntType1(
-                    new Point(
-                        getRandomInt(mapConstants.tileSize + mapConstants.displayPosition.x, window.innerWidth * 5 - mapConstants.tileSize),
-                        getRandomInt(mapConstants.tileSize + mapConstants.displayPosition.y, window.innerHeight * 5 - mapConstants.tileSize * 2)),
-                    "red",
-                    true,
-                    100,
-                    24 * canvas.height / 700,
-                    34 * canvas.height / 700
-                );
+                const randomNumber=getRandomInt(1,100);
+                if ( 1 && randomNumber<50){
+                    //creating Type3 enemy
+                    gruntType1Array.push(
+                        new GruntType4(
+                            new Point(
+                                getRandomInt(mapConstants.tileSize + mapConstants.displayPosition.x, window.innerWidth * 5 - mapConstants.tileSize),
+                                getRandomInt(mapConstants.tileSize + mapConstants.displayPosition.y, window.innerHeight * 5 - mapConstants.tileSize * 2)),
+                            "red",
+                            true,
+                            gruntConstants.type4.healthPoint,
+                            gruntConstants.type4.width,
+                            gruntConstants.type4.height,
+                            gruntConstants.type4.damage,
+                            gruntConstants.type4.attackRate,
+                            gruntConstants.type4.image,
+                            4,
+                            gruntConstants.type4.velocity
+                            
+                        )
+                    );
 
-                gruntType1Array.push(gruntObj);
+                }
+                else if ( stateConstants.wave>1&& randomNumber<60){
+                    //creating Type3 enemy
+                    gruntType1Array.push(
+                        new GruntType1(
+                            new Point(
+                                getRandomInt(mapConstants.tileSize + mapConstants.displayPosition.x, window.innerWidth * 5 - mapConstants.tileSize),
+                                getRandomInt(mapConstants.tileSize + mapConstants.displayPosition.y, window.innerHeight * 5 - mapConstants.tileSize * 2)),
+                            "red",
+                            true,
+                            gruntConstants.type3.healthPoint,
+                            gruntConstants.type3.width,
+                            gruntConstants.type3.height,
+                            gruntConstants.type3.damage,
+                            gruntConstants.type3.attackRate,
+                            gruntConstants.type3.image,
+                            3,
+                            gruntConstants.type3.velocity
+                            
+                        )
+                    );
+
+                }
+                else{
+                    //creating Type1 enemy
+                    gruntType1Array.push(
+                        new GruntType1(
+                            new Point(
+                                getRandomInt(mapConstants.tileSize + mapConstants.displayPosition.x, window.innerWidth * 5 - mapConstants.tileSize),
+                                getRandomInt(mapConstants.tileSize + mapConstants.displayPosition.y, window.innerHeight * 5 - mapConstants.tileSize * 2)),
+                            "red",
+                            true,
+                            gruntConstants.type1.healthPoint,
+                            gruntConstants.type1.width,
+                            gruntConstants.type1.height,
+                            gruntConstants.type1.damage,
+                            gruntConstants.type1.attackRate,
+                            gruntConstants.type1.image,
+                            1,
+                            gruntConstants.type1.velocity
+                            
+                        )
+                    );
+                }
             }
 
         }
@@ -156,12 +212,11 @@ function lowerInventory(ctx: CanvasRenderingContext2D) {
     }
 
 }
-
+let a=0;
 
 //function that handles all display
 function displayAll(ctx: CanvasRenderingContext2D) {
     //Map background
-    // console.log(gruntType1Array)
     ctx.drawImage(
         mapImage,
         mapConstants.displayPosition.x,
@@ -236,6 +291,11 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     );
     if (remainingTime() >= mainConstants.waveIntervalTime) {
         stateConstants.wave++;
+        mainConstants.weaponArray.forEach(
+            (obj)=>{
+                clearInterval(obj?.fireInterval);
+            }
+        );
         buyPannel(ctx);
 
     }
@@ -259,7 +319,19 @@ function displayAll(ctx: CanvasRenderingContext2D) {
 
     //LowerInventory
     lowerInventory(ctx);
-
+    a++
+    const position=Math.floor(a/5)%4
+    // ctx.drawImage(
+    //     gruntConstants.type3.image,
+    //     gruntType4Sprite.positionRight[position].x,
+    //     gruntType4Sprite.positionRight[position].y,
+    //     gruntType4Sprite.width,
+    //     gruntType4Sprite.height,
+    //     100,100,
+    //     gruntType4Sprite.width,
+    //     gruntType4Sprite.height
+    // );
+    
 
 
 }
@@ -335,7 +407,8 @@ function resetWaveChange() {
             gunConstants.pistol.height,
             gunConstants.pistol.fireRate,
             gunConstants.pistol.cost,
-            gunConstants.pistol.image
+            gunConstants.pistol.image,
+            "pistol"
         );
     }
     //clearing all shootings

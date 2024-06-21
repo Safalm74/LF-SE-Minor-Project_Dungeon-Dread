@@ -1,7 +1,7 @@
 import homeScreen from "./screens/homeScreen";
 import gameMain from "./screens/gameScreen";
 import eventhandler from "./util/eventHandler";
-import buyPannel from "./screens/buyScreen";
+//import buyPannel from "./screens/buyScreen";
 
 // initializing canvas
 const canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
@@ -21,7 +21,7 @@ if (canvas) {
   // homeScreen(ctx)
 
   //calling game
-   gameMain(ctx);
+  gameMain(ctx);
   //buyPannel(ctx);
 }
 

@@ -1,6 +1,6 @@
 import Point from "./points";
 import GruntType1 from "./gruntType1";
-import mainConstants from "../constants/mainConstants";
+
 
 interface IBullet {
     startPoint: Point;

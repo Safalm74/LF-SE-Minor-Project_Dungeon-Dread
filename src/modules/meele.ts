@@ -1,17 +1,13 @@
 import Gun from "./gun";
-import gunSrc from "../assets/weapon/gun/pestol.svg";
 import pestolSprite from "../sprites/pestolSprite";
 import Point from "./points";
 import GruntType1 from "./gruntType1";
 import weaponRangeConstants from "../constants/weaponRangeConstants";
 import { bulletArray } from "../screens/gameScreen";
 import Bullet from "./bullet";
-import smgSprite from "../sprites/smgSprite";
-const gunImage = new Image;
-gunImage.src = gunSrc;
+import gunConstants from "../constants/gunConstants";
 
-export {gunImage};
-export default class Pestol extends Gun {
+export default class Meele extends Gun {
     detectedEnemy: boolean = false;
     trackingEnemyObj: any= null;
     lookingAngle: number = 0;
@@ -38,7 +34,7 @@ export default class Pestol extends Gun {
                     this.trackingEnemyObj.position.y
                 )
             )
-            this.shoot();
+            this.stab();
 
             if (
                 this.position.distanceBetween(this.trackingEnemyObj.position)
@@ -58,7 +54,7 @@ export default class Pestol extends Gun {
 
     }
 
-    shoot() {
+    stab() {
         if (this.lookingLeft) {
             this.shootingPoint = new Point(this.position.x, this.position.y + this.height / 4);
         }
@@ -120,24 +116,15 @@ export default class Pestol extends Gun {
     }
 
     draw(ctx: CanvasRenderingContext2D) {
-        let gunSprite;
-        switch(this.guntype){
-            case "pistol":
-                gunSprite=pestolSprite;
-                break;
-            case "smg":
-                gunSprite=smgSprite;
-                break;
-        }
         ctx.translate(this.position.x, this.position.y)
         ctx.rotate(this.lookingAngle);
         let lookingDirectionPosition: Point;
         if (this.lookingLeft) {
-            lookingDirectionPosition = gunSprite!.positionLeft[0];
+            lookingDirectionPosition = pestolSprite.positionLeft[0];
             this.shootingPoint = new Point(0, this.height / 4);
         }
         else {
-            lookingDirectionPosition = gunSprite!.positionRight[0];
+            lookingDirectionPosition = pestolSprite.positionRight[0];
             this.shootingPoint = new Point(this.width, this.height / 4);
         }
 
@@ -153,18 +140,13 @@ export default class Pestol extends Gun {
         }
 
 
+
         ctx.fillStyle = "red";
         //ctx.fillRect(0, 0, 1000, 5)
         ctx.drawImage(
             this.gunImage,
-            lookingDirectionPosition.x,
-            lookingDirectionPosition.y,
-            pestolSprite.width,
-            pestolSprite.height,
-            0,
-            0,
-            this.width,
-            this.height
+            this.position.x,
+            this.position.y
         )
 
         ctx.rotate(-this.lookingAngle);

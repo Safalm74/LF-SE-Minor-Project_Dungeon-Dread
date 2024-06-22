@@ -9,6 +9,7 @@ import Bullet from "./bullet";
 import smgSprite from "../sprites/smgSprite";
 import GruntType2 from "./gruntType2";
 import GruntType4 from "./gruntType4";
+import Boss from "./boss";
 const gunImage = new Image;
 gunImage.src = gunSrc;
 
@@ -19,20 +20,15 @@ export default class Pestol extends Gun {
     lookingAngle: number = 0;
     shootingPoint: Point = pestolSprite.positionRight[1];
     fireInterval: any = null;
+    level:number=1;
 
-    detectEnemy(obj: GruntType1 | GruntType2 | GruntType4) {
+    detectEnemy(obj: GruntType1 | GruntType2 | GruntType4 | Boss) {
         const logicalCenter = this.position
-
         if (
             (logicalCenter.distanceBetween(obj.position)
                 < weaponRangeConstants.pestol) && !this.detectedEnemy) {
             this.detectedEnemy = true;
-            this.trackingEnemyObj = obj
-            //trackingEnemyObjPosition.x=trackingEnemyObjPosition.x+this.trackingEnemyObj.width/2;
-           // trackingEnemyObjPosition.y=trackingEnemyObjPosition.y+this.trackingEnemyObj.height/2;
-        }
-        
-        
+            this.trackingEnemyObj = obj}
         if (this.detectedEnemy && this.trackingEnemyObj) {
             this.lookingAngle = logicalCenter.angle(
                 new Point(
@@ -90,8 +86,8 @@ export default class Pestol extends Gun {
                 () => {
                     if (this.trackingEnemyObj) {
                         const trackingEnemyObjPosition=new Point( // to aim at center of body of zombie
-                            this.trackingEnemyObj.position.x +this.width/2,
-                            this.trackingEnemyObj.position.y +this.height/2)
+                            this.trackingEnemyObj.position.x +this.trackingEnemyObj.width/2,
+                            this.trackingEnemyObj.position.y +this.trackingEnemyObj.height/2)
                         const vector = this.shootingPoint.pointDifference(trackingEnemyObjPosition);
                         const magnitude = this.shootingPoint.distanceBetween(trackingEnemyObjPosition);
                         const unitVector = new Point(
@@ -104,7 +100,7 @@ export default class Pestol extends Gun {
                         const bulletObj = new Bullet(
                             this.shootingPoint,
                             endPoint,
-                            weaponRangeConstants.pestolDamage,
+                            this.damage,
                             new Point(
                                 -unitVector.x * weaponRangeConstants.bulletVelocity,
                                 -unitVector.y * weaponRangeConstants.bulletVelocity),
@@ -156,7 +152,6 @@ export default class Pestol extends Gun {
 
 
         ctx.fillStyle = "red";
-        //ctx.fillRect(0, 0, 1000, 5)
         ctx.drawImage(
             this.gunImage,
             lookingDirectionPosition.x,

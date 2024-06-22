@@ -45,7 +45,6 @@ export default class Spit implements ISpit {
             this.position.y + this.radius < hero.position.y + hero.height
 
         ) {
-            console.log('hit')
             this.isHit = true;
             hero.healthpoint -= this.damage;
         }

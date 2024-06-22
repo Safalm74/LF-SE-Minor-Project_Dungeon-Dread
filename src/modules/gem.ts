@@ -2,6 +2,7 @@ import Point from "./points";
 import gemImageSrc from "../assets/gem/gem.png"
 import gemSprite from "../sprites/gemSprite";
 import { hero } from "../screens/gameScreen";
+import heroConstants from "../constants/heroConstants";
 
 const gemImage = new Image;
 gemImage.src = gemImageSrc;
@@ -59,6 +60,9 @@ export default class Gem implements IGem {
             hero.position.x <= this.position.x + this.width
         ) {
             hero.gemCount += this.value;
+            if (hero.essenceCount<heroConstants.maxEssence){
+                hero.essenceCount +=2
+            }
 
             return false;
         }

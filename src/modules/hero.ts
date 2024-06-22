@@ -5,13 +5,14 @@ import mainConstants from "../constants/mainConstants";
 import Tile from "./tile";
 import Point from "./points";
 import { canvas } from "../main";
-import { gruntType1Array } from "../screens/gameScreen";
+import { boss, gruntType1Array } from "../screens/gameScreen";
 import GruntType1 from "./gruntType1";
 import GruntType2 from "./gruntType2";
 import GruntType4 from "./gruntType4";
 import heroConstants from "../constants/heroConstants";
 import fireImageSrc from "../assets/ability/amaterasu.png"
 import amaterasuSprite from "../sprites/amaterasuSprite";
+import Boss from "./boss";
 const fireImage = new Image;
 fireImage.src = fireImageSrc;
 const heroImage = new Image;
@@ -27,8 +28,11 @@ export default class Hero extends Entity {
     abilityDurability: number = heroConstants.abilityDurability;
     abilityRate: number = heroConstants.abilityRate;
     abilityInUse: boolean = false;
-    inRangeEnemies: (GruntType1 | GruntType2 | GruntType4)[] = [];
+    inRangeEnemies: (GruntType1 | GruntType2 | GruntType4 | Boss)[] = [];
     abilityTime: Date = new Date;
+
+    gemCount: number = 0;
+    essenceCount: number = 0;
     weaponPositions: Point[] = [
         new Point(this.position.x + this.weaponOffset + this.width, this.position.y),
         new Point(this.position.x - this.weaponOffset, this.position.y),
@@ -37,11 +41,11 @@ export default class Hero extends Entity {
         new Point(this.position.x + this.weaponOffset + this.width, this.position.y),
         new Point(this.position.x + this.weaponOffset + this.width, this.position.y),
     ];
-    gemCount: number = 0;
     ability() {
         if (!this.abilityInUse && //checking i f hero is already using ability
             ((new Date).getTime() - //checking time to use ability
-                this.abilityTime.getTime() > 15)
+                this.abilityTime.getTime() > 15*1000) &&
+            this.essenceCount
         ) {
             this.abilityTime = new Date;
             this.abilityInUse = true;
@@ -58,20 +62,20 @@ export default class Hero extends Entity {
 
                     }
                 }
+
             );
+            if (boss) {
+                this.inRangeEnemies.push(boss)
+            }
 
             setTimeout(
                 () => {
                     this.inRangeEnemies = [];
                     this.abilityInUse = false;
+                    this.essenceCount=0;
                 },
-                this.abilityDurability);
+                this.abilityDurability * (this.essenceCount / heroConstants.maxEssence));
         }
-        else {
-            console.log('wait');
-        }
-
-
     }
     reheal() {
         setInterval(() => {
@@ -170,6 +174,7 @@ export default class Hero extends Entity {
                 );
 
                 obj.healthpoint -= this.abilityDamage;
+
 
             }
         );

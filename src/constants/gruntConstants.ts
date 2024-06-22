@@ -26,12 +26,23 @@ type gruntInst = {
     damage:number;
     velocity:Point;
 }
+type boss={
+    healthPoint:number;
+    width: number;
+    height: number;
+    image: HTMLImageElement;
+    attackRate: number;
+    damage:number;
+    velocity:Point;
+    velocityFast:Point;
+}
 
 type GruntConstants = {
     type1:gruntInst;
     type2:gruntInst;
     type3:gruntInst;
     type4:gruntInst;
+    boss:boss;
 
 }
 
@@ -52,7 +63,7 @@ const gruntConstants: GruntConstants = {
         width:  window.innerHeight /1500,
         height: window.innerHeight/1500,
         image: type2Image,
-        attackRate: 0.1,
+        attackRate: 0.01,
         damage:2,
         velocity:new Point(1,1)
     },
@@ -75,6 +86,17 @@ const gruntConstants: GruntConstants = {
         attackRate: 1,
         damage:3,
         velocity:new Point(1,1)
+    },
+
+    boss :{
+        healthPoint:1800,
+        width:  window.innerHeight / 500,
+        height:window.innerHeight/500,
+        image: type34Image,
+        attackRate: 1,
+        damage:30,
+        velocity:new Point(1,1),
+        velocityFast:new Point(4,4)
     }
    
 }

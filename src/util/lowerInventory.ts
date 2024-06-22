@@ -25,6 +25,20 @@ export default function lowerInventory(ctx: CanvasRenderingContext2D) {
             canvas.width * 0.05
         )
         if (mainConstants.weaponArray[i]) {
+            switch (mainConstants.weaponArray[i]!.level) {
+                case 1:
+                    ctx.fillStyle = "rgba(200,200,200,0.8)";
+                    break;
+                case 3:
+                    ctx.fillStyle = "rgba(15,10,222,0.8)";
+                    break;
+                case 3:
+                    ctx.fillStyle = "rgba(255,215,0,0.8)";
+                    break;
+
+
+
+            }
             ctx.drawImage(
                 mainConstants.weaponArray[i]!.gunImage,
                 -mainConstants.mapPosition.x + canvas.width * ((0.2 + 0.1 * i) + 0.025),

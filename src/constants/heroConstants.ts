@@ -9,6 +9,7 @@ type HeroConstants = {
     abilityDamage:number;
     abilityRate:number;
     abilityDurability:number;
+    maxEssence:number;
 }
 
 const heroConstants: HeroConstants = {
@@ -16,9 +17,10 @@ const heroConstants: HeroConstants = {
     width:heroSprite.width *window.innerHeight / 600,
     height:heroSprite.height * window.innerHeight / 600,
     velocity:new Point(5,5),
-    abilityDamage:0.5,
+    abilityDamage:0.1,
     abilityRate:10,
     abilityDurability:10*1000,
+    maxEssence:50
 }
 
 export default heroConstants;

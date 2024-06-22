@@ -2,7 +2,7 @@ import heroConstants from "../constants/heroConstants";
 import stateConstants from "../constants/stateConstants";
 import { ctx } from "../main";
 import Point from "../modules/points";
-import { buyBtnsclicked } from "../screens/buyScreen";
+import { buyBtnsclicked, upgradeWeapon } from "../screens/buyScreen";
 import { hero } from "../screens/gameScreen";
 import { btnsclicked } from "../screens/homeScreen";
 
@@ -43,9 +43,7 @@ function handleEvents() {
     if (stateConstants.btnPressed[' ']) {
         hero.ability();
     }
-    if (stateConstants.btnPressed['\n']) {
-        console.log('enter')
-    }
+    
 }
 
 export { handleEvents }
@@ -56,6 +54,10 @@ export default function eventhandler() {
         'keydown',
         (e) => {
             stateConstants.btnPressed[e.key.toLowerCase()] = true
+            if(stateConstants.buyScreenFlag && stateConstants.btnPressed['u']){
+                console.log('here');
+                upgradeWeapon();
+            }
         }
     );
     window.addEventListener(

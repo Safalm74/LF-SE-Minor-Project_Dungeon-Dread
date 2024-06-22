@@ -7,6 +7,7 @@ import progressBar from "../util/bar";
 import lowerInventory from "../util/lowerInventory";
 import gameMain, { hero } from "./gameScreen";
 import gunConstants from "../constants/gunConstants";
+import weaponRangeConstants from "../constants/weaponRangeConstants";
 
 let buyStartTime: Date;
 const buyTime = 5 * 1000;
@@ -124,6 +125,23 @@ let buyBtnsclicked = (
 
 
 }
+function upgradeWeapon() {
+    console.log(mainConstants.weaponArray[selectedPosition]?.level)
+    if (
+        mainConstants.weaponArray[selectedPosition]
+        && mainConstants.weaponArray[selectedPosition]!.level < 3
+    ) {
+        mainConstants.weaponArray[selectedPosition]!.damage += mainConstants.
+            weaponArray[selectedPosition]!
+            .damage *
+            0.1
+        mainConstants.weaponArray[selectedPosition]!.fireRate += mainConstants.
+            weaponArray[selectedPosition]!
+            .fireRate *
+            0.1
+        mainConstants.weaponArray[selectedPosition]!.level++;
+    }
+}
 function buyPannelLoop(ctx: CanvasRenderingContext2D) {
     // clearing screen 
     ctx?.clearRect(
@@ -227,7 +245,7 @@ function buyPannelLoop(ctx: CanvasRenderingContext2D) {
 
 }
 
-export { buyBtnsclicked }
+export { buyBtnsclicked, upgradeWeapon }
 
 export default function buyPannel(
     ctx: CanvasRenderingContext2D
@@ -236,7 +254,12 @@ export default function buyPannel(
     stateConstants.buyScreenFlag = true;
     buyStartTime = new Date;
     selectedPosition = 0;
-
+    for (let i = 0; i < mainConstants.weaponArray.length; i++) {
+        selectedPosition = i;
+        if (!mainConstants.weaponArray[i]) {
+            break;
+        }
+    }
     buyPannelLoop(ctx);
 
 }

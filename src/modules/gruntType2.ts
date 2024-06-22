@@ -76,8 +76,6 @@ export default class GruntType2 extends Entity {
                 1000 / this.attackRate
             );
         }
-
-
     }
 
     draw(ctx: CanvasRenderingContext2D) {

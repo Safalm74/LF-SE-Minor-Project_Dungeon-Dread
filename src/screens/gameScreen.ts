@@ -22,6 +22,7 @@ import GruntType2 from "../modules/gruntType2";
 import Spit from "../modules/spit";
 import Gem from "../modules/gem";
 import gemSprite from "../sprites/gemSprite";
+import Boss from "../modules/boss";
 //import heroConstants from "../constants/heroCopnstants";
 //loading map background
 const mapImage = new Image;
@@ -34,12 +35,14 @@ let gruntType1Array: (GruntType1 | GruntType2 | GruntType4)[] = [];
 //Bullet array
 let bulletArray: Bullet[] = [];
 //gem array
-let gemArray:Gem[]=[];
+let gemArray: Gem[] = [];
 
 //Spit aray
 let spitArray: Spit[] = [];
 //hero obj
 let hero: Hero;
+//boss
+let boss: Boss;
 //weaponArray
 
 // create enemy interval
@@ -71,9 +74,9 @@ function createHero() {
     );
     hero.reheal();
 }
-function collectGem(){
-    gemArray=gemArray.filter(
-        (obj)=>{
+function collectGem() {
+    gemArray = gemArray.filter(
+        (obj) => {
             return obj.collected();
         }
     );
@@ -88,8 +91,8 @@ function removeDeadEnemy() {
                     new Gem(
                         obj.position,
                         16,
-                        gemSprite[1][0].width*0.2,
-                        gemSprite[1][0].height*0.2,
+                        gemSprite[1][0].width * 0.2,
+                        gemSprite[1][0].height * 0.2,
                     )
                 );
             }
@@ -105,7 +108,7 @@ function removeBullet() {
     bulletArray = bulletArray.filter(
         (obj) => {
 
-            obj.checkOnhit(gruntType1Array);
+            obj.checkOnhit(gruntType1Array, boss);
 
             return (
                 !((obj.endPoint.x >=
@@ -296,14 +299,9 @@ function lowerInventory(ctx: CanvasRenderingContext2D) {
     }
 
 }
-let a = 0;
-import fireImageSrc from "../assets/ability/amaterasu.png"
-import amaterasuSprite from "../sprites/amaterasuSprite";
-const fireImage= new Image;
-fireImage.src=fireImageSrc;
-
 //function that handles all display
 function displayAll(ctx: CanvasRenderingContext2D) {
+
     //Map background
     ctx.drawImage(
         mapImage,
@@ -313,9 +311,9 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         window.innerHeight * mapConstants.mapSizeMultiplier
 
     );
-//drawmap
+    //drawmap
     map.draw(ctx);
-//draw enemy
+    //draw enemy
 
     gruntType1Array.forEach(
         (obj) => {
@@ -328,7 +326,20 @@ function displayAll(ctx: CanvasRenderingContext2D) {
 
         }
     );
-//draw hero
+
+    if (boss) {
+        boss.draw(ctx);
+        mainConstants.weaponArray.forEach(
+            (wobj) => {
+                if (wobj) {
+                    wobj.detectEnemy(boss)
+
+                }
+
+            }
+        );
+    }
+    //draw hero
     hero.draw(ctx);
     if (mainConstants.dropdownInterval) {
         dropDownMsg(ctx, `wave : ${stateConstants.wave}`);
@@ -381,12 +392,27 @@ function displayAll(ctx: CanvasRenderingContext2D) {
             mainConstants.mapPosition.x,
             canvas.height * 0.1 -
             mainConstants.mapPosition.y),
-        mainConstants.waveIntervalTime - remainingTime(),
-        mainConstants.waveIntervalTime,
+        hero.essenceCount,
+        heroConstants.maxEssence,
         canvas.width * 0.4,
         canvas.height * 0.03,
-        'Time remaining'
+        'Essence'
     );
+    //Display time remaining
+    const remainingTimeString = `${Math.floor
+            ((mainConstants.waveIntervalTime -
+                remainingTime())
+                / 1000)}`
+    dropDownMsg(
+        ctx,
+        `${remainingTimeString}`,
+        new Point(
+            -(ctx.measureText(remainingTimeString).width / 2 +
+                mainConstants.mapPosition.x),
+            (canvas.height / 5 -
+                mainConstants.mapPosition.y)),
+                "0.1rem"
+        );
     //
     if (remainingTime() >= mainConstants.waveIntervalTime) {
         stateConstants.wave++;
@@ -414,7 +440,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     );
     //drawing gems
     gemArray.forEach(
-        (obj)=>{
+        (obj) => {
             obj.draw(ctx);
         }
     );
@@ -434,7 +460,6 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     lowerInventory(ctx);
 
 }
-
 
 //main Loop function
 function gameLoop(
@@ -487,16 +512,20 @@ function resetWaveChange() {
         (obj) => {
 
             clearInterval(obj.attackInterval);
-
         }
 
     );
+    if (boss) {
+        clearInterval(boss.attackInterval);
+        clearInterval(boss.spitInterval);
+    }
     //reset health
     hero.healthpoint = mainConstants.heroTotalHealth;
 
     bulletArray = [];
     gruntType1Array = [];
     spitArray = [];
+    gemArray = [];
     clearInterval(createEnemyInterval);
     createEnemyInterval = null;
     waveStartTime = new Date;
@@ -516,9 +545,12 @@ function resetWaveChange() {
     }
     //clearing all shootings
     mainConstants.weaponArray.forEach(
-        (obj) => {
+        (obj, i) => {
             if (obj) {
                 clearInterval(obj.fireInterval);
+                obj.trackingEnemyObj = null;
+                obj.detectedEnemy = false;
+                obj.position = hero.weaponPositions[i];
             }
         }
     );
@@ -526,7 +558,7 @@ function resetWaveChange() {
 }
 
 
-export { hero, gruntType1Array, bulletArray, spitArray }
+export { hero, gruntType1Array, bulletArray, spitArray, boss }
 export default function gameMain(
     ctx: CanvasRenderingContext2D) {
     stateConstants.ingame = true;
@@ -546,8 +578,35 @@ export default function gameMain(
     if (mainConstants.dropdownInterval) {
         dropDownMsg(ctx, `wave : ${stateConstants.wave}`);
     }
+    //creating boss
+    if (stateConstants.wave >= 5) {
+        boss = new Boss(new Point(
+            getRandomInt(mapConstants.tileSize +
+                mapConstants.displayPosition.x,
+                window.innerWidth * 5 -
+                mapConstants.tileSize),
+            getRandomInt(mapConstants.tileSize +
+                mapConstants.displayPosition.y,
+                window.innerHeight * 5 -
+                mapConstants.tileSize * 2)),
+            "red",
+            true,
+            gruntConstants.boss.healthPoint,
+            gruntConstants.boss.width,
+            gruntConstants.boss.height,
+            gruntConstants.boss.damage,
+            gruntConstants.boss.attackRate,
+            gruntConstants.boss.image,
+            2,
+            gruntConstants.boss.velocity
+        );
+        boss.changeSpeed();
+
+    }
+
+
 
     // buyPannel(ctx);
-    
+
     gameLoop(ctx);
 }

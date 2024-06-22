@@ -2,6 +2,7 @@ import Point from "./points";
 import GruntType1 from "./gruntType1";
 import GruntType4 from "./gruntType4";
 import GruntType2 from "./gruntType2";
+import Boss from "./boss";
 
 
 interface IBullet {
@@ -38,7 +39,8 @@ export default class Bullet implements IBullet {
     }
 
     checkOnhit(
-        objArray: (GruntType1 | GruntType2|GruntType4)[]
+        objArray: (GruntType1 | GruntType2|GruntType4)[],
+        boss:Boss|null=null
     ) {
         objArray.forEach(
             (obj) => {
@@ -56,6 +58,19 @@ export default class Bullet implements IBullet {
                 }
             }
         );
+        if (boss){
+
+            if (
+                this.endPoint.x > boss.position.x &&
+                this.endPoint.x < boss.position.x + boss.width &&
+                this.endPoint.y > boss.position.y &&
+                this.endPoint.y < boss.position.y + boss.height
+            ) {
+                this.isHit = true;
+                boss.healthpoint -= this.damage;
+            }
+
+        }
     }
 
     draw(ctx: CanvasRenderingContext2D) {

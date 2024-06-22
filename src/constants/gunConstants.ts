@@ -35,19 +35,19 @@ type GunConstants = {
 
 const gunConstants: GunConstants = {
     pistol: {
-        damage: 5,
+        damage: 8,
         width: pestolSprite.width * heroConstants.width * 0.01,
         height: pestolSprite.height * heroConstants.width * 0.01,
         image: pistolImage,
-        fireRate: 1.5,
+        fireRate: 2,
         cost: 500
     },
     smg: {
-        damage: 0.01,
+        damage: 5.005,
         width: smgSprite.width * heroConstants.width * 0.01,
         height: smgSprite.height * heroConstants.width * 0.01,
         image: smgImage,
-        fireRate: 5,
+        fireRate: 4,
         cost: 5000
     },
     sword:{

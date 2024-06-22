@@ -7,6 +7,8 @@ import weaponRangeConstants from "../constants/weaponRangeConstants";
 import { bulletArray } from "../screens/gameScreen";
 import Bullet from "./bullet";
 import smgSprite from "../sprites/smgSprite";
+import GruntType2 from "./gruntType2";
+import GruntType4 from "./gruntType4";
 const gunImage = new Image;
 gunImage.src = gunSrc;
 
@@ -18,7 +20,7 @@ export default class Pestol extends Gun {
     shootingPoint: Point = pestolSprite.positionRight[1];
     fireInterval: any = null;
 
-    detectEnemy(obj: GruntType1) {
+    detectEnemy(obj: GruntType1 | GruntType2 | GruntType4) {
         const logicalCenter = this.position
 
         if (

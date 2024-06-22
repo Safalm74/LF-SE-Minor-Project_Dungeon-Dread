@@ -1,3 +1,4 @@
+import heroConstants from "../constants/heroConstants";
 import stateConstants from "../constants/stateConstants";
 import { ctx } from "../main";
 import Point from "../modules/points";
@@ -6,6 +7,23 @@ import { hero } from "../screens/gameScreen";
 import { btnsclicked } from "../screens/homeScreen";
 
 function handleEvents() {
+    if (
+        (stateConstants.btnPressed['a'] && stateConstants.btnPressed['w']) ||
+        (stateConstants.btnPressed['a'] && stateConstants.btnPressed['s']) ||
+        (stateConstants.btnPressed['d'] && stateConstants.btnPressed['w']) ||
+        (stateConstants.btnPressed['d'] && stateConstants.btnPressed['s'])
+
+    ) {
+        hero.velocity.x=0.7*heroConstants.velocity.x
+        hero.velocity.y=0.7*heroConstants.velocity.y
+
+    }
+    else{
+
+        hero.velocity.x=heroConstants.velocity.x
+        hero.velocity.y=heroConstants.velocity.y
+
+    }
     if (stateConstants.btnPressed['a']) {
         hero.isMoving = true;
         hero.moveLeft(true, ctx);

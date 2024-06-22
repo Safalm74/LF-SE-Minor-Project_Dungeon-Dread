@@ -1,5 +1,7 @@
 import Point from "./points";
 import GruntType1 from "./gruntType1";
+import GruntType4 from "./gruntType4";
+import GruntType2 from "./gruntType2";
 
 
 interface IBullet {
@@ -36,10 +38,11 @@ export default class Bullet implements IBullet {
     }
 
     checkOnhit(
-        objArray: GruntType1[]
+        objArray: (GruntType1 | GruntType2|GruntType4)[]
     ) {
         objArray.forEach(
             (obj) => {
+
                 if (
                     this.endPoint.x > obj.position.x &&
                     this.endPoint.x < obj.position.x + obj.width &&

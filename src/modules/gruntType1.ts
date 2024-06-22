@@ -7,7 +7,6 @@ import { hero } from "../screens/gameScreen";
 import mainConstants from "../constants/mainConstants";
 import Tile from "./tile";
 import Hero from "./hero";
-import getRandomInt from "../util/randomNumber";
 import gruntType3Sprite from "../sprites/grunt[Type3]sprite";
 
 

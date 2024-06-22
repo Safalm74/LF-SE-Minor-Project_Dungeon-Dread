@@ -16,8 +16,8 @@ type MainConstants = {
 const mainConstants: MainConstants = {
     collideableObjs: [],
     heroTotalHealth: 120,
-    waveIntervalTime: 30 * 1000,
-    maxEnemies: 500 * mapConstants.mapSizeMultiplier,
+    waveIntervalTime: 90 * 1000,
+    maxEnemies: 100 * mapConstants.mapSizeMultiplier,
     mapPosition: new Point(0, 0),
     dropdownInterval: null,
     weaponArray: [

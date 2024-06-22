@@ -5,6 +5,15 @@ import mainConstants from "../constants/mainConstants";
 import Tile from "./tile";
 import Point from "./points";
 import { canvas } from "../main";
+import { gruntType1Array } from "../screens/gameScreen";
+import GruntType1 from "./gruntType1";
+import GruntType2 from "./gruntType2";
+import GruntType4 from "./gruntType4";
+import heroConstants from "../constants/heroConstants";
+import fireImageSrc from "../assets/ability/amaterasu.png"
+import amaterasuSprite from "../sprites/amaterasuSprite";
+const fireImage = new Image;
+fireImage.src = fireImageSrc;
 const heroImage = new Image;
 heroImage.src = hero;
 
@@ -13,6 +22,13 @@ export default class Hero extends Entity {
     isMoving: boolean = false;
     speedLimit: number = 3;
     weaponOffset: number = 10;
+    abilityInterval: any = null;
+    abilityDamage: number = heroConstants.abilityDamage;
+    abilityDurability: number = heroConstants.abilityDurability;
+    abilityRate: number = heroConstants.abilityRate;
+    abilityInUse: boolean = false;
+    inRangeEnemies: (GruntType1 | GruntType2 | GruntType4)[] = [];
+    abilityTime: Date = new Date;
     weaponPositions: Point[] = [
         new Point(this.position.x + this.weaponOffset + this.width, this.position.y),
         new Point(this.position.x - this.weaponOffset, this.position.y),
@@ -21,17 +37,50 @@ export default class Hero extends Entity {
         new Point(this.position.x + this.weaponOffset + this.width, this.position.y),
         new Point(this.position.x + this.weaponOffset + this.width, this.position.y),
     ];
-    ability(){
-        console.log('using ability');
+    gemCount: number = 0;
+    ability() {
+        if (!this.abilityInUse && //checking i f hero is already using ability
+            ((new Date).getTime() - //checking time to use ability
+                this.abilityTime.getTime() > 15)
+        ) {
+            this.abilityTime = new Date;
+            this.abilityInUse = true;
+            this.inRangeEnemies = gruntType1Array.filter(
+                (obj) => {
+                    if (
+                        obj.position.x > -mainConstants.mapPosition.x &&
+                        obj.position.x < -mainConstants.mapPosition.x + canvas.width &&
+                        obj.position.y > -mainConstants.mapPosition.y &&
+                        obj.position.y < -mainConstants.mapPosition.y + canvas.height
+
+                    ) {
+                        return true;
+
+                    }
+                }
+            );
+
+            setTimeout(
+                () => {
+                    this.inRangeEnemies = [];
+                    this.abilityInUse = false;
+                },
+                this.abilityDurability);
+        }
+        else {
+            console.log('wait');
+        }
+
+
     }
-    reheal(){
-        setInterval(()=>{
-            if(this.healthpoint<50){
-                this.healthpoint +=3
+    reheal() {
+        setInterval(() => {
+            if (this.healthpoint < 50) {
+                this.healthpoint += 3
             }
 
-        
-        },5000)
+
+        }, 5000)
     }
 
     checkCollision() {
@@ -82,8 +131,6 @@ export default class Hero extends Entity {
         }
         this.updateWeaponPosition();
 
-
-
     }
     moveUp(up: boolean, ctx: CanvasRenderingContext2D) {
         const velocity = up ? this.velocity.y : -1 * this.velocity.y;
@@ -106,10 +153,31 @@ export default class Hero extends Entity {
     draw(ctx: CanvasRenderingContext2D) {
         this.position.x = canvas.width / 2 - mainConstants.mapPosition.x;
         this.position.y = canvas.height / 2 - mainConstants.mapPosition.y;
+        this.inRangeEnemies.forEach(
+            (obj) => {
+                let position = Math.floor(this.spritePosition / 5) % amaterasuSprite.position.length;
+
+                ctx.drawImage(
+                    fireImage,
+                    amaterasuSprite.position[position].x,
+                    amaterasuSprite.position[position].y,
+                    amaterasuSprite.width,
+                    amaterasuSprite.height,
+                    obj.position.x,
+                    obj.position.y,
+                    obj.width,
+                    obj.height,
+                );
+
+                obj.healthpoint -= this.abilityDamage;
+
+            }
+        );
+
         const lookingDirection = this.lookingLeft ? heroSprite.positionLeft : heroSprite.positionRight;
         if (this.isMoving) {
             const staggerFrame = 5;
-            let position = Math.floor(this.spritePosition / staggerFrame) % 6;
+            let position = Math.floor(this.spritePosition / staggerFrame) % lookingDirection.length;
             ctx.drawImage(
                 heroImage,
                 lookingDirection[position].x,
@@ -121,7 +189,6 @@ export default class Hero extends Entity {
                 this.width,
                 this.height
             );
-            this.spritePosition++
         }
         else {
             ctx.drawImage(
@@ -137,5 +204,11 @@ export default class Hero extends Entity {
             );
         }
 
+        if (this.healthpoint < 0) {
+            // homeScreen(ctx)
+        }
+
+        this.spritePosition++
     }
+
 }

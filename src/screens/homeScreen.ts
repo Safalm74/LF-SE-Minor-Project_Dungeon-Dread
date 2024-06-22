@@ -23,6 +23,10 @@ function checkCollision(
     cursorPosiiton: Point,
     BtnPosition: Point,
     size: TextMetrics) {
+    cursorPosiiton = new Point(
+        cursorPosiiton.x + mainConstants.mapPosition.x,
+        cursorPosiiton.y + mainConstants.mapPosition.y
+    );
     const width = size.width;
     const height = size.actualBoundingBoxAscent + size.actualBoundingBoxDescent;
     if (
@@ -68,17 +72,24 @@ function btnsclicked(
 //function that handles all displays
 function displayAll(ctx: CanvasRenderingContext2D) {
 
+    // clearing screen 
+    ctx?.clearRect(
+        -mainConstants.mapPosition.x,
+        -mainConstants.mapPosition.y,
+        canvas.width,
+        canvas.height);
+
     //fill background image
     ctx.drawImage(
         backGroundImage,
-        0,
-        0,
+        mainConstants.mapPosition.x,
+        mainConstants.mapPosition.y,
         canvas.width,
         canvas.height
     );
     startBtnPosition = new Point(
-        canvas.width * 0.01,
-        canvas.height * 0.2)
+        mainConstants.mapPosition.x + canvas.width * 0.01,
+        mainConstants.mapPosition.y + canvas.height * 0.2)
 
     about = new Point(
         canvas.width * 0.01,

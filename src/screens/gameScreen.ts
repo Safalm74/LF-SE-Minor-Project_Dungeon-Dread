@@ -18,7 +18,10 @@ import heroConstants from "../constants/heroConstants";
 import gunConstants from "../constants/gunConstants";
 import gruntConstants from "../constants/gruntConstants";
 import GruntType4 from "../modules/gruntType4";
-import gruntType4Sprite from "../sprites/grunt[Type4]Sprite";
+import GruntType2 from "../modules/gruntType2";
+import Spit from "../modules/spit";
+import Gem from "../modules/gem";
+import gemSprite from "../sprites/gemSprite";
 //import heroConstants from "../constants/heroCopnstants";
 //loading map background
 const mapImage = new Image;
@@ -26,9 +29,15 @@ mapImage.src = gameMap;
 //checking time to set next wave
 let waveStartTime: Date;
 //spwan Type1 enemies
-let gruntType1Array: (GruntType1|GruntType4)[] = [];
+
+let gruntType1Array: (GruntType1 | GruntType2 | GruntType4)[] = [];
 //Bullet array
 let bulletArray: Bullet[] = [];
+//gem array
+let gemArray:Gem[]=[];
+
+//Spit aray
+let spitArray: Spit[] = [];
 //hero obj
 let hero: Hero;
 //weaponArray
@@ -62,12 +71,27 @@ function createHero() {
     );
     hero.reheal();
 }
+function collectGem(){
+    gemArray=gemArray.filter(
+        (obj)=>{
+            return obj.collected();
+        }
+    );
+}
 //function that removes dead enemies
 function removeDeadEnemy() {
     gruntType1Array = gruntType1Array.filter(
         (obj) => {
             if (obj.healthpoint < 0) {
                 clearInterval(obj.attackInterval);
+                gemArray.push(
+                    new Gem(
+                        obj.position,
+                        16,
+                        gemSprite[1][0].width*0.2,
+                        gemSprite[1][0].height*0.2,
+                    )
+                );
             }
             else {
                 return true;
@@ -93,20 +117,68 @@ function removeBullet() {
             );
         }
     );
+    spitArray = spitArray.filter(
+        (obj) => {
+            obj.checkOnhit();
+
+            return (
+                !((obj.position.x >=
+                    window.innerHeight *
+                    mapConstants.mapSizeMultiplier) ||
+                    (obj.position.x <=
+                        0) ||
+                    obj.isHit)
+            );
+        }
+    );
 }
 //function that creates enemy every interval
 function createType1() {
     createEnemyInterval = setInterval(
         () => {
             if (gruntType1Array.length < mainConstants.maxEnemies) {
-                const randomNumber=getRandomInt(1,100);
-                if ( 1 && randomNumber<50){
+                const randomNumber = getRandomInt(1, 100);
+                if (stateConstants.wave > 2 && randomNumber < 40) {
                     //creating Type3 enemy
+                    gruntType1Array.push(
+                        new GruntType2(
+                            new Point(
+                                getRandomInt(mapConstants.tileSize +
+                                    mapConstants.displayPosition.x,
+                                    window.innerWidth * 5 -
+                                    mapConstants.tileSize),
+                                getRandomInt(mapConstants.tileSize +
+                                    mapConstants.displayPosition.y,
+                                    window.innerHeight * 5 -
+                                    mapConstants.tileSize * 2)),
+                            "red",
+                            true,
+                            gruntConstants.type2.healthPoint,
+                            gruntConstants.type2.width,
+                            gruntConstants.type2.height,
+                            gruntConstants.type2.damage,
+                            gruntConstants.type2.attackRate,
+                            gruntConstants.type2.image,
+                            2,
+                            gruntConstants.type2.velocity
+
+                        )
+                    );
+
+                }
+                if (stateConstants.wave > 3 && randomNumber < 50) {
+                    //creating Type4 enemy
                     gruntType1Array.push(
                         new GruntType4(
                             new Point(
-                                getRandomInt(mapConstants.tileSize + mapConstants.displayPosition.x, window.innerWidth * 5 - mapConstants.tileSize),
-                                getRandomInt(mapConstants.tileSize + mapConstants.displayPosition.y, window.innerHeight * 5 - mapConstants.tileSize * 2)),
+                                getRandomInt(mapConstants.tileSize +
+                                    mapConstants.displayPosition.x,
+                                    window.innerWidth * 5 -
+                                    mapConstants.tileSize),
+                                getRandomInt(mapConstants.tileSize +
+                                    mapConstants.displayPosition.y,
+                                    window.innerHeight * 5 -
+                                    mapConstants.tileSize * 2)),
                             "red",
                             true,
                             gruntConstants.type4.healthPoint,
@@ -117,18 +189,24 @@ function createType1() {
                             gruntConstants.type4.image,
                             4,
                             gruntConstants.type4.velocity
-                            
+
                         )
                     );
 
                 }
-                else if ( stateConstants.wave>1&& randomNumber<60){
+                else if (stateConstants.wave > 1 && randomNumber < 60) {
                     //creating Type3 enemy
                     gruntType1Array.push(
                         new GruntType1(
                             new Point(
-                                getRandomInt(mapConstants.tileSize + mapConstants.displayPosition.x, window.innerWidth * 5 - mapConstants.tileSize),
-                                getRandomInt(mapConstants.tileSize + mapConstants.displayPosition.y, window.innerHeight * 5 - mapConstants.tileSize * 2)),
+                                getRandomInt(mapConstants.tileSize +
+                                    mapConstants.displayPosition.x,
+                                    window.innerWidth * 5 -
+                                    mapConstants.tileSize),
+                                getRandomInt(mapConstants.tileSize +
+                                    mapConstants.displayPosition.y,
+                                    window.innerHeight * 5 -
+                                    mapConstants.tileSize * 2)),
                             "red",
                             true,
                             gruntConstants.type3.healthPoint,
@@ -139,18 +217,24 @@ function createType1() {
                             gruntConstants.type3.image,
                             3,
                             gruntConstants.type3.velocity
-                            
+
                         )
                     );
 
                 }
-                else{
+                else {
                     //creating Type1 enemy
                     gruntType1Array.push(
                         new GruntType1(
                             new Point(
-                                getRandomInt(mapConstants.tileSize + mapConstants.displayPosition.x, window.innerWidth * 5 - mapConstants.tileSize),
-                                getRandomInt(mapConstants.tileSize + mapConstants.displayPosition.y, window.innerHeight * 5 - mapConstants.tileSize * 2)),
+                                getRandomInt(mapConstants.tileSize +
+                                    mapConstants.displayPosition.x,
+                                    window.innerWidth * 5 -
+                                    mapConstants.tileSize),
+                                getRandomInt(mapConstants.tileSize +
+                                    mapConstants.displayPosition.y,
+                                    window.innerHeight * 5 -
+                                    mapConstants.tileSize * 2)),
                             "red",
                             true,
                             gruntConstants.type1.healthPoint,
@@ -161,7 +245,7 @@ function createType1() {
                             gruntConstants.type1.image,
                             1,
                             gruntConstants.type1.velocity
-                            
+
                         )
                     );
                 }
@@ -212,7 +296,11 @@ function lowerInventory(ctx: CanvasRenderingContext2D) {
     }
 
 }
-let a=0;
+let a = 0;
+import fireImageSrc from "../assets/ability/amaterasu.png"
+import amaterasuSprite from "../sprites/amaterasuSprite";
+const fireImage= new Image;
+fireImage.src=fireImageSrc;
 
 //function that handles all display
 function displayAll(ctx: CanvasRenderingContext2D) {
@@ -225,9 +313,9 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         window.innerHeight * mapConstants.mapSizeMultiplier
 
     );
-
+//drawmap
     map.draw(ctx);
-    hero.draw(ctx);
+//draw enemy
 
     gruntType1Array.forEach(
         (obj) => {
@@ -240,6 +328,8 @@ function displayAll(ctx: CanvasRenderingContext2D) {
 
         }
     );
+//draw hero
+    hero.draw(ctx);
     if (mainConstants.dropdownInterval) {
         dropDownMsg(ctx, `wave : ${stateConstants.wave}`);
     }
@@ -270,29 +360,38 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         canvas.width,
         canvas.height
     )
-
+    //show player health
     progressBar(
         ctx,
-        new Point(canvas.width * 0.05 - mainConstants.mapPosition.x, canvas.height * 0.05 - mainConstants.mapPosition.y),
+        new Point(canvas.width * 0.05 -
+            mainConstants.mapPosition.x,
+            canvas.height * 0.1 -
+            mainConstants.mapPosition.y),
         hero.healthpoint,
         mainConstants.heroTotalHealth,
         canvas.width * 0.4,
         canvas.height * 0.03,
         'Life line'
     )
+    //show time remaining
     progressBar(
         ctx,
-        new Point(canvas.width * 0.95 - canvas.width * 0.4 - mainConstants.mapPosition.x, canvas.height * 0.05 - mainConstants.mapPosition.y),
+        new Point(canvas.width * 0.95 -
+            canvas.width * 0.4 -
+            mainConstants.mapPosition.x,
+            canvas.height * 0.1 -
+            mainConstants.mapPosition.y),
         mainConstants.waveIntervalTime - remainingTime(),
         mainConstants.waveIntervalTime,
         canvas.width * 0.4,
         canvas.height * 0.03,
         'Time remaining'
     );
+    //
     if (remainingTime() >= mainConstants.waveIntervalTime) {
         stateConstants.wave++;
         mainConstants.weaponArray.forEach(
-            (obj)=>{
+            (obj) => {
                 clearInterval(obj?.fireInterval);
             }
         );
@@ -303,6 +402,20 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     bulletArray.forEach(
         (bulletObj) => {
             bulletObj.draw(ctx);
+        }
+
+    );
+    //drawing spit
+    spitArray.forEach(
+        (spitObj) => {
+            spitObj.draw(ctx);
+        }
+
+    );
+    //drawing gems
+    gemArray.forEach(
+        (obj)=>{
+            obj.draw(ctx);
         }
     );
 
@@ -319,22 +432,9 @@ function displayAll(ctx: CanvasRenderingContext2D) {
 
     //LowerInventory
     lowerInventory(ctx);
-    a++
-    const position=Math.floor(a/5)%4
-    // ctx.drawImage(
-    //     gruntConstants.type3.image,
-    //     gruntType4Sprite.positionRight[position].x,
-    //     gruntType4Sprite.positionRight[position].y,
-    //     gruntType4Sprite.width,
-    //     gruntType4Sprite.height,
-    //     100,100,
-    //     gruntType4Sprite.width,
-    //     gruntType4Sprite.height
-    // );
-    
-
 
 }
+
 
 //main Loop function
 function gameLoop(
@@ -354,6 +454,8 @@ function gameLoop(
     removeDeadEnemy();
     //remove unecessary bullets
     removeBullet();
+    //collecting gem
+    collectGem();
 
     gruntType1Array.forEach(
         (obj) => {
@@ -390,10 +492,11 @@ function resetWaveChange() {
 
     );
     //reset health
-    hero.healthpoint=mainConstants.heroTotalHealth;
+    hero.healthpoint = mainConstants.heroTotalHealth;
 
     bulletArray = [];
     gruntType1Array = [];
+    spitArray = [];
     clearInterval(createEnemyInterval);
     createEnemyInterval = null;
     waveStartTime = new Date;
@@ -423,7 +526,7 @@ function resetWaveChange() {
 }
 
 
-export { hero, gruntType1Array, bulletArray }
+export { hero, gruntType1Array, bulletArray, spitArray }
 export default function gameMain(
     ctx: CanvasRenderingContext2D) {
     stateConstants.ingame = true;
@@ -444,7 +547,7 @@ export default function gameMain(
         dropDownMsg(ctx, `wave : ${stateConstants.wave}`);
     }
 
-   // buyPannel(ctx);
-    ``
+    // buyPannel(ctx);
+    
     gameLoop(ctx);
 }

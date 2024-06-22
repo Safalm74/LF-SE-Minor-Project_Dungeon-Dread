@@ -2,13 +2,11 @@ import Entity from "./entity";
 import spwan from "../assets/entity/enemy/spwan.png"
 import gruntType1 from "../assets/entity/enemy/grunts/type1.png"
 import spwanSprite from "../sprites/spwanSprite";
-import gruntType1Sprite from "../sprites/grunt[Type1]Sptite";
 import Point from "./points";
 import { hero } from "../screens/gameScreen";
 import mainConstants from "../constants/mainConstants";
 import Tile from "./tile";
 import Hero from "./hero";
-import getRandomInt from "../util/randomNumber";
 import gruntConstants from "../constants/gruntConstants";
 import gruntType4Sprite from "../sprites/grunt[Type4]Sprite";
 
@@ -78,7 +76,7 @@ export default class GruntType4 extends Entity {
         if (!chkcls.collidedHero) {
             this.position.x += this.velocity.x;
             this.position.y += this.velocity.y;
-            this.isAttacking=false;
+            this.isAttacking = false;
         }
         else {
             this.isAttacking = true;
@@ -108,7 +106,11 @@ export default class GruntType4 extends Entity {
                 staggerFrame) %
                 gruntType4Sprite.attackLeft.length;
 
-            
+            this.height = lookingDirection[position].height;
+            this.width = lookingDirection[position].width;
+
+
+
             if (position == 2) {
                 hero.healthpoint -= this.damage;
             }
@@ -120,8 +122,8 @@ export default class GruntType4 extends Entity {
                 lookingDirection[position].height,
                 this.position.x,
                 this.position.y,
-                lookingDirection[position].width,
-                lookingDirection[position].height
+                this.width,
+                this.height
             );
 
         }
@@ -134,6 +136,9 @@ export default class GruntType4 extends Entity {
             const position = Math.floor(this.spritePosition /
                 staggerFrame) %
                 gruntType4Sprite.positionLeft.length;
+
+            this.width = gruntType4Sprite.width;
+            this.height = gruntType4Sprite.height;
             ctx.drawImage(
                 gruntConstants.type3.image,
                 lookingDirection[position].x,
@@ -142,8 +147,8 @@ export default class GruntType4 extends Entity {
                 gruntType4Sprite.height,
                 this.position.x,
                 this.position.y,
-                gruntType4Sprite.width,
-                gruntType4Sprite.height
+                this.width,
+                this.height
             );
         }
         this.spritePosition++

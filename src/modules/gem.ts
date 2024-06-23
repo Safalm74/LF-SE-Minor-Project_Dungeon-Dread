@@ -1,7 +1,7 @@
 import Point from "./points";
 import gemImageSrc from "../assets/gem/gem.png"
 import gemSprite from "../sprites/gemSprite";
-import { hero } from "../screens/gameScreen";
+import { hero, spitArray } from "../screens/gameScreen";
 import heroConstants from "../constants/heroConstants";
 
 const gemImage = new Image;
@@ -48,16 +48,17 @@ export default class Gem implements IGem {
             gemSprite[1][position].height,
             this.position.x,
             this.position.y,
-            this.width,
-            this.height
+            gemSprite[1][position].width*0.3,
+            gemSprite[1][position].height*0.3
         );
+        this.spritePostion++;
     }
     collected() {
         if (
-            hero.position.y + hero.height >= this.position.y &&
-            hero.position.y <= this.position.y + this.height &&
-            hero.position.x + hero.width >= this.position.x &&
-            hero.position.x <= this.position.x + this.width
+            hero.position.y + hero.height+20 >= this.position.y &&
+            hero.position.y -20 <= this.position.y + this.height &&
+            hero.position.x + hero.width +20 >= this.position.x &&
+            hero.position.x -20<= this.position.x + this.width
         ) {
             hero.gemCount += this.value;
             if (hero.essenceCount<heroConstants.maxEssence){

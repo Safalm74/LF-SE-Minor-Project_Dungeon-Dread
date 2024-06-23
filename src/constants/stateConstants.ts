@@ -1,14 +1,19 @@
 type StateConstants = {
     ingame: boolean;
+    buyScreenFlag:boolean;
+    aboutScreenFlag:boolean;
+    controlScreenFlag:boolean;
     btnPressed: {
         [key:string]:boolean
     }
     wave:number;
-    buyScreenFlag:boolean;
+    
 }
 
 const stateConstants: StateConstants = {
     ingame: false,
+    aboutScreenFlag:false,
+    controlScreenFlag:false,
     btnPressed:{
 
     },

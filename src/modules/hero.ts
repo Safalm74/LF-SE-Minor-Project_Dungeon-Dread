@@ -72,10 +72,11 @@ export default class Hero extends Entity {
                 () => {
                     this.inRangeEnemies = [];
                     this.abilityInUse = false;
-                    this.essenceCount=0;
                 },
                 this.abilityDurability * (this.essenceCount / heroConstants.maxEssence));
-        }
+        
+                this.essenceCount=0;
+            }
     }
     reheal() {
         setInterval(() => {

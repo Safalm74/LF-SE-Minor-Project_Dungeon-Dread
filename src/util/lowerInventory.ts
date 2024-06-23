@@ -29,7 +29,7 @@ export default function lowerInventory(ctx: CanvasRenderingContext2D) {
                 case 1:
                     ctx.fillStyle = "rgba(200,200,200,0.8)";
                     break;
-                case 3:
+                case 2:
                     ctx.fillStyle = "rgba(15,10,222,0.8)";
                     break;
                 case 3:

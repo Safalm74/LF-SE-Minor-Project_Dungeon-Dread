@@ -18,25 +18,25 @@ const gemSprite: GemSprite = {
             position: new Point(91, 7)
         },
         {
-            width: 80,
+            width: 77,
             height: 80,
-            position: new Point(91, 7)
+            position: new Point(172, 7)
         }, {
-            width: 80,
+            width: 57,
             height: 80,
-            position: new Point(91, 7)
+            position: new Point(262, 7)
         }, {
-            width: 80,
+            width: 40,
             height: 80,
-            position: new Point(91, 7)
+            position: new Point(351, 7)
         }, {
-            width: 80,
+            width: 57,
             height: 80,
-            position: new Point(91, 7)
+            position: new Point(422, 7)
         }, {
-            width: 80,
+            width: 77,
             height: 80,
-            position: new Point(91, 7)
+            position: new Point(492, 7)
         }
     ]
 

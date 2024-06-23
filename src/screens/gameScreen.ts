@@ -23,6 +23,8 @@ import Spit from "../modules/spit";
 import Gem from "../modules/gem";
 import gemSprite from "../sprites/gemSprite";
 import Boss from "../modules/boss";
+import gameOver from "./gameoverScreen";
+import aboutScreen from "./aboutScreen";
 //import heroConstants from "../constants/heroCopnstants";
 //loading map background
 const mapImage = new Image;
@@ -299,6 +301,30 @@ function lowerInventory(ctx: CanvasRenderingContext2D) {
     }
 
 }
+//reset
+function resetGame() {
+    clearInterval(hero.abilityInterval);
+    if (boss) {
+        clearInterval(boss.attackInterval);
+    }
+    mainConstants.weaponArray.forEach(
+        (obj) => {
+            if (obj) {
+                clearInterval(obj.fireInterval);
+                obj.detectedEnemy = false;
+                obj.trackingEnemyObj = null;
+            }
+        }
+    );
+    mainConstants.weaponArray = [];
+    stateConstants.wave = 1;
+    gruntType1Array.forEach((obj) => {
+        if (obj) {
+            clearInterval(obj.attackInterval);
+        }
+    })
+
+}
 //function that handles all display
 function displayAll(ctx: CanvasRenderingContext2D) {
 
@@ -400,9 +426,9 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     );
     //Display time remaining
     const remainingTimeString = `${Math.floor
-            ((mainConstants.waveIntervalTime -
-                remainingTime())
-                / 1000)}`
+        ((mainConstants.waveIntervalTime -
+            remainingTime())
+            / 1000)}`
     dropDownMsg(
         ctx,
         `${remainingTimeString}`,
@@ -411,10 +437,10 @@ function displayAll(ctx: CanvasRenderingContext2D) {
                 mainConstants.mapPosition.x),
             (canvas.height / 5 -
                 mainConstants.mapPosition.y)),
-                "0.1rem"
-        );
-    //
-    if (remainingTime() >= mainConstants.waveIntervalTime) {
+        "0.1rem"
+    );
+    //changing interval
+    if (remainingTime() >= mainConstants.waveIntervalTime && hero.healthpoint > 0) {
         stateConstants.wave++;
         mainConstants.weaponArray.forEach(
             (obj) => {
@@ -423,6 +449,13 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         );
         buyPannel(ctx);
 
+    }
+    if (hero.healthpoint <= 0) {
+        resetWaveChange();
+        resetGame();
+        stateConstants.ingame = false;
+        aboutScreen(ctx);
+        //gameOver(ctx);
     }
     //drawing bullets
     bulletArray.forEach(
@@ -495,7 +528,6 @@ function gameLoop(
             );
         }
     );
-
     //looping game
     if (stateConstants.ingame) {
         requestAnimationFrame(

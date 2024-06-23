@@ -81,7 +81,6 @@ export default class Pestol extends Gun {
             Math.cos(this.lookingAngle)
 
         if (!this.fireInterval) {
-
             this.fireInterval = setInterval(
                 () => {
                     if (this.trackingEnemyObj) {

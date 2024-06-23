@@ -2,6 +2,7 @@ import heroConstants from "../constants/heroConstants";
 import stateConstants from "../constants/stateConstants";
 import { ctx } from "../main";
 import Point from "../modules/points";
+import { aboutbtnsclicked } from "../screens/aboutScreen";
 import { buyBtnsclicked, upgradeWeapon } from "../screens/buyScreen";
 import { hero } from "../screens/gameScreen";
 import { btnsclicked } from "../screens/homeScreen";
@@ -83,6 +84,14 @@ export default function eventhandler() {
                         e.offsetX,
                         e.offsetY
                     )
+                );
+            }
+            if (stateConstants.aboutScreenFlag) {
+                aboutbtnsclicked(
+                    new Point(
+                        e.offsetX,
+                        e.offsetY
+                    ),ctx
                 );
             }
         }

@@ -1,6 +1,7 @@
 import homeScreen from "./screens/homeScreen";
 import gameMain from "./screens/gameScreen";
 import eventhandler from "./util/eventHandler";
+import gameOver from "./screens/gameoverScreen";
 //import buyPannel from "./screens/buyScreen";
 
 // initializing canvas
@@ -18,10 +19,10 @@ if (canvas) {
 
 
   //calling Home Screen
-  // homeScreen(ctx)
-
+homeScreen(ctx)
+gameOver(ctx)
   //calling game
-  gameMain(ctx);
+ // gameMain(ctx);
   //buyPannel(ctx);
 }
 

@@ -1,9 +1,6 @@
 import Point from "./points";
-import spitImageSrc from "../assets/weapon/spit/spit.png";
 import { hero } from "../screens/gameScreen";
 
-const spitImage = new Image;
-spitImage.src = spitImageSrc;
 
 
 interface ISpit {

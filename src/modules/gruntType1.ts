@@ -8,10 +8,13 @@ import mainConstants from "../constants/mainConstants";
 import Tile from "./tile";
 import Hero from "./hero";
 import gruntType3Sprite from "../sprites/grunt[Type3]sprite";
+import upcounter from "../util/upcounter";
 
 
 const spwanImage = new Image;
 spwanImage.src = spwan;
+
+spwanImage.onload=upcounter;
 
 export default class GruntType1 extends Entity {
     isSpwaned: boolean = false;

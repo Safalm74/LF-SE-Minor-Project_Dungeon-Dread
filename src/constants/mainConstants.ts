@@ -5,7 +5,8 @@ import Pestol from "../modules/pestol";
 
 import themeSoundSrc from "../assets/sounds/homeMusic.mp3"
 import windSoundSrc from "../assets/sounds/wind.mp3"
-import gemCollectSounc from "../assets/sounds/coinCollect.wav"
+import gemCollectSound from "../assets/sounds/coinCollect.wav"
+import upcounter from "../util/upcounter";
 
 
 type MainConstants = {
@@ -21,6 +22,17 @@ type MainConstants = {
     gemSound: HTMLAudioElement;
 }
 
+const homeSound= new Audio(themeSoundSrc);
+const windSound= new Audio(windSoundSrc);
+const gemSound= new Audio(gemCollectSound);
+
+homeSound.onload= upcounter;
+windSound.onload= upcounter;
+gemSound.onload =upcounter;
+
+windSound.volume=0.5 ;
+gemSound.volume=0.2;
+
 const mainConstants: MainConstants = {
     collideableObjs: [],
     heroTotalHealth: 120,
@@ -35,9 +47,9 @@ const mainConstants: MainConstants = {
         null,
         null,
         null],
-    homeSound: new Audio(themeSoundSrc),
-    windSound: new Audio(windSoundSrc),
-    gemSound: new Audio(gemCollectSounc)
+    homeSound: homeSound,
+    windSound: windSound,
+    gemSound: gemSound
 
 
 }

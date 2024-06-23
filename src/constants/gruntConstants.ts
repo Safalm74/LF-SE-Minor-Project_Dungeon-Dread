@@ -5,7 +5,8 @@ import type2ImageSrc from "../assets/entity/enemy/grunts/type2.png"
 import gruntType1Sprite from "../sprites/grunt[Type1]Sptite";
 import gruntType3Sprite from "../sprites/grunt[Type3]sprite";
 import Point from "../modules/points";
-import gruntType2Sprite from "../sprites/grunt[Type2]Sprite";
+import upcounter from "../util/upcounter";
+
 
 
 const type1Image=new Image;
@@ -15,6 +16,11 @@ const type2Image=new Image;
 type1Image.src=type1ImageSrc;
 type34Image.src=type34ImageSrc;
 type2Image.src=type2ImageSrc;
+
+
+type1Image.onload=upcounter;
+type34Image.onload=upcounter;
+type2Image.onload=upcounter;
 
 
 type gruntInst = {

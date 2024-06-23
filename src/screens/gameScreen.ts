@@ -23,12 +23,14 @@ import Spit from "../modules/spit";
 import Gem from "../modules/gem";
 import gemSprite from "../sprites/gemSprite";
 import Boss from "../modules/boss";
-import gameOver from "./gameoverScreen";
+
 import aboutScreen from "./aboutScreen";
+import upcounter from "../util/upcounter";
 //import heroConstants from "../constants/heroCopnstants";
 //loading map background
 const mapImage = new Image;
 mapImage.src = gameMap;
+mapImage.onload = upcounter;
 //checking time to set next wave
 let waveStartTime: Date;
 //spwan Type1 enemies
@@ -357,6 +359,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
 
     if (boss) {
         boss.draw(ctx);
+        mainConstants.maxEnemies = 100
         mainConstants.weaponArray.forEach(
             (wobj) => {
                 if (wobj) {
@@ -441,24 +444,12 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         canvas.height * 0.03,
         'Essence'
     );
-    //Display time remaining
-    const remainingTimeString = `${Math.floor
-        ((mainConstants.waveIntervalTime -
-            remainingTime())
-            / 1000)}`
-    dropDownMsg(
-        ctx,
-        `${remainingTimeString}`,
-        new Point(
-            -(ctx.measureText(remainingTimeString).width / 2 +
-                mainConstants.mapPosition.x),
-            (canvas.height / 5 -
-                mainConstants.mapPosition.y)),
-        "0.1rem"
-    );
+
     //changing interval
     if (remainingTime() >= mainConstants.waveIntervalTime &&
-        hero.healthpoint > 0) {
+        hero.healthpoint > 0 &&
+        !boss
+    ) {
         stateConstants.wave++;
         mainConstants.weaponArray.forEach(
             (obj) => {
@@ -467,6 +458,35 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         );
         buyPannel(ctx);
 
+    }
+    if (!boss) {
+        //Display time remaining
+        const remainingTimeString = `${Math.floor
+            ((mainConstants.waveIntervalTime -
+                remainingTime())
+                / 1000)}`
+        dropDownMsg(
+            ctx,
+            `${remainingTimeString}`,
+            new Point(
+                -(ctx.measureText(remainingTimeString).width / 2 +
+                    mainConstants.mapPosition.x),
+                (canvas.height / 5 -
+                    mainConstants.mapPosition.y)),
+            "0.1rem"
+        );
+    }
+    else {
+        dropDownMsg(
+            ctx,
+            `Final Wave`,
+            new Point(
+                -(ctx.measureText('Final Wave').width / 2 +
+                    mainConstants.mapPosition.x),
+                (canvas.height / 5 -
+                    mainConstants.mapPosition.y)),
+            "0.1rem"
+        );
     }
     if (hero.healthpoint <= 0) {
         resetWaveChange();
@@ -505,7 +525,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
             }
         }
     );
-
+    mainConstants.maxEnemies = 500
     //LowerInventory
     lowerInventory(ctx);
 
@@ -573,7 +593,6 @@ function resetWaveChange() {
     }
     //reset health
     hero.healthpoint = mainConstants.heroTotalHealth;
-
     bulletArray = [];
     gruntType1Array = [];
     spitArray = [];

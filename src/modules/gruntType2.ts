@@ -7,10 +7,13 @@ import gruntType2Sprite from "../sprites/grunt[Type2]Sprite";
 import Spit from "./spit";
 import weaponRangeConstants from "../constants/weaponRangeConstants";
 import gruntConstants from "../constants/gruntConstants";
+import upcounter from "../util/upcounter";
 
 
 const spwanImage = new Image;
 spwanImage.src = spwan;
+
+spwanImage.onload=upcounter;
 
 export default class GruntType2 extends Entity {
     isSpwaned: boolean = false;

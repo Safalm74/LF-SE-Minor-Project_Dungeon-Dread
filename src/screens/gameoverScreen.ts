@@ -1,15 +1,15 @@
 
 
 import backGround from "../assets/home/background.webp"
-import mainConstants from "../constants/mainConstants";
 import { canvas } from "../main";
 import Point from "../modules/points";
 import Btn from "../util/btn";
+import upcounter from "../util/upcounter";
 import gameMain from "./gameScreen";
 
 const backGroundImage = new Image;
 backGroundImage.src = backGround;
-
+backGroundImage.onload=upcounter;
 //gameOverReturnHome btn
 let gameOverReturnHomeBtnPosition: Point;
 let gameOverReturnHomebtnSize: TextMetrics;

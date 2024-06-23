@@ -1,5 +1,3 @@
-
-
 import backGround from "../assets/home/background.webp"
 import gruntConstants from "../constants/gruntConstants";
 import mainConstants from "../constants/mainConstants";
@@ -8,12 +6,14 @@ import { canvas } from "../main";
 import Point from "../modules/points";
 import homeAnimationSprite from "../sprites/homeAnimationSprite";
 import Btn from "../util/btn";
+import upcounter from "../util/upcounter";
 import aboutScreen from "./aboutScreen";
 import controlScreen from "./controlScreen";
 import gameMain from "./gameScreen";
 
 const backGroundImage = new Image;
 backGroundImage.src = backGround;
+backGroundImage.onload=upcounter;
 
 //start btn
 let startBtnPosition: Point;
@@ -114,7 +114,6 @@ function displayMonster(ctx: CanvasRenderingContext2D) {
 }
 //function that handles all displays
 function displayAll(ctx: CanvasRenderingContext2D) {
-
     // clearing screen 
     ctx.clearRect(
         -mainConstants.mapPosition.x,

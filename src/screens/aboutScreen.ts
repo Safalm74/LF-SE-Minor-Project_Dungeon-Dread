@@ -5,11 +5,13 @@ import { canvas } from "../main";
 import Point from "../modules/points";
 import Btn from "../util/btn";
 import textWrapper from "../util/textwrapper";
-import gameMain from "./gameScreen";
+import upcounter from "../util/upcounter";
 import homeScreen from "./homeScreen";
 
 const backGroundImage = new Image;
 backGroundImage.src = backGround;
+
+backGroundImage.onload=upcounter;
 
 const aboutMsg = `
     The world in Dungeon Dread has multiple dungeons 

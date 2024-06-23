@@ -1,13 +1,16 @@
 import Point from "./points";
 import gemImageSrc from "../assets/gem/gem.png"
 import gemSprite from "../sprites/gemSprite";
-import { hero, spitArray } from "../screens/gameScreen";
+import { hero } from "../screens/gameScreen";
 import heroConstants from "../constants/heroConstants";
 import stateConstants from "../constants/stateConstants";
 import mainConstants from "../constants/mainConstants";
+import upcounter from "../util/upcounter";
 
 const gemImage = new Image;
 gemImage.src = gemImageSrc;
+
+gemImage.onload=upcounter;
 interface IGem {
     position: Point;
     value: number;

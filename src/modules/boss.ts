@@ -8,9 +8,11 @@ import gruntConstants from "../constants/gruntConstants";
 import weaponRangeConstants from "../constants/weaponRangeConstants";
 import Spit from "./spit";
 import progressBar from "../util/bar";
+import upcounter from "../util/upcounter";
+
 const bossImage = new Image;
 bossImage.src = bossImageSrc;
-
+bossImage.onload=upcounter;
 
 export default class Boss extends Entity {
     speedToggle: boolean = false;

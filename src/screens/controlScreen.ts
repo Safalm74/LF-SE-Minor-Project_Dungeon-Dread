@@ -6,12 +6,15 @@ import Point from "../modules/points";
 import Btn from "../util/btn";
 import homeScreen from "./homeScreen";
 import controlImageSrc from "../assets/controls/Controls.png";
+import upcounter from "../util/upcounter";
 
 const controlImage=new Image;
 controlImage.src=controlImageSrc;
+controlImage.onload=upcounter;
 
 const backGroundImage = new Image;
 backGroundImage.src = backGround;
+backGroundImage.onload=upcounter;
 
 
 

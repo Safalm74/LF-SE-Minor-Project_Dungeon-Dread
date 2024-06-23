@@ -49,6 +49,8 @@ export default class Hero extends Entity {
         ) {
             this.abilityTime = new Date;
             this.abilityInUse = true;
+            heroConstants.amaterasuSound.currentTime=2;
+            heroConstants.amaterasuSound.play();
             this.inRangeEnemies = gruntType1Array.filter(
                 (obj) => {
                     if (
@@ -83,8 +85,6 @@ export default class Hero extends Entity {
             if (this.healthpoint < 50) {
                 this.healthpoint += 3
             }
-
-
         }, 5000)
     }
 

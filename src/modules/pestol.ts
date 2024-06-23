@@ -1,5 +1,4 @@
 import Gun from "./gun";
-import gunSrc from "../assets/weapon/gun/pestol.svg";
 import pestolSprite from "../sprites/pestolSprite";
 import Point from "./points";
 import GruntType1 from "./gruntType1";
@@ -10,7 +9,6 @@ import smgSprite from "../sprites/smgSprite";
 import GruntType2 from "./gruntType2";
 import GruntType4 from "./gruntType4";
 import Boss from "./boss";
-import gunConstants from "../constants/gunConstants";
 import stateConstants from "../constants/stateConstants";
 
 //importing sounds

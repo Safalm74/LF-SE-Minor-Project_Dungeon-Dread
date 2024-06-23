@@ -6,10 +6,13 @@ import stateConstants from "../constants/stateConstants";
 import { canvas } from "../main";
 import Point from "../modules/points";
 import Btn from "../util/btn";
+import upcounter from "../util/upcounter";
 import homeScreen from "./homeScreen";
 
 const backGroundImage = new Image;
 backGroundImage.src = backGround;
+
+backGroundImage.onload=upcounter;
 
 //start btn
 let startBtnPosition: Point;
@@ -55,7 +58,6 @@ function firstScreenbtnsclicked(
             startbtnSize
         )) {
         stateConstants.firstPageFlag = false;
-        mainConstants.homeSound.play()
         homeScreen(ctx)
     }
 

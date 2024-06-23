@@ -3,12 +3,14 @@ import bush from "../assets/map/bush.png";
 import stoneAndDrumSprite from "../sprites/stoneAndDrumSprite";
 import stoneAndDrum from "../assets/map/stoneandDrum.svg";
 import Point from "./points";
+import upcounter from "../util/upcounter";
 
 const bushImage = new Image;
 bushImage.src = bush;
-
+bushImage.onload=upcounter;
 const stoneAndDrumImage = new Image;
 stoneAndDrumImage.src = stoneAndDrum;
+stoneAndDrumImage.onload=upcounter;
 
 interface ITile {
     position: Point;

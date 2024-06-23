@@ -3,6 +3,8 @@ import gemImageSrc from "../assets/gem/gem.png"
 import gemSprite from "../sprites/gemSprite";
 import { hero, spitArray } from "../screens/gameScreen";
 import heroConstants from "../constants/heroConstants";
+import stateConstants from "../constants/stateConstants";
+import mainConstants from "../constants/mainConstants";
 
 const gemImage = new Image;
 gemImage.src = gemImageSrc;
@@ -60,9 +62,16 @@ export default class Gem implements IGem {
             hero.position.x + hero.width +20 >= this.position.x &&
             hero.position.x -20<= this.position.x + this.width
         ) {
+            if(!stateConstants.ismute){
+                if(mainConstants.gemSound){
+                    mainConstants.gemSound.pause();
+                    mainConstants.gemSound.currentTime=0;
+                }
+                mainConstants.gemSound.play();
+            }
             hero.gemCount += this.value;
             if (hero.essenceCount<heroConstants.maxEssence){
-                hero.essenceCount +=2
+                hero.essenceCount +=1
             }
 
             return false;

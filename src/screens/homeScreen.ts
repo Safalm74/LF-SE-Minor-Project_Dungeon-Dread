@@ -3,12 +3,13 @@
 import backGround from "../assets/home/background.webp"
 import gruntConstants from "../constants/gruntConstants";
 import mainConstants from "../constants/mainConstants";
-import mapConstants from "../constants/mapConstants";
+import stateConstants from "../constants/stateConstants";
 import { canvas } from "../main";
 import Point from "../modules/points";
 import homeAnimationSprite from "../sprites/homeAnimationSprite";
 import Btn from "../util/btn";
 import aboutScreen from "./aboutScreen";
+import controlScreen from "./controlScreen";
 import gameMain from "./gameScreen";
 
 const backGroundImage = new Image;
@@ -57,9 +58,9 @@ function btnsclicked(
     ClickedPosition: Point,
     ctx: CanvasRenderingContext2D
 ) {
-    ClickedPosition=new Point(
-        -mainConstants.mapPosition.x +ClickedPosition.x,
-        -mainConstants.mapPosition.y +ClickedPosition.y
+    ClickedPosition = new Point(
+        -mainConstants.mapPosition.x + ClickedPosition.x,
+        -mainConstants.mapPosition.y + ClickedPosition.y
     );
     if (
         startbtnSize &&
@@ -68,7 +69,18 @@ function btnsclicked(
             startBtnPosition,
             startbtnSize
         )) {
+        stateConstants.homeScreenFlag = false;
+        mainConstants.homeSound.pause();
         gameMain(ctx)
+    }
+    if (controlBtnSize &&
+        checkCollision(
+            ClickedPosition,
+            controlBtnPosition,
+            controlBtnSize
+        )) {
+        stateConstants.homeScreenFlag = false;
+        controlScreen(ctx)
     }
     if (aboutBtnSize &&
         checkCollision(
@@ -76,8 +88,10 @@ function btnsclicked(
             about,
             aboutBtnSize
         )) {
+        stateConstants.homeScreenFlag = false;
         aboutScreen(ctx)
     }
+
 }
 
 //display monster
@@ -138,11 +152,11 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         -mainConstants.mapPosition.y +
         canvas.height * 0.5)
 
-
     about = new Point(
+        -mainConstants.mapPosition.x +
         canvas.width * 0.01,
-        canvas.height * 0.6
-    )
+        -mainConstants.mapPosition.y +
+        canvas.height * 0.6)
     //Game Name
     const GameName = "DUNGEON DREAD"
     ctx.font = "3rem ShadowOfTheDeadOver"
@@ -178,16 +192,26 @@ function homeMainLoop(ctx: CanvasRenderingContext2D) {
     //calling display handiling function
     displayAll(ctx);
 
-
-    requestAnimationFrame(() => {
-        homeMainLoop(ctx)
-    });
-
+    if (stateConstants.homeScreenFlag) {
+        requestAnimationFrame(() => {
+            homeMainLoop(ctx)
+        });
+    }
 }
 
 
 export { btnsclicked }
 
 export default function homeScreen(ctx: CanvasRenderingContext2D) {
+    stateConstants.homeScreenFlag = true;
+    if (!stateConstants.ismute) {
+        if (mainConstants.homeSound) {
+            mainConstants.homeSound.pause();
+            mainConstants.homeSound.currentTime = 0;
+        }
+        mainConstants.homeSound.play()
+
+    }
+
     homeMainLoop(ctx)
 }

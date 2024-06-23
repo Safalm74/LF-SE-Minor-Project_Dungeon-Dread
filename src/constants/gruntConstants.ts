@@ -59,7 +59,7 @@ const gruntConstants: GruntConstants = {
         velocity:new Point(1,1)
     },
     type2 :{
-        healthPoint:10,
+        healthPoint:20,
         width:  window.innerHeight /1500,
         height: window.innerHeight/1500,
         image: type2Image,
@@ -69,7 +69,7 @@ const gruntConstants: GruntConstants = {
     },
 
     type3 :{
-        healthPoint:8,
+        healthPoint:15,
         width: gruntType3Sprite.width * window.innerHeight / 700,
         height: gruntType3Sprite.height*window.innerHeight/700,
         image: type34Image,
@@ -79,7 +79,7 @@ const gruntConstants: GruntConstants = {
     },
 
     type4 :{
-        healthPoint:18,
+        healthPoint:28,
         width:  window.innerHeight / 500,
         height:window.innerHeight/500,
         image: type34Image,

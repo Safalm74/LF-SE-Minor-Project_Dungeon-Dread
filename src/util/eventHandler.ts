@@ -1,12 +1,30 @@
 import heroConstants from "../constants/heroConstants";
+import mainConstants from "../constants/mainConstants";
 import stateConstants from "../constants/stateConstants";
 import { ctx } from "../main";
 import Point from "../modules/points";
 import { aboutbtnsclicked } from "../screens/aboutScreen";
 import { buyBtnsclicked, upgradeWeapon } from "../screens/buyScreen";
+import { controlBtnClicked } from "../screens/controlScreen";
+import { firstScreenbtnsclicked } from "../screens/firstScreen";
 import { hero } from "../screens/gameScreen";
 import { btnsclicked } from "../screens/homeScreen";
+function handleSounds() {
+    if (stateConstants.ismute) {
 
+
+        mainConstants.windSound.pause();
+        mainConstants.windSound.currentTime = 0;
+    }
+    else {
+        if (stateConstants.homeScreenFlag) {
+            mainConstants.homeSound.play();
+        }
+        if (stateConstants.ingame) {
+            mainConstants.windSound.play();
+        }
+    }
+}
 function handleEvents() {
     if (
         (stateConstants.btnPressed['a'] && stateConstants.btnPressed['w']) ||
@@ -15,14 +33,14 @@ function handleEvents() {
         (stateConstants.btnPressed['d'] && stateConstants.btnPressed['s'])
 
     ) {
-        hero.velocity.x=0.7*heroConstants.velocity.x
-        hero.velocity.y=0.7*heroConstants.velocity.y
+        hero.velocity.x = 0.7 * heroConstants.velocity.x
+        hero.velocity.y = 0.7 * heroConstants.velocity.y
 
     }
-    else{
+    else {
 
-        hero.velocity.x=heroConstants.velocity.x
-        hero.velocity.y=heroConstants.velocity.y
+        hero.velocity.x = heroConstants.velocity.x
+        hero.velocity.y = heroConstants.velocity.y
 
     }
     if (stateConstants.btnPressed['a']) {
@@ -44,7 +62,7 @@ function handleEvents() {
     if (stateConstants.btnPressed[' ']) {
         hero.ability();
     }
-    
+
 }
 
 export { handleEvents }
@@ -55,9 +73,15 @@ export default function eventhandler() {
         'keydown',
         (e) => {
             stateConstants.btnPressed[e.key.toLowerCase()] = true
-            if(stateConstants.buyScreenFlag && stateConstants.btnPressed['u']){
+            if (stateConstants.buyScreenFlag && stateConstants.btnPressed['u']) {
                 console.log('here');
                 upgradeWeapon();
+            }
+            if (e.key.toLowerCase() === "m") {
+                stateConstants.ismute = stateConstants.ismute ?
+                    false :
+                    true
+                handleSounds();
             }
         }
     );
@@ -71,12 +95,23 @@ export default function eventhandler() {
     window.addEventListener(
         'click',
         (e) => {
-            btnsclicked(
-                new Point(
-                    e.offsetX,
-                    e.offsetY),
-                ctx
-            );
+            if (stateConstants.firstPageFlag) {
+                firstScreenbtnsclicked(
+                    new Point(
+                        e.offsetX,
+                        e.offsetY),
+                    ctx
+                );
+            }
+            if (stateConstants.homeScreenFlag) {
+                btnsclicked(
+                    new Point(
+                        e.offsetX,
+                        e.offsetY),
+                    ctx
+                );
+            }
+
 
             if (stateConstants.buyScreenFlag) {
                 buyBtnsclicked(
@@ -91,7 +126,15 @@ export default function eventhandler() {
                     new Point(
                         e.offsetX,
                         e.offsetY
-                    ),ctx
+                    ), ctx
+                );
+            }
+            if (stateConstants.controlScreenFlag) {
+                controlBtnClicked(
+                    new Point(
+                        e.offsetX,
+                        e.offsetY
+                    ), ctx
                 );
             }
         }

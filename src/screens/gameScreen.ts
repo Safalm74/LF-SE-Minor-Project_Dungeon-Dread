@@ -303,6 +303,7 @@ function lowerInventory(ctx: CanvasRenderingContext2D) {
 }
 //reset
 function resetGame() {
+    stateConstants.ingame = false;
     clearInterval(hero.abilityInterval);
     if (boss) {
         clearInterval(boss.attackInterval);
@@ -322,7 +323,8 @@ function resetGame() {
         if (obj) {
             clearInterval(obj.attackInterval);
         }
-    })
+    });
+    createHero();
 
 }
 //function that handles all display
@@ -361,9 +363,13 @@ function displayAll(ctx: CanvasRenderingContext2D) {
                     wobj.detectEnemy(boss)
 
                 }
-
             }
         );
+        if (boss.healthpoint <= 0) {
+            resetWaveChange();
+            resetGame();
+            aboutScreen(ctx);
+        }
     }
     //draw hero
     hero.draw(ctx);
@@ -406,11 +412,22 @@ function displayAll(ctx: CanvasRenderingContext2D) {
             mainConstants.mapPosition.y),
         hero.healthpoint,
         mainConstants.heroTotalHealth,
-        canvas.width * 0.4,
+        canvas.width * 0.45,
         canvas.height * 0.03,
         'Life line'
     )
-    //show time remaining
+    //show gemcount
+    const gemString = `Gems: ${hero.gemCount}`
+    dropDownMsg(
+        ctx,
+        gemString,
+        new Point(
+            -canvas.width * 0.4 - mainConstants.mapPosition.x,
+            (canvas.height / 5 -
+                mainConstants.mapPosition.y)),
+        "1rem Eater"
+    );
+    //show essence
     progressBar(
         ctx,
         new Point(canvas.width * 0.95 -
@@ -440,7 +457,8 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         "0.1rem"
     );
     //changing interval
-    if (remainingTime() >= mainConstants.waveIntervalTime && hero.healthpoint > 0) {
+    if (remainingTime() >= mainConstants.waveIntervalTime &&
+        hero.healthpoint > 0) {
         stateConstants.wave++;
         mainConstants.weaponArray.forEach(
             (obj) => {
@@ -453,7 +471,6 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     if (hero.healthpoint <= 0) {
         resetWaveChange();
         resetGame();
-        stateConstants.ingame = false;
         aboutScreen(ctx);
         //gameOver(ctx);
     }
@@ -539,6 +556,9 @@ function gameLoop(
     //dropDownMsg(ctx,'New Wave');
 }
 function resetWaveChange() {
+    //reset sound
+    mainConstants.windSound.pause();
+    mainConstants.windSound.currentTime = 0
     //clearing all damages
     gruntType1Array.forEach(
         (obj) => {
@@ -594,12 +614,11 @@ export { hero, gruntType1Array, bulletArray, spitArray, boss }
 export default function gameMain(
     ctx: CanvasRenderingContext2D) {
     stateConstants.ingame = true;
-
-    createHero();
+    if (!hero) {
+        createHero();
+    }
     resetWaveChange();
-
     createType1();
-
     //moving focustohero
     mainConstants.dropdownInterval = true;
     setTimeout(
@@ -635,10 +654,12 @@ export default function gameMain(
         boss.changeSpeed();
 
     }
-
-
-
-    // buyPannel(ctx);
-
+    if (!stateConstants.ismute) {
+        if (mainConstants.windSound) {
+            mainConstants.windSound.pause();
+            mainConstants.windSound.currentTime = 0;
+        }
+        mainConstants.windSound.play();
+    }
     gameLoop(ctx);
 }

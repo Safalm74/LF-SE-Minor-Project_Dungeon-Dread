@@ -10,10 +10,12 @@ import smgSprite from "../sprites/smgSprite";
 import GruntType2 from "./gruntType2";
 import GruntType4 from "./gruntType4";
 import Boss from "./boss";
-const gunImage = new Image;
-gunImage.src = gunSrc;
+import gunConstants from "../constants/gunConstants";
+import stateConstants from "../constants/stateConstants";
 
-export {gunImage};
+//importing sounds
+import gunSoundSrc from "../assets/sounds/gun.mp3"
+
 export default class Pestol extends Gun {
     detectedEnemy: boolean = false;
     trackingEnemyObj: any= null;
@@ -21,7 +23,18 @@ export default class Pestol extends Gun {
     shootingPoint: Point = pestolSprite.positionRight[1];
     fireInterval: any = null;
     level:number=1;
+    sound:HTMLAudioElement=new Audio(gunSoundSrc);
+    playSound(){
+        if(!stateConstants.ismute){
+            this.sound.volume=0.2
+            if(this.sound){
+                this.sound.pause();
+                this.sound.currentTime=0;
+            }
+            this.sound.play();
+        }
 
+    }
     detectEnemy(obj: GruntType1 | GruntType2 | GruntType4 | Boss) {
         const logicalCenter = this.position
         if (
@@ -106,6 +119,7 @@ export default class Pestol extends Gun {
                             this.position,
                         );
                         bulletArray.push(bulletObj);
+                        this.playSound();
                     }
 
                 },

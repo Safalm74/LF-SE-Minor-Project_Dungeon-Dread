@@ -8,6 +8,9 @@ export default function Btn(
     color:string="white"
 
 ) {
+    if(!position){
+        console.log("no position")
+    }
     ctx.fillStyle = color
     ctx.font = font
     ctx.fillText(

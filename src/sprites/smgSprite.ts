@@ -10,12 +10,12 @@ type SmgSprite={
 const smgSprite:SmgSprite={
     width:66,
     height:38,
-    positionRight: [
+    positionLeft: [
         new Point(5,31),
         new Point(67,40),
         new Point(19,46)
     ],
-    positionLeft: [
+    positionRight: [
         new Point(90,31),
         new Point(94,40),
         new Point(143,46)

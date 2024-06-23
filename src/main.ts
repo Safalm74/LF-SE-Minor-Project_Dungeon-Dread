@@ -2,7 +2,9 @@ import homeScreen from "./screens/homeScreen";
 import gameMain from "./screens/gameScreen";
 import eventhandler from "./util/eventHandler";
 import gameOver from "./screens/gameoverScreen";
-//import buyPannel from "./screens/buyScreen";
+
+import buyPannel from "./screens/buyScreen";
+import firstScreen from "./screens/firstScreen";
 
 // initializing canvas
 const canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
@@ -17,12 +19,12 @@ if (canvas) {
   canvas.height = window.innerHeight;
   canvas.style.background = "linear-gradient(172.33deg, #30303A -1.75%, #20202E 83.53%, #050519 104.9%)";
 
-
+  firstScreen(ctx);
   //calling Home Screen
-homeScreen(ctx)
-gameOver(ctx)
+  //homeScreen(ctx)
+  //gameOver(ctx)
   //calling game
- // gameMain(ctx);
+  // gameMain(ctx);
   //buyPannel(ctx);
 }
 

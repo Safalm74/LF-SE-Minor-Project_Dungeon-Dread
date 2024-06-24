@@ -1,7 +1,7 @@
+//modules
 import Point from "./points";
+//objs
 import { hero } from "../screens/gameScreen";
-
-
 
 interface ISpit {
     position: Point;
@@ -12,7 +12,6 @@ interface ISpit {
     radius: number
 
 }
-
 export default class Spit implements ISpit {
     position: Point;
     damage: number;
@@ -33,7 +32,6 @@ export default class Spit implements ISpit {
         this.velocity = velocity;
         this.gunPosition = gunPosition;
     }
-
     checkOnhit() {
         if (
             this.position.x - this.radius > hero.position.x &&
@@ -47,17 +45,16 @@ export default class Spit implements ISpit {
         }
 
     }
-    update(){
-        this.position.x +=this.velocity.x
-        this.position.y +=this.velocity.y
+    update() {
+        this.position.x += this.velocity.x
+        this.position.y += this.velocity.y
     }
     draw(ctx: CanvasRenderingContext2D) {
         this.update();
         // //drawing
         ctx.beginPath();
-        ctx.fillStyle="green"
+        ctx.fillStyle = "green"
         ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
         ctx.fill();
     }
-
 }

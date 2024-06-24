@@ -1,5 +1,21 @@
 import Point from "../modules/points";
 import Tile from "../modules/tile";
+import stoneAndDrum from "../assets/map/stoneandDrum.svg";
+
+import bush from "../assets/map/bush.png";
+import upcounter from "../util/upcounter";
+import gameMap from "../assets/map/map.png"
+//loading map background
+const mapImage = new Image;
+mapImage.src = gameMap;
+mapImage.onload = upcounter;
+
+const bushImage = new Image;
+bushImage.src = bush;
+bushImage.onload=upcounter;
+const stoneAndDrumImage = new Image;
+stoneAndDrumImage.src = stoneAndDrum;
+stoneAndDrumImage.onload=upcounter;
 
 type MapConstants = {
     tileSize: number;
@@ -9,6 +25,9 @@ type MapConstants = {
     mapTileArray: Tile[][];
     displayPosition:Point;
     mapSizeMultiplier:number;
+    bushImage:HTMLImageElement;
+    stoneImage:HTMLImageElement;
+    mapImage:HTMLImageElement;
 }
 let mapTileArray: Tile[][] = [];
 const tileSize = 50;
@@ -24,6 +43,9 @@ const mapConstants: MapConstants = {
     mapColor: mapColor,
     mapTileArray: mapTileArray,
     displayPosition: new Point(0,0),
-    mapSizeMultiplier:5
+    mapSizeMultiplier:5,
+    bushImage:bushImage,
+    stoneImage:stoneAndDrumImage,
+    mapImage:mapImage
 }
 export default mapConstants;

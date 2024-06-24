@@ -1,47 +1,19 @@
-
-
-import backGround from "../assets/home/background.webp"
+//modules
+import Point from "../modules/points";
+//constants
 import mainConstants from "../constants/mainConstants";
 import stateConstants from "../constants/stateConstants";
-import { canvas } from "../main";
-import Point from "../modules/points";
+import screenConstants from "../constants/screenConstants";
+//utils
 import Btn from "../util/btn";
-import upcounter from "../util/upcounter";
+import checkCursorCollision from "../util/cursorCollision";
+//objs
+import { canvas } from "../main";
+//screens
 import homeScreen from "./homeScreen";
-
-const backGroundImage = new Image;
-backGroundImage.src = backGround;
-
-backGroundImage.onload=upcounter;
-
 //start btn
 let startBtnPosition: Point;
 let startbtnSize: TextMetrics;
-
-function checkCollision(
-    cursorPosiiton: Point,
-    BtnPosition: Point,
-    size: TextMetrics) {
-    cursorPosiiton = new Point(
-        cursorPosiiton.x + mainConstants.mapPosition.x,
-        cursorPosiiton.y + mainConstants.mapPosition.y
-    );
-    const width = size.width;
-    const height = size.actualBoundingBoxAscent +
-        size.actualBoundingBoxDescent;
-    if (
-        cursorPosiiton.x > BtnPosition.x &&
-        cursorPosiiton.x < BtnPosition.x + width &&
-        cursorPosiiton.y > BtnPosition.y - height &&
-        cursorPosiiton.y < BtnPosition.y
-    ) {
-        return true
-    }
-    else {
-        return false
-    }
-}
-
 function firstScreenbtnsclicked(
     ClickedPosition: Point,
     ctx: CanvasRenderingContext2D
@@ -52,7 +24,7 @@ function firstScreenbtnsclicked(
     );
     if (
         startbtnSize &&
-        checkCollision(
+        checkCursorCollision(
             ClickedPosition,
             startBtnPosition,
             startbtnSize
@@ -60,10 +32,7 @@ function firstScreenbtnsclicked(
         stateConstants.firstPageFlag = false;
         homeScreen(ctx)
     }
-
 }
-
-
 //function that handles all displays
 function displayAll(ctx: CanvasRenderingContext2D) {
 
@@ -76,14 +45,12 @@ function displayAll(ctx: CanvasRenderingContext2D) {
 
     //fill background image
     ctx.drawImage(
-        backGroundImage,
+        screenConstants.backGroundImage,
         -mainConstants.mapPosition.x,
         -mainConstants.mapPosition.y,
         canvas.width,
         canvas.height
     );
-
-
     //Game Name
     const GameName = "DUNGEON DREAD"
     ctx.font = "3rem ShadowOfTheDeadOver"
@@ -91,37 +58,30 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     const gameNameSize = ctx.measureText(GameName)
     ctx.fillText(
         GameName,
-        canvas.width * 0.5-gameNameSize.width/2,
-        canvas.height * 0.3+
+        canvas.width * 0.5 - gameNameSize.width / 2,
+        canvas.height * 0.3 +
         gameNameSize.actualBoundingBoxAscent +
         gameNameSize.actualBoundingBoxDescent
     );
     //start game
     ctx.font = "3rem Eater"
-    
     startBtnPosition = new Point(
-        canvas.width * 0.5-ctx.measureText("ENTER").width/2,
+        canvas.width * 0.5 - ctx.measureText("ENTER").width / 2,
         -mainConstants.mapPosition.y +
         canvas.height * 0.8)
     startbtnSize = Btn(ctx, "ENTER", startBtnPosition);
-
-
 }
 function homeMainLoop(ctx: CanvasRenderingContext2D) {
     //clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     //calling display handiling function
     displayAll(ctx);
-
     if (stateConstants.homeScreenFlag) {
         requestAnimationFrame(() => {
             homeMainLoop(ctx)
         });
     }
 }
-
-
 export { firstScreenbtnsclicked }
 
 export default function firstScreen(ctx: CanvasRenderingContext2D) {

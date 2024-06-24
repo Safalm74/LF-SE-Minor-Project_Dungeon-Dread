@@ -10,21 +10,21 @@ import smgImageSrc from "../assets/weapon/gun/smg.svg";
 import gunSoundSrc from "../assets/sounds/gun.mp3"
 import stateConstants from "./stateConstants";
 import upcounter from "../util/upcounter";
-const pistolSound=new Audio(gunSoundSrc);
+const pistolSound = new Audio(gunSoundSrc);
 
 const pistolImage = new Image;
 pistolImage.src = pistolImageSrc;
 
-const smgImage=new Image;
-smgImage.src=smgImageSrc;
+const smgImage = new Image;
+smgImage.src = smgImageSrc;
 
 //assetsloading
-pistolSound.onload=()=>{
+pistolSound.onload = () => {
     stateConstants.assetsLoaded++
 }
-pistolImage.onload=upcounter
-smgImage.onload=upcounter
-pistolSound.onload=upcounter
+pistolImage.onload = upcounter
+smgImage.onload = upcounter
+pistolSound.onload = upcounter
 type gunInst = {
     damage: number;
     width: number;
@@ -32,33 +32,40 @@ type gunInst = {
     image: HTMLImageElement;
     fireRate: number;
     cost: number;
+    soundSrc:string;
 }
 
 type GunConstants = {
     pistol: gunInst;
     smg: gunInst;
-    sound:HTMLAudioElement;
+    sound: HTMLAudioElement;
 
 }
 
 const gunConstants: GunConstants = {
     pistol: {
         damage: 3,
-        width: pestolSprite.width * heroConstants.width * 0.01,
-        height: pestolSprite.height * heroConstants.width * 0.01,
+        width: pestolSprite.width *
+            heroConstants.width * 0.01,
+        height: pestolSprite.height *
+            heroConstants.width * 0.01,
         image: pistolImage,
         fireRate: 2,
-        cost: 500
+        cost: 500,
+        soundSrc:gunSoundSrc
     },
     smg: {
         damage: 1,
-        width: smgSprite.width * heroConstants.width * 0.01,
-        height: smgSprite.height * heroConstants.width * 0.01,
+        width: smgSprite.width *
+            heroConstants.width * 0.01,
+        height: smgSprite.height *
+            heroConstants.width * 0.01,
         image: smgImage,
         fireRate: 4,
-        cost: 1500
+        cost: 1500,
+        soundSrc:gunSoundSrc
     },
-    sound:pistolSound
+    sound: pistolSound
 }
 
 export default gunConstants;

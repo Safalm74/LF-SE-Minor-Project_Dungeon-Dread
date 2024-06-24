@@ -1,23 +1,20 @@
+//modules
 import Entity from "./entity";
-import hero from "../assets/entity/hero/hero.png";
-import heroSprite from "../sprites/hero";
-import mainConstants from "../constants/mainConstants";
 import Tile from "./tile";
 import Point from "./points";
-import { canvas } from "../main";
-import { boss, gruntType1Array } from "../screens/gameScreen";
-import GruntType1 from "./gruntType1";
+import GruntType1 from "./gruntType1and3";
 import GruntType2 from "./gruntType2";
 import GruntType4 from "./gruntType4";
-import heroConstants from "../constants/heroConstants";
-import fireImageSrc from "../assets/ability/amaterasu.png"
-import amaterasuSprite from "../sprites/amaterasuSprite";
 import Boss from "./boss";
-
-const fireImage = new Image;
-fireImage.src = fireImageSrc;
-const heroImage = new Image;
-heroImage.src = hero;
+//constants
+import mainConstants from "../constants/mainConstants";
+import heroConstants from "../constants/heroConstants";
+//sprite information
+import heroSprite from "../sprites/hero";
+import amaterasuSprite from "../sprites/amaterasuSprite";
+//objs
+import { canvas } from "../main";
+import { boss, gruntArray } from "../screens/gameScreen";
 
 export default class Hero extends Entity {
     isMoving: boolean = false;
@@ -33,8 +30,7 @@ export default class Hero extends Entity {
     stamina: number = heroConstants.stamina
     staminaInterval: any;
     healthInterval: any;
-    staminaUse:boolean=false;
-
+    staminaUse: boolean = false;
     gemCount: number = 0;
     essenceCount: number = 0;
     weaponPositions: Point[] = [
@@ -54,7 +50,7 @@ export default class Hero extends Entity {
             this.abilityInUse = true;
             heroConstants.amaterasuSound.currentTime = 2;
             heroConstants.amaterasuSound.play();
-            this.inRangeEnemies = gruntType1Array.filter(
+            this.inRangeEnemies = gruntArray.filter(
                 (obj) => {
                     if (
                         obj.position.x > -mainConstants.mapPosition.x &&
@@ -64,15 +60,12 @@ export default class Hero extends Entity {
 
                     ) {
                         return true;
-
                     }
                 }
-
             );
             if (boss) {
                 this.inRangeEnemies.push(boss)
             }
-
             setTimeout(
                 () => {
                     this.inRangeEnemies = [];
@@ -98,19 +91,17 @@ export default class Hero extends Entity {
                 if (this.stamina < heroConstants.stamina) {
                     this.stamina += 1;
                 }
-                this.staminaUse=false;
+                this.staminaUse = false;
             }, 2000
-
         );
     }
     run() {
-        this.staminaUse=true;
+        this.staminaUse = true;
         if (this.stamina > 0) {
             this.velocity = new Point(7, 7);
             this.stamina -= 0.1;
         }
     }
-
     checkCollision() {
         let collided: boolean = false;
         let collidedObj: Tile = mainConstants.collideableObjs[0];
@@ -126,11 +117,9 @@ export default class Hero extends Entity {
                     collidedObj = obj
                 }
             }
-
         );
         return { collided, collidedObj };
     }
-
     updateWeaponPosition() {
         this.weaponPositions = [
             new Point(this.position.x + this.weaponOffset + this.width, this.position.y),
@@ -156,7 +145,6 @@ export default class Hero extends Entity {
             mainConstants.mapPosition.y += positionOffsetY;
             ctx.translate(positionOffsetX, positionOffsetY);
         }
-        this.updateWeaponPosition();
     }
     moveUp(up: boolean, ctx: CanvasRenderingContext2D) {
         const velocity = up ? this.velocity.y : -1 * this.velocity.y;
@@ -172,19 +160,18 @@ export default class Hero extends Entity {
             mainConstants.mapPosition.y += positionOffsetY;
             ctx.translate(positionOffsetX, positionOffsetY);
         }
-
-        this.updateWeaponPosition();
-
     }
     draw(ctx: CanvasRenderingContext2D) {
+        this.updateWeaponPosition();
         this.position.x = canvas.width / 2 - mainConstants.mapPosition.x;
         this.position.y = canvas.height / 2 - mainConstants.mapPosition.y;
         this.inRangeEnemies.forEach(
             (obj) => {
-                let position = Math.floor(this.spritePosition / 5) % amaterasuSprite.position.length;
+                let position = Math.floor(this.spritePosition / 5) %
+                    amaterasuSprite.position.length;
 
                 ctx.drawImage(
-                    fireImage,
+                    heroConstants.amatherasuImage,
                     amaterasuSprite.position[position].x,
                     amaterasuSprite.position[position].y,
                     amaterasuSprite.width,
@@ -198,16 +185,15 @@ export default class Hero extends Entity {
                 obj.healthpoint -= this.abilityDamage;
             }
         );
-
         const lookingDirection = this.lookingLeft ? heroSprite.positionLeft : heroSprite.positionRight;
         if (this.isMoving) {
-            const staggerFrame = (20/this.velocity.x) * 0.9;
+            const staggerFrame = (20 / this.velocity.x) * 0.9;
             let position = (Math.floor(this.spritePosition / staggerFrame) % (lookingDirection.length - 1)) + 1;
 
             this.width = heroSprite.positionLeft[position].width * window.innerHeight / 1200;
             this.height = heroSprite.positionLeft[position].height * window.innerHeight / 1200;
             ctx.drawImage(
-                heroImage,
+                heroConstants.image,
                 lookingDirection[position].position.x,
                 lookingDirection[position].position.y,
                 lookingDirection[position].width,
@@ -222,7 +208,7 @@ export default class Hero extends Entity {
             this.width = heroSprite.positionLeft[0].width * window.innerHeight / 1200;
             this.height = heroSprite.positionLeft[0].height * window.innerHeight / 1200;
             ctx.drawImage(
-                heroImage,
+                heroConstants.image,
                 lookingDirection[0].position.x,
                 lookingDirection[0].position.y,
                 lookingDirection[0].width,
@@ -235,5 +221,4 @@ export default class Hero extends Entity {
         }
         this.spritePosition++
     }
-
 }

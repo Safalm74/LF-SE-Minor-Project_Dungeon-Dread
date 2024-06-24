@@ -1,24 +1,16 @@
-import bushSprite from "../sprites/bushSprite";
-import bush from "../assets/map/bush.png";
-import stoneAndDrumSprite from "../sprites/stoneAndDrumSprite";
-import stoneAndDrum from "../assets/map/stoneandDrum.svg";
+//modules
 import Point from "./points";
-import upcounter from "../util/upcounter";
-
-const bushImage = new Image;
-bushImage.src = bush;
-bushImage.onload=upcounter;
-const stoneAndDrumImage = new Image;
-stoneAndDrumImage.src = stoneAndDrum;
-stoneAndDrumImage.onload=upcounter;
-
+//constants
+import mapConstants from "../constants/mapConstants";
+//sprite information
+import bushSprite from "../sprites/bushSprite";
+import stoneAndDrumSprite from "../sprites/stoneAndDrumSprite";
 interface ITile {
     position: Point;
     tileType: 'bush' | 'stone' | 'empty' | 'drum';
     isObstacle: boolean;
     tileSize: number;
 }
-
 export default class Tile implements ITile {
     position: Point;
     tileType: 'bush' | 'stone' | 'empty' | 'drum';
@@ -39,7 +31,7 @@ export default class Tile implements ITile {
         switch (this.tileType) {
             case 'bush':
                 ctx.drawImage(
-                    bushImage,
+                    mapConstants.bushImage,
                     bushSprite.position.x,
                     bushSprite.position.y,
                     bushSprite.width,
@@ -51,11 +43,10 @@ export default class Tile implements ITile {
                 );
                 break;
             case 'empty':
-                
                 break;
             case 'stone':
                 ctx.drawImage(
-                    stoneAndDrumImage,
+                    mapConstants.stoneImage,
                     stoneAndDrumSprite.stone.position.x,
                     stoneAndDrumSprite.stone.position.y,
                     stoneAndDrumSprite.stone.width,
@@ -68,7 +59,7 @@ export default class Tile implements ITile {
                 break;
             case 'drum':
                 ctx.drawImage(
-                    stoneAndDrumImage,
+                    mapConstants.stoneImage,
                     stoneAndDrumSprite.drum.position.x,
                     stoneAndDrumSprite.drum.position.y,
                     stoneAndDrumSprite.drum.width,
@@ -79,8 +70,6 @@ export default class Tile implements ITile {
                     this.tileSize
                 );
                 break;
-
         }
     }
-
 } 

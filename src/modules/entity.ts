@@ -1,5 +1,4 @@
 import Point from "./points";
-
 interface IEntity {
     position: Point;
     team: 'red' | 'blue'; //red means enemy team, blue means hero team
@@ -14,7 +13,6 @@ interface IEntity {
     gruntImage: HTMLImageElement;
     gruntType:number;
 }
-
 export default class Entity implements IEntity {
     position: Point;
     team: "red" | "blue";

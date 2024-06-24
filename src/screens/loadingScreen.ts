@@ -1,15 +1,14 @@
-import backGround from "../assets/home/background.webp"
+//modules
+import Point from "../modules/points";
+//constants
 import mainConstants from "../constants/mainConstants";
 import stateConstants from "../constants/stateConstants";
-import { canvas } from "../main";
-import Point from "../modules/points";
+//utils
 import progressBar from "../util/bar";
-import upcounter from "../util/upcounter";
+//objs
+import { canvas } from "../main";
+//screens
 import firstScreen from "./firstScreen";
-
-const backGroundImage = new Image;
-backGroundImage.src = backGround;
-backGroundImage.onload=upcounter;
 
 
 //function that handles all displays
@@ -29,7 +28,6 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         canvas.width,
         canvas.height
     );
-    //
     ctx.fillStyle = "rgba(40,40,40,0.1)"
     ctx.fillRect(
         -mainConstants.mapPosition.x,
@@ -63,9 +61,11 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         18,
         canvas.width*0.4,
         10,
-        `Loading... `
+        `Loading... `,
+        "4rem Arial",
+        "white"
     );
-    if(stateConstants.assetsLoaded>=19){
+    if(stateConstants.assetsLoaded>=16){
         stateConstants.loadingScreen=false;
         firstScreen(ctx)
     }

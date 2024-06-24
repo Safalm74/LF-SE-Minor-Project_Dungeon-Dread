@@ -2,9 +2,6 @@ interface Ipoint {
     x: number;
     y: number;
 }
-
-
-
 export default class Point implements Ipoint {
     x;
     y;

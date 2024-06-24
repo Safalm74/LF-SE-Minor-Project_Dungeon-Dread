@@ -1,19 +1,20 @@
+//modules
 import Entity from "./entity";
-import bossSprite from "../sprites/bossSprite";
-
-import bossImageSrc from "../assets/entity/enemy/boss/boss.png"
-import { hero, spitArray } from "../screens/gameScreen";
 import Point from "./points";
+import Spit from "./spit";
+
+//constants
 import gruntConstants from "../constants/gruntConstants";
 import weaponRangeConstants from "../constants/weaponRangeConstants";
-import Spit from "./spit";
+
+//utils
 import progressBar from "../util/bar";
-import upcounter from "../util/upcounter";
 
-const bossImage = new Image;
-bossImage.src = bossImageSrc;
-bossImage.onload=upcounter;
+//sprite information
+import bossSprite from "../sprites/bossSprite";
 
+//objs and array
+import { hero, spitArray } from "../screens/gameScreen";
 export default class Boss extends Entity {
     speedToggle: boolean = false;
     attackInterval: any = null;
@@ -32,7 +33,7 @@ export default class Boss extends Entity {
             }, 5000
         );
     }
-    checkCollision() {
+    checkCollision() {//checking rectangular collision
         if (
 
             hero.position.y + hero.height / 2 >= this.position.y &&
@@ -44,13 +45,12 @@ export default class Boss extends Entity {
         }
         return false;
     }
-    update() {
+
+    update() {//function that moves, attacks
         if (!this.checkCollision()) {
             this.moveTowardsHero();
             clearInterval(this.attackInterval)
             this.attackInterval = null;
-
-
         }
         else {
 
@@ -68,28 +68,38 @@ export default class Boss extends Entity {
         }
 
     }
-    spitTohero() {
+
+    spitTohero() { //spit,another ability of boss
         if (!this.attackInterval) {
             this.spitInterval = setInterval(
                 () => {
+                    /*calculating 
+                    1. vector from boss to hero
+                    2. calculating unit vector
+                    3. multiplying with magnitude of velocity
+                    unit vector */
                     if (hero) {
                         const trackingEnemyObjPosition = new Point(
                             hero.position.x,
                             hero.position.y)
-                        const vector = this.position.pointDifference(trackingEnemyObjPosition);
-                        const magnitude = this.position.distanceBetween(trackingEnemyObjPosition);
+                        const vector = this.position
+                            .pointDifference(trackingEnemyObjPosition);
+                        const magnitude = this.position
+                            .distanceBetween(trackingEnemyObjPosition);
                         const unitVector = new Point(
                             vector.x / magnitude, vector.y / magnitude
                         );
-
+                        //creating spit object
                         const spitObj = new Spit(
-                            new Point(this.position.x + this.width / 2, this.position.y + this.width / 2),
+                            new Point(this.position.x + this.width / 2, //this.width / 2=> to move towards center of boss
+                                this.position.y + this.width / 2),
                             this.damage,
                             new Point(
-                                -unitVector.x * weaponRangeConstants.bulletVelocity * 0.3,
+                                -unitVector.x * weaponRangeConstants.bulletVelocity * 0.3, //30% of bullet velocity
                                 -unitVector.y * weaponRangeConstants.bulletVelocity * 0.3),
                             this.position,
                         );
+                        //pushing to spit obj
                         spitArray.push(spitObj);
                     }
 
@@ -114,9 +124,15 @@ export default class Boss extends Entity {
 
     draw(ctx: CanvasRenderingContext2D) {
         this.update();
+        this.lookingLeft = hero.position.x < //checking looking direction from center of boss
+            this.position.x +
+            this.width / 2;
         const lookingDirection = this.lookingLeft ?
-            bossSprite.position :
-            bossSprite.position;
+            bossSprite.positionLeft :
+            bossSprite.positionRight;
+        const bossImage = this.lookingLeft ?
+            gruntConstants.boss.imageLeft :
+            gruntConstants.boss.imageRight;
         const staggerFrame = 5;
         let position = Math.floor(this.spritePosition /
             staggerFrame) %
@@ -128,8 +144,8 @@ export default class Boss extends Entity {
 
         ctx.drawImage(
             bossImage,
-            bossSprite.position[position].x,
-            bossSprite.position[position].y,
+            lookingDirection[position].x,
+            lookingDirection[position].y,
             bossSprite.width,
             bossSprite.height,
             this.position.x,

@@ -1,26 +1,22 @@
+//modules
 import Entity from "./entity";
-import spwan from "../assets/entity/enemy/spwan.png"
-import spwanSprite from "../sprites/spwanSprite";
 import Point from "./points";
-import { hero, spitArray } from "../screens/gameScreen";
-import gruntType2Sprite from "../sprites/grunt[Type2]Sprite";
 import Spit from "./spit";
+//constants
 import weaponRangeConstants from "../constants/weaponRangeConstants";
 import gruntConstants from "../constants/gruntConstants";
-import upcounter from "../util/upcounter";
-
-
-const spwanImage = new Image;
-spwanImage.src = spwan;
-
-spwanImage.onload = upcounter;
+//sprite information
+import spwanSprite from "../sprites/spwanSprite";
+import gruntType2Sprite from "../sprites/grunt[Type2]Sprite";
+//objs
+import { hero, spitArray } from "../screens/gameScreen";
 
 export default class GruntType2 extends Entity {
     isSpwaned: boolean = false;
     attackInterval: any = null;
     attackRadius: number = 400;
-
-    update() {
+    spitRange: number = 200;
+    update() {//movement similar to type1and3
         const distance = Math.sqrt(
             (this.position.x - hero.position.x) ** 2 +
             (this.position.y - hero.position.y) ** 2);
@@ -38,19 +34,16 @@ export default class GruntType2 extends Entity {
             -unitVector.x * magnitudeVelocity,
             -unitVector.y * magnitudeVelocity
         )
-
-        if (distance > 200) {
+        if (distance > this.spitRange) {
             clearInterval(this.attackInterval)
             this.attackInterval = null;
             this.position.x += resultantVelocity.x;
             this.position.y += resultantVelocity.y;
         } else {
             this.spitHero();
-
-
         }
     }
-    spitHero() {
+    spitHero() {//spits from certain distance, spitting is similar to boss
         if (!this.attackInterval) {
             this.attackInterval = setInterval(
                 () => {
@@ -59,8 +52,10 @@ export default class GruntType2 extends Entity {
                         const trackingEnemyObjPosition = new Point(
                             hero.position.x,
                             hero.position.y)
-                        const vector = this.position.pointDifference(trackingEnemyObjPosition);
-                        const magnitude = this.position.distanceBetween(trackingEnemyObjPosition);
+                        const vector = this.position
+                            .pointDifference(trackingEnemyObjPosition);
+                        const magnitude = this.position
+                            .distanceBetween(trackingEnemyObjPosition);
                         const unitVector = new Point(
                             vector.x / magnitude, vector.y / magnitude
                         );
@@ -68,9 +63,13 @@ export default class GruntType2 extends Entity {
                         const spitObj = new Spit(
                             new Point(this.position.x + this.width / 2, this.position.y + this.width / 2),
                             this.damage,
-                            new Point(
-                                -unitVector.x * weaponRangeConstants.bulletVelocity * 0.3,
-                                -unitVector.y * weaponRangeConstants.bulletVelocity * 0.3),
+                            new Point( //spit velocity 30% of bullet velocity
+                                -unitVector.x *
+                                weaponRangeConstants.bulletVelocity *
+                                0.3,
+                                -unitVector.y *
+                                weaponRangeConstants.bulletVelocity *
+                                0.3),
                             this.position,
                         );
 
@@ -82,7 +81,6 @@ export default class GruntType2 extends Entity {
             );
         }
     }
-
     draw(ctx: CanvasRenderingContext2D) {
         const lookingDirection = gruntType2Sprite
         this.update();
@@ -100,19 +98,19 @@ export default class GruntType2 extends Entity {
             lookingDirection.position[position].height,
             this.position.x,
             this.position.y,
-            lookingDirection.position[position].width * gruntConstants.type2.width,
-            lookingDirection.position[position].height * gruntConstants.type2.height,
+            lookingDirection.position[position].width *
+            gruntConstants.type2.width,
+            lookingDirection.position[position].height *
+            gruntConstants.type2.height,
         );
         this.spritePosition++
     }
-
-
     spwan(ctx: CanvasRenderingContext2D) {
         const staggerFrame = 10;
-        let position = Math.floor(this.spritePosition / staggerFrame) % 10;
-
+        let position = Math.floor(this.spritePosition /
+            staggerFrame) % spwanSprite.position.length;
         ctx.drawImage(
-            spwanImage,
+            gruntConstants.spwanImage,
             spwanSprite.position[position].x,
             spwanSprite.position[position].y,
             spwanSprite.width,
@@ -122,15 +120,10 @@ export default class GruntType2 extends Entity {
             this.width,
             this.height
         );
-
         this.spritePosition++
         if (position >= 9) {
             this.isSpwaned = true;
             this.spritePosition = 0;
         }
-
     }
-
-
-
 }

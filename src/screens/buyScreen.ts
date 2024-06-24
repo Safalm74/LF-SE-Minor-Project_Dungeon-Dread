@@ -1,28 +1,29 @@
+//modules
+import Point from "../modules/points";
+import Gun from "../modules/gun";
+//constants
+import gunConstants from "../constants/gunConstants";
 import mainConstants from "../constants/mainConstants";
 import stateConstants from "../constants/stateConstants";
-import { canvas } from "../main";
-import Pestol from "../modules/pestol";
-import Point from "../modules/points";
-import progressBar from "../util/bar";
+//utils
 import lowerInventory from "../util/lowerInventory";
-import gameMain, { hero } from "./gameScreen";
-import gunConstants from "../constants/gunConstants";
+import progressBar from "../util/bar";
+//sprite information
 import pestolSprite from "../sprites/pestolSprite";
 import smgSprite from "../sprites/smgSprite";
+//objs
+import { canvas } from "../main";
+//screens
+import gameMain, { hero } from "./gameScreen";
 
-let buyStartTime: Date;
-const buyTime = 5 * 1000;
-
-
-
-let selectedPosition: number = 0;
-
+//variables
+let buyStartTime: Date; //to hold time
+let selectedPosition: number = 0;//to track selected position to buy
 
 function remainingTime() {
     const remainingTimems = (new Date).getTime() - buyStartTime.getTime()
     return remainingTimems;
 }
-
 function checkCollision(
     cursorPosiiton: Point,
     BtnPosition: Point,
@@ -45,30 +46,27 @@ function checkCollision(
         return false
     }
 }
-
-
 let buyBtnsclicked = (
     ClickedPosition: Point
 ) => {
-
     for (let i = 0; i < 6; i++) {
         const inventorPositionFlag = (checkCollision(
             ClickedPosition,
             new Point(
-                -mainConstants.mapPosition.x + canvas.width * ((0.2 + 0.1 * i) + 0.025),
-                -mainConstants.mapPosition.y + canvas.height * (0.8 + 0.03)
+                -mainConstants.mapPosition.x +
+                canvas.width * ((0.2 + 0.1 * i) + 0.025),
+                -mainConstants.mapPosition.y +
+                canvas.height * (0.8 + 0.03)
             ),
             new Point(
                 canvas.width * 0.05,
                 canvas.width * 0.05
             )
-
         ));
         if (inventorPositionFlag) {
             selectedPosition = i
             break;
         }
-
     }
     const boxWrapperWidth = canvas.width *
         0.8 -
@@ -93,7 +91,7 @@ let buyBtnsclicked = (
             switch (i) {
                 case 0:
                     if (hero.gemCount >= gunConstants.pistol.cost) {
-                        mainConstants.weaponArray[selectedPosition] = new Pestol(
+                        mainConstants.weaponArray[selectedPosition] = new Gun(
                             hero.weaponPositions[selectedPosition],
                             false,
                             gunConstants.pistol.damage,
@@ -102,14 +100,15 @@ let buyBtnsclicked = (
                             gunConstants.pistol.fireRate,
                             gunConstants.pistol.cost,
                             gunConstants.pistol.image,
-                            "pistol"
+                            "pistol",
+                            new Audio(gunConstants.pistol.soundSrc)
                         );
                         hero.gemCount -= gunConstants.pistol.cost;
                     }
                     break;
                 case 1:
                     if (hero.gemCount >= gunConstants.smg.cost) {
-                        mainConstants.weaponArray[selectedPosition] = new Pestol(
+                        mainConstants.weaponArray[selectedPosition] = new Gun(
                             hero.weaponPositions[selectedPosition],
                             false,
                             gunConstants.smg.damage,
@@ -118,7 +117,8 @@ let buyBtnsclicked = (
                             gunConstants.smg.fireRate,
                             gunConstants.smg.cost,
                             gunConstants.smg.image,
-                            "smg"
+                            "smg",
+                            new Audio(gunConstants.smg.soundSrc)
                         );
                         hero.gemCount -= gunConstants.smg.cost;
                     }
@@ -131,12 +131,8 @@ let buyBtnsclicked = (
                 }
             }
             break;
-
         }
     }
-
-
-
 }
 function upgradeWeapon() {
     if (
@@ -284,12 +280,9 @@ function buyPannelLoop(ctx: CanvasRenderingContext2D) {
         canvas.width * 0.8 - mainConstants.mapPosition.x,
         canvas.height * 0.1 - mainConstants.mapPosition.y,
     );
-
     ctx.fillStyle = "rgba(200,200,200,0.8)"
-
     //innerbox for buy
     ctx.strokeStyle = "green"
-
     //buycard for pistol
     buyCard(
         ctx,
@@ -308,7 +301,6 @@ function buyPannelLoop(ctx: CanvasRenderingContext2D) {
         gunConstants.pistol.fireRate
 
     );
-
     //buycard for smg
     buyCard(
         ctx,
@@ -327,8 +319,6 @@ function buyPannelLoop(ctx: CanvasRenderingContext2D) {
         gunConstants.smg.fireRate
 
     );
-
-
     //rendering lower inventory
     lowerInventory(ctx);
     ctx.strokeStyle = "gold";
@@ -338,21 +328,19 @@ function buyPannelLoop(ctx: CanvasRenderingContext2D) {
         canvas.width * 0.05,
         canvas.width * 0.05
     )
-
     //time bar to buy guns
     progressBar(
         ctx,
         new Point(canvas.width * 0.1 - mainConstants.mapPosition.x,
             canvas.height * 0.7 - mainConstants.mapPosition.y),
         remainingTime(),
-        buyTime,
+        mainConstants.buyTime,
         canvas.width * 0.8,
         canvas.height * 0.01,
         "Buy Time:"
     );
-
     //checking buy time
-    if (remainingTime() >= buyTime) {
+    if (remainingTime() >= mainConstants.buyTime) {
         mainConstants.weaponArray.forEach(
             (obj, i) => {
                 if (obj) {
@@ -370,7 +358,6 @@ function buyPannelLoop(ctx: CanvasRenderingContext2D) {
                 buyPannelLoop(ctx)
             }
         )
-
     }
 }
 export { buyBtnsclicked, upgradeWeapon }
@@ -391,7 +378,5 @@ export default function buyPannel(
             break;
         }
     }
-
     buyPannelLoop(ctx);
-
 }

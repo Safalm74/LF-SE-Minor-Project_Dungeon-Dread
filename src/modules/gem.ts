@@ -1,16 +1,15 @@
+//modules
 import Point from "./points";
-import gemImageSrc from "../assets/gem/gem.png"
-import gemSprite from "../sprites/gemSprite";
-import { hero } from "../screens/gameScreen";
+//constants
 import heroConstants from "../constants/heroConstants";
 import stateConstants from "../constants/stateConstants";
 import mainConstants from "../constants/mainConstants";
-import upcounter from "../util/upcounter";
+//sprite information
+import gemSprite from "../sprites/gemSprite";
+//objs
+import { hero } from "../screens/gameScreen";
 
-const gemImage = new Image;
-gemImage.src = gemImageSrc;
 
-gemImage.onload=upcounter;
 interface IGem {
     position: Point;
     value: number;
@@ -41,12 +40,12 @@ export default class Gem implements IGem {
     }
 
     draw(ctx: CanvasRenderingContext2D) {
-        const staggerFrame = 5;
-        const position = Math.floor(
+        const staggerFrame = 5; //to slowdown animation
+        const position = Math.floor( //sprite image position
             this.spritePostion / staggerFrame
         ) % gemSprite[1].length
         ctx.drawImage(
-            gemImage,
+            mainConstants.gemImage,
             gemSprite[1][position].position.x,
             gemSprite[1][position].position.y,
             gemSprite[1][position].width,
@@ -58,12 +57,13 @@ export default class Gem implements IGem {
         );
         this.spritePostion++;
     }
-    collected() {
+    collected() {//checking collision
+        const offset=20; //offset to collect gem without actually collising to hero
         if (
-            hero.position.y + hero.height+20 >= this.position.y &&
-            hero.position.y -20 <= this.position.y + this.height &&
-            hero.position.x + hero.width +20 >= this.position.x &&
-            hero.position.x -20<= this.position.x + this.width
+            hero.position.y + hero.height+offset >= this.position.y &&
+            hero.position.y -offset <= this.position.y + this.height &&
+            hero.position.x + hero.width +offset >= this.position.x &&
+            hero.position.x -offset<= this.position.x + this.width
         ) {
             if(!stateConstants.ismute){
                 if(mainConstants.gemSound){

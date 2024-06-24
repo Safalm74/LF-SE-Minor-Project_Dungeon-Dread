@@ -3,7 +3,6 @@ import mainConstants from "../constants/mainConstants";
 import stateConstants from "../constants/stateConstants";
 import { ctx } from "../main";
 import Point from "../modules/points";
-import { aboutbtnsclicked } from "../screens/aboutScreen";
 import { buyBtnsclicked, upgradeWeapon } from "../screens/buyScreen";
 import { controlBtnClicked } from "../screens/controlScreen";
 import { firstScreenbtnsclicked } from "../screens/firstScreen";
@@ -11,9 +10,12 @@ import { hero } from "../screens/gameScreen";
 import { btnsclicked } from "../screens/homeScreen";
 import { infoScreenBtn } from "../screens/infoScreen";
 function handleSounds() {
+    stateConstants.ismute = stateConstants.ismute ?
+    false :
+    true
     if (stateConstants.ismute) {
-
-
+        mainConstants.homeSound.pause();
+        mainConstants.homeSound.currentTime = 0;
         mainConstants.windSound.pause();
         mainConstants.windSound.currentTime = 0;
     }
@@ -92,9 +94,6 @@ export default function eventhandler() {
                 upgradeWeapon();
             }
             if (e.key.toLowerCase() === "m") {
-                stateConstants.ismute = stateConstants.ismute ?
-                    false :
-                    true
                 handleSounds();
             }
         }
@@ -140,14 +139,6 @@ export default function eventhandler() {
                         e.offsetY
                     ),
                     ctx
-                );
-            }
-            if (stateConstants.aboutScreenFlag) {
-                aboutbtnsclicked(
-                    new Point(
-                        e.offsetX,
-                        e.offsetY
-                    ), ctx
                 );
             }
             if (stateConstants.controlScreenFlag) {

@@ -15,17 +15,14 @@ export default function lowerInventory(ctx: CanvasRenderingContext2D) {
         -mainConstants.mapPosition.y + canvas.height * 0.8,
         canvas.width * 0.6,
         canvas.width * 0.08
+
     )
-    ctx.fillStyle = "rgba(200,200,200,0.8)"
+
+    ctx.font = "1rem Arial"
+    const lineHeight = 10;
     for (let i = 0; i < weponsNumber; i++) {
-        ctx.fillRect(
-            -mainConstants.mapPosition.x + canvas.width * ((0.2 + 0.1 * i) + 0.025),
-            -mainConstants.mapPosition.y + canvas.height * (0.8 + 0.03),
-            canvas.width * 0.05,
-            canvas.width * 0.05
-        )
         if (mainConstants.weaponArray[i]) {
-            switch (mainConstants.weaponArray[i]!.level) {
+            switch (mainConstants.weaponArray[i]?.level) {
                 case 1:
                     ctx.fillStyle = "rgba(200,200,200,0.8)";
                     break;
@@ -35,16 +32,45 @@ export default function lowerInventory(ctx: CanvasRenderingContext2D) {
                 case 3:
                     ctx.fillStyle = "rgba(255,215,0,0.8)";
                     break;
-
-
-
             }
+
+        }
+        else {
+            ctx.fillStyle = "rgba(200,200,200,1)"
+        }
+        ctx.fillRect(
+            -mainConstants.mapPosition.x + canvas.width * ((0.2 + 0.1 * i) + 0.025),
+            -mainConstants.mapPosition.y + canvas.height * (0.8 + 0.03),
+            canvas.width * 0.05,
+            canvas.width * 0.05
+        )
+        if (mainConstants.weaponArray[i]) {
             ctx.drawImage(
                 mainConstants.weaponArray[i]!.gunImage,
                 -mainConstants.mapPosition.x + canvas.width * ((0.2 + 0.1 * i) + 0.025),
                 -mainConstants.mapPosition.y + canvas.height * (0.8 + 0.03),
                 canvas.width * 0.05,
                 canvas.width * 0.05
+            )
+
+            ctx.fillStyle = "green"
+            ctx.fillRect(
+                -mainConstants.mapPosition.x +
+                canvas.width * ((0.2 + 0.1 * i) +
+                    0.025),
+                -mainConstants.mapPosition.y +
+                canvas.height * (0.8 + 0.03),
+                canvas.width * 0.01,
+                canvas.width * 0.01
+            )
+            ctx.fillStyle = "white"
+            ctx.fillText(
+                `${mainConstants.weaponArray[i]!.level}`,
+                -mainConstants.mapPosition.x +
+                canvas.width * ((0.2 + 0.1 * i) + 0.025
+                ),
+                -mainConstants.mapPosition.y +
+                canvas.height * (0.8 + 0.03) + lineHeight
             )
 
         }

@@ -1,5 +1,6 @@
+//modules
 import Point from "./points";
-import GruntType1 from "./gruntType1";
+import GruntType1 from "./gruntType1and3";
 import GruntType4 from "./gruntType4";
 import GruntType2 from "./gruntType2";
 import Boss from "./boss";
@@ -77,7 +78,7 @@ export default class Bullet implements IBullet {
         //updating points
         this.startPoint = this.startPoint.add(this.velocity);
         this.endPoint = this.endPoint.add(this.velocity);
-        // //drawing
+        // //drawing line as a bullet
         ctx.beginPath();
         ctx.strokeStyle = "gold";
         ctx.moveTo(this.startPoint.x, this.startPoint.y);

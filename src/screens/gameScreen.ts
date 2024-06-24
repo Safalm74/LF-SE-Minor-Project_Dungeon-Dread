@@ -1,78 +1,61 @@
-import mapConstants from "../constants/mapConstants";
-import stateConstants from "../constants/stateConstants";
+//modules
 import Map from "../modules/map";
 import Hero from "../modules/hero";
 import Point from "../modules/points";
-import getRandomInt from "../util/randomNumber";
-import GruntType1 from "../modules/gruntType1";
-import gameMap from "../assets/map/map.png"
-import { canvas } from "../main";
-import progressBar from "../util/bar";
-import mainConstants from "../constants/mainConstants";
-import dropDownMsg from "../util/dropdownMsg";
-import Pestol from "../modules/pestol";
-import { handleEvents } from "../util/eventHandler";
+import GruntType1and3 from "../modules/gruntType1and3";
 import Bullet from "../modules/bullet";
-import buyPannel from "./buyScreen";
-import heroConstants from "../constants/heroConstants";
-import gunConstants from "../constants/gunConstants";
-import gruntConstants from "../constants/gruntConstants";
 import GruntType4 from "../modules/gruntType4";
 import GruntType2 from "../modules/gruntType2";
 import Spit from "../modules/spit";
 import Gem from "../modules/gem";
-import gemSprite from "../sprites/gemSprite";
 import Boss from "../modules/boss";
-import upcounter from "../util/upcounter";
+import Gun from "../modules/gun";
+//constants
+import mapConstants from "../constants/mapConstants";
+import stateConstants from "../constants/stateConstants";
+import mainConstants from "../constants/mainConstants";
+import heroConstants from "../constants/heroConstants";
+import gunConstants from "../constants/gunConstants";
+import gruntConstants from "../constants/gruntConstants";
+//utils
+import getRandomInt from "../util/randomNumber";
+import progressBar from "../util/bar";
+import dropDownMsg from "../util/dropdownMsg";
+import { handleEvents } from "../util/eventHandler";
 import loadInfoScreen from "../util/infoScreenLoader";
-import homeScreen from "./homeScreen";
-
-import gemImageSrc from "../assets/gem/gem.png"
-const gemImage = new Image;
-gemImage.src = gemImageSrc;
-
-import sharinganImageSrc from "../assets/ability/sharingan.png"
 import lowerInventory from "../util/lowerInventory";
-const sharinganImage = new Image;
-sharinganImage.src = sharinganImageSrc;
-//import heroConstants from "../constants/heroCopnstants";
-//loading map background
-const mapImage = new Image;
-mapImage.src = gameMap;
-mapImage.onload = upcounter;
+//sprite information
+import gemSprite from "../sprites/gemSprite";
+//objs
+import { canvas } from "../main";
+//screens
+import buyPannel from "./buyScreen";
+import homeScreen from "./homeScreen";
 //checking time to set next wave
 let waveStartTime: Date;
-//spwan Type1 enemies
-
-let gruntType1Array: (GruntType1 | GruntType2 | GruntType4)[] = [];
+//enemy array
+let gruntArray: (GruntType1and3 | GruntType2 | GruntType4)[] = [];
 //Bullet array
 let bulletArray: Bullet[] = [];
 //gem array
 let gemArray: Gem[] = [];
-
 //Spit aray
 let spitArray: Spit[] = [];
 //hero obj
 let hero: Hero;
 //boss
 let boss: Boss;
-//weaponArray
-
 // create enemy interval
 let createEnemyInterval: any;
-
 //function to return time difference and detect end of wave
 function remainingTime() {
     const remainingTimems = (new Date).getTime() - waveStartTime.getTime()
-
     return remainingTimems;
 }
-
 //loading map obsticles and bushes
 const map = new Map(
     mapConstants.tileSize
 );
-
 //function that initiate hero
 function createHero() {
     //defining hero object
@@ -96,7 +79,7 @@ function collectGem() {
 }
 //function that removes dead enemies
 function removeDeadEnemy() {
-    gruntType1Array = gruntType1Array.filter(
+    gruntArray = gruntArray.filter(
         (obj) => {
             if (obj.healthpoint < 0) {
                 clearInterval(obj.attackInterval);
@@ -112,7 +95,6 @@ function removeDeadEnemy() {
             else {
                 return true;
             }
-
         }
     );
 }
@@ -120,9 +102,7 @@ function removeDeadEnemy() {
 function removeBullet() {
     bulletArray = bulletArray.filter(
         (obj) => {
-
-            obj.checkOnhit(gruntType1Array, boss);
-
+            obj.checkOnhit(gruntArray, boss);
             return (
                 !((obj.endPoint.x >=
                     window.innerHeight *
@@ -136,7 +116,6 @@ function removeBullet() {
     spitArray = spitArray.filter(
         (obj) => {
             obj.checkOnhit();
-
             return (
                 !((obj.position.x >=
                     window.innerHeight *
@@ -149,14 +128,14 @@ function removeBullet() {
     );
 }
 //function that creates enemy every interval
-function createType1() {
+function createEnemy() {
     createEnemyInterval = setInterval(
         () => {
-            if (gruntType1Array.length < mainConstants.maxEnemies) {
+            if (gruntArray.length < mainConstants.maxEnemies) {
                 const randomNumber = getRandomInt(1, 100);
                 if (stateConstants.wave > 2 && randomNumber < 40) {
                     //creating Type3 enemy
-                    gruntType1Array.push(
+                    gruntArray.push(
                         new GruntType2(
                             new Point(
                                 getRandomInt(mapConstants.tileSize +
@@ -177,14 +156,12 @@ function createType1() {
                             gruntConstants.type2.image,
                             2,
                             gruntConstants.type2.velocity
-
                         )
                     );
-
                 }
                 if (stateConstants.wave > 3 && randomNumber < 50) {
                     //creating Type4 enemy
-                    gruntType1Array.push(
+                    gruntArray.push(
                         new GruntType4(
                             new Point(
                                 getRandomInt(mapConstants.tileSize +
@@ -205,15 +182,13 @@ function createType1() {
                             gruntConstants.type4.image,
                             4,
                             gruntConstants.type4.velocity
-
                         )
                     );
-
                 }
                 else if (stateConstants.wave > 1 && randomNumber < 60) {
                     //creating Type3 enemy
-                    gruntType1Array.push(
-                        new GruntType1(
+                    gruntArray.push(
+                        new GruntType1and3(
                             new Point(
                                 getRandomInt(mapConstants.tileSize +
                                     mapConstants.displayPosition.x,
@@ -233,15 +208,13 @@ function createType1() {
                             gruntConstants.type3.image,
                             3,
                             gruntConstants.type3.velocity
-
                         )
                     );
-
                 }
                 else {
                     //creating Type1 enemy
-                    gruntType1Array.push(
-                        new GruntType1(
+                    gruntArray.push(
+                        new GruntType1and3(
                             new Point(
                                 getRandomInt(mapConstants.tileSize +
                                     mapConstants.displayPosition.x,
@@ -261,58 +234,15 @@ function createType1() {
                             gruntConstants.type1.image,
                             1,
                             gruntConstants.type1.velocity
-
                         )
                     );
                 }
             }
-
         }
         ,
         500
     );
 }
-// //function creating lower inventory
-// function lowerInventory(ctx: CanvasRenderingContext2D) {
-//     const weponsNumber = 6;
-//     ctx.strokeStyle = "white"
-//     ctx.fillStyle = "rgba(40,200,40,0.1)"
-//     ctx.fillRect(
-//         -mainConstants.mapPosition.x + canvas.width * 0.2,
-//         -mainConstants.mapPosition.y + canvas.height * 0.8,
-//         canvas.width * 0.6,
-//         canvas.width * 0.08
-//     )
-//     ctx.strokeRect(
-//         -mainConstants.mapPosition.x + canvas.width * 0.2,
-//         -mainConstants.mapPosition.y + canvas.height * 0.8,
-//         canvas.width * 0.6,
-//         canvas.width * 0.08
-//     )
-//     ctx.fillStyle = "rgba(200,200,200,0.8)"
-//     for (let i = 0; i < weponsNumber; i++) {
-//         ctx.fillRect(
-//             -mainConstants.mapPosition.x + canvas.width * ((0.2 + 0.1 * i) + 0.025),
-//             -mainConstants.mapPosition.y + canvas.height * (0.8 + 0.03),
-//             canvas.width * 0.05,
-//             canvas.width * 0.05
-//         )
-//         if (mainConstants.weaponArray[i]) {
-//             ctx.drawImage(
-//                 mainConstants.weaponArray[i]!.gunImage,
-//                 -mainConstants.mapPosition.x + canvas.width * ((0.2 + 0.1 * i) + 0.025),
-//                 -mainConstants.mapPosition.y + canvas.height * (0.8 + 0.03),
-//                 canvas.width * 0.05,
-//                 canvas.width * 0.05
-//             )
-
-//         }
-
-
-//     }
-
-// }
-//reset
 function resetGame() {
     stateConstants.ingame = false;
     clearInterval(hero.abilityInterval);
@@ -330,19 +260,18 @@ function resetGame() {
     );
     mainConstants.weaponArray = [];
     stateConstants.wave = 1;
-    gruntType1Array.forEach((obj) => {
+    gruntArray.forEach((obj) => {
         if (obj) {
             clearInterval(obj.attackInterval);
         }
     });
     createHero();
-
 }
 //function that handles all display
 function displayAll(ctx: CanvasRenderingContext2D) {
     //Map background
     ctx.drawImage(
-        mapImage,
+        mapConstants.mapImage,
         mapConstants.displayPosition.x,
         mapConstants.displayPosition.y,
         window.innerWidth * mapConstants.mapSizeMultiplier,
@@ -351,8 +280,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     //drawmap
     map.draw(ctx);
     //draw enemy
-
-    gruntType1Array.forEach(
+    gruntArray.forEach(
         (obj) => {
             if (obj.isSpwaned) {
                 obj.draw(ctx);
@@ -360,18 +288,15 @@ function displayAll(ctx: CanvasRenderingContext2D) {
             else {
                 obj.spwan(ctx);
             }
-
         }
     );
-
     if (boss) {
         boss.draw(ctx);
-        mainConstants.maxEnemies = 100
+        mainConstants.maxEnemies = 50
         mainConstants.weaponArray.forEach(
             (wobj) => {
                 if (wobj) {
                     wobj.detectEnemy(boss)
-
                 }
             }
         );
@@ -399,7 +324,6 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         hero.position.x + hero.width / 2,
         hero.position.y + hero.height / 2,
         1000
-
     );
     if (hero.healthpoint > 30) {
 
@@ -434,7 +358,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     //show gemcount
     const gemString = `x ${hero.gemCount}`
     ctx.drawImage(
-        gemImage,
+        mainConstants.gemImage,
         gemSprite[1][0].position.x,
         gemSprite[1][0].position.y,
         gemSprite[1][0].width,
@@ -444,7 +368,6 @@ function displayAll(ctx: CanvasRenderingContext2D) {
             mainConstants.mapPosition.y),
         gemSprite[1][0].width * 0.3,
         gemSprite[1][0].height * 0.3
-
     );
     ctx.font = "1rem Eater"
     ctx.fillStyle = "white"
@@ -458,7 +381,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     );
     //showAbilityTimer
     ctx.drawImage(
-        sharinganImage,
+        heroConstants.sharingan,
         canvas.width * 0.05 - mainConstants.mapPosition.x,
         (canvas.height / 5 -
             mainConstants.mapPosition.y) + gemSprite[1][0].height*0.5,
@@ -477,7 +400,6 @@ function displayAll(ctx: CanvasRenderingContext2D) {
             2 * Math.PI * (1 - timeRemainingForAbility)
         );
         ctx.fill();
-
     } else {
         ctx.beginPath();
         ctx.strokeStyle = 'blue';
@@ -490,9 +412,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
             2 * Math.PI
         );
         ctx.stroke();
-
     }
-    
     //show stamina
     if (hero.staminaUse){
          progressBar(
@@ -508,8 +428,6 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         "1rem Arial"
     )
     }
-   
-
     //show essence
     progressBar(
         ctx,
@@ -524,7 +442,6 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         canvas.height * 0.03,
         'Essence'
     );
-
     //changing interval
     if (remainingTime() >= mainConstants.waveIntervalTime &&
         hero.healthpoint > 0 &&
@@ -584,7 +501,6 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         (bulletObj) => {
             bulletObj.draw(ctx);
         }
-
     );
     //drawing spit
     spitArray.forEach(
@@ -599,23 +515,19 @@ function displayAll(ctx: CanvasRenderingContext2D) {
             obj.draw(ctx);
         }
     );
-
     mainConstants.weaponArray.forEach(
         (obj, i) => {
             if (obj) {
 
                 obj.draw(ctx);
                 obj.position = hero.weaponPositions[i]
-
             }
         }
     );
     mainConstants.maxEnemies = 500
     //LowerInventory
     lowerInventory(ctx);
-
 }
-
 //main Loop function
 function gameLoop(
     ctx: CanvasRenderingContext2D
@@ -636,16 +548,13 @@ function gameLoop(
     removeBullet();
     //collecting gem
     collectGem();
-
-    gruntType1Array.forEach(
+    gruntArray.forEach(
         (obj) => {
             mainConstants.weaponArray.forEach(
                 (wobj) => {
                     if (wobj) {
                         wobj.detectEnemy(obj)
-
                     }
-
                 }
             );
         }
@@ -657,7 +566,6 @@ function gameLoop(
                 gameLoop(ctx)
             });
     }
-
     //dropDownMsg(ctx,'New Wave');
 }
 function resetWaveChange() {
@@ -665,12 +573,10 @@ function resetWaveChange() {
     mainConstants.windSound.pause();
     mainConstants.windSound.currentTime = 0
     //clearing all damages
-    gruntType1Array.forEach(
+    gruntArray.forEach(
         (obj) => {
-
             clearInterval(obj.attackInterval);
         }
-
     );
     if (boss) {
         clearInterval(boss.attackInterval);
@@ -679,7 +585,7 @@ function resetWaveChange() {
     //reset health
     hero.healthpoint = mainConstants.heroTotalHealth;
     bulletArray = [];
-    gruntType1Array = [];
+    gruntArray = [];
     spitArray = [];
     gemArray = [];
     clearInterval(createEnemyInterval);
@@ -687,7 +593,7 @@ function resetWaveChange() {
     waveStartTime = new Date;
     //if player has no gun
     if (!mainConstants.weaponArray[0]) {
-        mainConstants.weaponArray[0] = new Pestol(
+        mainConstants.weaponArray[0] = new Gun(
             hero.weaponPositions[0],
             false,
             gunConstants.pistol.damage,
@@ -696,7 +602,8 @@ function resetWaveChange() {
             gunConstants.pistol.fireRate,
             gunConstants.pistol.cost,
             gunConstants.pistol.image,
-            "pistol"
+            "pistol",
+            new Audio(gunConstants.pistol.soundSrc)
         );
     }
     //clearing all shootings
@@ -710,11 +617,8 @@ function resetWaveChange() {
             }
         }
     );
-
 }
-
-
-export { hero, gruntType1Array, bulletArray, spitArray, boss }
+export { hero, gruntArray, bulletArray, spitArray, boss }
 export default function gameMain(
     ctx: CanvasRenderingContext2D) {
     stateConstants.ingame = true;
@@ -722,7 +626,7 @@ export default function gameMain(
         createHero();
     }
     resetWaveChange();
-    createType1();
+    createEnemy();
     //moving focustohero
     mainConstants.dropdownInterval = true;
     setTimeout(
@@ -756,7 +660,6 @@ export default function gameMain(
             gruntConstants.boss.velocity
         );
         boss.changeSpeed();
-
     }
     if (!stateConstants.ismute) {
         if (mainConstants.windSound) {

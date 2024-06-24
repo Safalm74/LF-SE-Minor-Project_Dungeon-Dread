@@ -1,59 +1,35 @@
-import backGround from "../assets/home/background.webp"
+
+//modules
+import Point from "../modules/points";
+//constants
 import gruntConstants from "../constants/gruntConstants";
 import mainConstants from "../constants/mainConstants";
+import screenConstants from "../constants/screenConstants";
 import stateConstants from "../constants/stateConstants";
-import { canvas } from "../main";
-import Point from "../modules/points";
-import homeAnimationSprite from "../sprites/homeAnimationSprite";
+//utils
 import Btn from "../util/btn";
+import checkCursorCollision from "../util/cursorCollision";
 import loadInfoScreen from "../util/infoScreenLoader";
-import upcounter from "../util/upcounter";
-import aboutScreen from "./aboutScreen";
+//sprite information
+import homeAnimationSprite from "../sprites/homeAnimationSprite";
+//objs
+import { canvas } from "../main";
+//screens
 import controlScreen from "./controlScreen";
 import gameMain from "./gameScreen";
-
-const backGroundImage = new Image;
-backGroundImage.src = backGround;
-backGroundImage.onload=upcounter;
-
 //start btn
 let startBtnPosition: Point;
 let startbtnSize: TextMetrics;
-
 //about btn
-let about: Point;
+let aboutBtnPosition: Point;
 let aboutBtnSize: TextMetrics;
-
 //about btn
 let controlBtnPosition: Point;
 let controlBtnSize: TextMetrics;
-
 //let SpritePosition
 let spritePosition = 0
+//function to check collision position
 
-function checkCollision(
-    cursorPosiiton: Point,
-    BtnPosition: Point,
-    size: TextMetrics) {
-    cursorPosiiton = new Point(
-        cursorPosiiton.x + mainConstants.mapPosition.x,
-        cursorPosiiton.y + mainConstants.mapPosition.y
-    );
-    const width = size.width;
-    const height = size.actualBoundingBoxAscent +
-        size.actualBoundingBoxDescent;
-    if (
-        cursorPosiiton.x > BtnPosition.x &&
-        cursorPosiiton.x < BtnPosition.x + width &&
-        cursorPosiiton.y > BtnPosition.y - height &&
-        cursorPosiiton.y < BtnPosition.y
-    ) {
-        return true
-    }
-    else {
-        return false
-    }
-}
 
 function btnsclicked(
     ClickedPosition: Point,
@@ -65,7 +41,7 @@ function btnsclicked(
     );
     if (
         startbtnSize &&
-        checkCollision(
+        checkCursorCollision(
             ClickedPosition,
             startBtnPosition,
             startbtnSize
@@ -75,7 +51,7 @@ function btnsclicked(
         gameMain(ctx)
     }
     if (controlBtnSize &&
-        checkCollision(
+        checkCursorCollision(
             ClickedPosition,
             controlBtnPosition,
             controlBtnSize
@@ -84,9 +60,9 @@ function btnsclicked(
         controlScreen(ctx)
     }
     if (aboutBtnSize &&
-        checkCollision(
+        checkCursorCollision(
             ClickedPosition,
-            about,
+            aboutBtnPosition,
             aboutBtnSize
         )) {
         stateConstants.homeScreenFlag = false;
@@ -130,7 +106,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
 
     //fill background image
     ctx.drawImage(
-        backGroundImage,
+        screenConstants.backGroundImage,
         -mainConstants.mapPosition.x,
         -mainConstants.mapPosition.y,
         canvas.width,
@@ -158,14 +134,14 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         -mainConstants.mapPosition.y +
         canvas.height * 0.5)
 
-    about = new Point(
+    aboutBtnPosition = new Point(
         -mainConstants.mapPosition.x +
         canvas.width * 0.01,
         -mainConstants.mapPosition.y +
         canvas.height * 0.6)
     //Game Name
     const GameName = "DUNGEON DREAD"
-    ctx.font = "3rem ShadowOfTheDeadOver"
+    ctx.font = "4rem ShadowOfTheDeadOver"
     ctx.fillStyle = "white"
     const gameNameSize = ctx.measureText(GameName)
     ctx.fillText(
@@ -178,10 +154,13 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         gameNameSize.actualBoundingBoxDescent
     );
     //start game
-    startbtnSize = Btn(ctx, "PLAY", startBtnPosition);
+    startbtnSize = Btn(ctx, "PLAY",
+        startBtnPosition,
+        "4rem bold Eater ",
+        "red");
 
     //about game
-    aboutBtnSize = Btn(ctx, "ABOUT", about);
+    aboutBtnSize = Btn(ctx, "ABOUT", aboutBtnPosition);
 
     //controls
     controlBtnSize = Btn(ctx, "INSTRUCTIONS", controlBtnPosition);

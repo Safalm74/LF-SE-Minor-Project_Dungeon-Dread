@@ -16,12 +16,9 @@ export default function textWrapper(
         sampleMeasure.actualBoundingBoxDescent;
     const msgList = msg.split(' ').filter(
         (word) => {
-            return !(
-                word === "\n" ||
-                word === "\t" ||
-                word === ' ')
+            return word.trim() !== ""
         }
-    );;
+    );
     let line: string = "";
     let shiftedY: number = position.y + lineHeight;
     const shiftedX: number = position.x + lineHeight
@@ -29,10 +26,9 @@ export default function textWrapper(
     for (let i = 0; i < msgList.length; i++) {
         const tempLine = line + msgList[i] + " ";
         const tempLineWidth = ctx.measureText(tempLine).width;
-        if (tempLineWidth <= wrapperWidth) {
-            line = tempLine;
-        }
-        else {
+        line = tempLine;
+        if (tempLineWidth > wrapperWidth * 0.9) {
+
             ctx.fillText(
                 line,
                 shiftedX,

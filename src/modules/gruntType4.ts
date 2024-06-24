@@ -1,26 +1,21 @@
+//modules
 import Entity from "./entity";
-import spwan from "../assets/entity/enemy/spwan.png"
-import spwanSprite from "../sprites/spwanSprite";
 import Point from "./points";
-import { hero } from "../screens/gameScreen";
-import mainConstants from "../constants/mainConstants";
 import Tile from "./tile";
 import Hero from "./hero";
+//constants
+import mainConstants from "../constants/mainConstants";
 import gruntConstants from "../constants/gruntConstants";
+//sprite information
 import gruntType4Sprite from "../sprites/grunt[Type4]Sprite";
-import upcounter from "../util/upcounter";
-
-
-const spwanImage = new Image;
-spwanImage.src = spwan;
-
-spwanImage.onload = upcounter;
+import spwanSprite from "../sprites/spwanSprite";
+//objs
+import { hero } from "../screens/gameScreen";
 
 export default class GruntType4 extends Entity {
     isSpwaned: boolean = false;
     attackInterval: any = null;
     isAttacking: boolean = false;
-
     checkCollision() {
         let collided: boolean = false;
         let collidedHero: boolean = false;
@@ -52,7 +47,6 @@ export default class GruntType4 extends Entity {
         return { collided, collidedObj, collidedHero };
 
     }
-
     update() {
         const chkcls = this.checkCollision();
         this.lookingLeft = this.position.x > hero.position.x
@@ -90,14 +84,10 @@ export default class GruntType4 extends Entity {
             this.position.x += positionOffsetX;
             this.position.y += positionOffsety;
         }
-
-
     }
-
     draw(ctx: CanvasRenderingContext2D) {
         this.update();
         if (this.isAttacking) {
-
             const lookingDirection = this.lookingLeft ?
                 gruntType4Sprite.attackLeft :
                 gruntType4Sprite.attackRight;
@@ -108,10 +98,10 @@ export default class GruntType4 extends Entity {
 
             this.height = lookingDirection[position].height;
             this.width = lookingDirection[position].width;
-
-
-
-            if (position === 2 && this.spritePosition % staggerFrame === 0) {
+            //getting damage when the animation reach to hitting
+            if (position === 2 &&
+                this.spritePosition % //making sure hit damages at instance of hit
+                staggerFrame === 0) {
                 hero.healthpoint -= this.damage;
             }
             ctx.drawImage(
@@ -153,14 +143,12 @@ export default class GruntType4 extends Entity {
         }
         this.spritePosition++
     }
-
-
     spwan(ctx: CanvasRenderingContext2D) {
         const staggerFrame = 10;
-        const position = Math.floor(this.spritePosition / staggerFrame) % 10;
-
+        const position = Math.floor(this.spritePosition /
+             staggerFrame) % spwanSprite.position.length;
         ctx.drawImage(
-            spwanImage,
+            gruntConstants.spwanImage,
             spwanSprite.position[position].x,
             spwanSprite.position[position].y,
             spwanSprite.width,
@@ -170,15 +158,10 @@ export default class GruntType4 extends Entity {
             this.width,
             this.height
         );
-
         this.spritePosition++
         if (position >= 9) {
             this.isSpwaned = true;
             this.spritePosition = 0;
         }
-
     }
-
-
-
 }

@@ -1,14 +1,15 @@
-import mapConstants from "../constants/mapConstants";
-import Point from "./points";
+//modules
 import Tile from "./tile";
-import getRandomInt from "../util/randomNumber";
+import Point from "./points";
+//constants
+import mapConstants from "../constants/mapConstants";
 import mainConstants from "../constants/mainConstants";
+import getRandomInt from "../util/randomNumber";
 interface IMap {
     tileSize: number;
     mapWidth: number;
     mapHeight: number;
 }
-
 
 const collideableMapObsticles: Tile[] = []
 export default class Map implements IMap {
@@ -17,33 +18,29 @@ export default class Map implements IMap {
     mapWidth: number;
     constructor(
         tileSize: number
-
     ) {
         this.tileSize = tileSize;
-        this.mapHeight = Math.floor(window.innerHeight*mapConstants.mapSizeMultiplier / tileSize);
-        this.mapWidth = Math.floor(window.innerWidth*mapConstants.mapSizeMultiplier / tileSize);
+        this.mapHeight = Math.floor(window.innerHeight * mapConstants.mapSizeMultiplier / tileSize);
+        this.mapWidth = Math.floor(window.innerWidth * mapConstants.mapSizeMultiplier / tileSize);
         this.initialize();
         this.collectCollideableobj();
-
     }
-    collectCollideableobj(){
+    collectCollideableobj() {
         mapConstants.mapTileArray.forEach(
-            (y_obj)=>{
+            (y_obj) => {
                 y_obj.forEach(
-                    (x_obj)=>{
-                        if (x_obj.isObstacle){
+                    (x_obj) => {
+                        if (x_obj.isObstacle) {
                             mainConstants.collideableObjs.push(x_obj);
                         }
                     });
             }
         );
-
     }
-    initialize(){
+    initialize() {
         for (let y_axis = 0; y_axis < this.mapHeight; y_axis++) {
             mapConstants.mapTileArray[y_axis] = [];
             for (let x_axis = 0; x_axis < this.mapWidth; x_axis++) {
-
                 if (
                     x_axis === 0 ||
                     y_axis === 0 ||
@@ -57,7 +54,6 @@ export default class Map implements IMap {
                         true,
                         this.tileSize
                     );
-
                 }
                 else {
                     const randomNumber = getRandomInt(1, 100);
@@ -70,7 +66,6 @@ export default class Map implements IMap {
                                 'drum',
                                 true,
                                 this.tileSize);
-
                         }
                         else {
                             mapConstants.mapTileArray[y_axis][x_axis] = new Tile(
@@ -81,8 +76,6 @@ export default class Map implements IMap {
                                 true,
                                 this.tileSize);
                         }
-
-
                     }
                     else {
                         mapConstants.mapTileArray[y_axis][x_axis] = new Tile(
@@ -93,12 +86,8 @@ export default class Map implements IMap {
                             false,
                             this.tileSize
                         );
-
                     }
-
                 }
-
-
             }
         }
     }
@@ -111,7 +100,5 @@ export default class Map implements IMap {
             }
         );
     }
-
 }
-
-export {collideableMapObsticles}
+export { collideableMapObsticles }

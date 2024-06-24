@@ -6,6 +6,7 @@ import { canvas } from "../main";
 import Point from "../modules/points";
 import homeAnimationSprite from "../sprites/homeAnimationSprite";
 import Btn from "../util/btn";
+import loadInfoScreen from "../util/infoScreenLoader";
 import upcounter from "../util/upcounter";
 import aboutScreen from "./aboutScreen";
 import controlScreen from "./controlScreen";
@@ -89,7 +90,13 @@ function btnsclicked(
             aboutBtnSize
         )) {
         stateConstants.homeScreenFlag = false;
-        aboutScreen(ctx)
+        //loading about screen
+        loadInfoScreen(
+            ctx,
+            "about",
+            "<=return Home",
+            homeScreen
+        );
     }
 
 }
@@ -177,7 +184,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     aboutBtnSize = Btn(ctx, "ABOUT", about);
 
     //controls
-    controlBtnSize = Btn(ctx, "CONTROLS", controlBtnPosition);
+    controlBtnSize = Btn(ctx, "INSTRUCTIONS", controlBtnPosition);
 
     //displaymonster
     displayMonster(ctx);

@@ -12,6 +12,7 @@ type StateConstants = {
     firstPageFlag: boolean;
     assetsLoaded: number;
     loadingScreen:boolean;
+    infoScreenFlag:boolean;
 
 }
 
@@ -23,12 +24,13 @@ const stateConstants: StateConstants = {
     btnPressed: {
 
     },
-    wave: 5,
+    wave: 3,
     buyScreenFlag: false,
     ismute: false,
     firstPageFlag: false,
     assetsLoaded: 0,
-    loadingScreen:false
+    loadingScreen:false,
+    infoScreenFlag:false
 }
 
 export default stateConstants;

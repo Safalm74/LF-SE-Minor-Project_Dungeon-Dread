@@ -9,6 +9,7 @@ import { controlBtnClicked } from "../screens/controlScreen";
 import { firstScreenbtnsclicked } from "../screens/firstScreen";
 import { hero } from "../screens/gameScreen";
 import { btnsclicked } from "../screens/homeScreen";
+import { infoScreenBtn } from "../screens/infoScreen";
 function handleSounds() {
     if (stateConstants.ismute) {
 
@@ -34,8 +35,21 @@ function handleEvents() {
 
     ) {
         hero.velocity.x = 0.7 * heroConstants.velocity.x
-        hero.velocity.y = 0.7 * heroConstants.velocity.y
+        hero.velocity.y = 0.7* heroConstants.velocity.y
 
+    }
+    else if (
+        (
+            stateConstants.btnPressed['c'] &&
+            (
+                stateConstants.btnPressed['w'] ||
+                stateConstants.btnPressed['a'] ||
+                stateConstants.btnPressed['s'] ||
+                stateConstants.btnPressed['d']
+            ))
+    )
+     {
+        hero.run();
     }
     else {
 
@@ -111,14 +125,21 @@ export default function eventhandler() {
                     ctx
                 );
             }
-
-
             if (stateConstants.buyScreenFlag) {
                 buyBtnsclicked(
                     new Point(
                         e.offsetX,
                         e.offsetY
                     )
+                );
+            }
+            if (stateConstants.infoScreenFlag) {
+                infoScreenBtn(
+                    new Point(
+                        e.offsetX,
+                        e.offsetY
+                    ),
+                    ctx
                 );
             }
             if (stateConstants.aboutScreenFlag) {

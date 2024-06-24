@@ -60,7 +60,7 @@ const gruntConstants: GruntConstants = {
         width: gruntType1Sprite.width * window.innerHeight / 700,
         height: gruntType1Sprite.height*window.innerHeight/700,
         image: type1Image,
-        attackRate: 0.8,
+        attackRate: 2,
         damage:2,
         velocity:new Point(1,1)
     },
@@ -69,7 +69,7 @@ const gruntConstants: GruntConstants = {
         width:  window.innerHeight /1500,
         height: window.innerHeight/1500,
         image: type2Image,
-        attackRate: 0.01,
+        attackRate: 2,
         damage:2,
         velocity:new Point(1,1)
     },

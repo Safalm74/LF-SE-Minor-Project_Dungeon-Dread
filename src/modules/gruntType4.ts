@@ -14,7 +14,7 @@ import upcounter from "../util/upcounter";
 const spwanImage = new Image;
 spwanImage.src = spwan;
 
-spwanImage.onload=upcounter;
+spwanImage.onload = upcounter;
 
 export default class GruntType4 extends Entity {
     isSpwaned: boolean = false;
@@ -111,7 +111,7 @@ export default class GruntType4 extends Entity {
 
 
 
-            if (position == 2) {
+            if (position === 2 && this.spritePosition % staggerFrame === 0) {
                 hero.healthpoint -= this.damage;
             }
             ctx.drawImage(

@@ -23,9 +23,18 @@ import Spit from "../modules/spit";
 import Gem from "../modules/gem";
 import gemSprite from "../sprites/gemSprite";
 import Boss from "../modules/boss";
-
-import aboutScreen from "./aboutScreen";
 import upcounter from "../util/upcounter";
+import loadInfoScreen from "../util/infoScreenLoader";
+import homeScreen from "./homeScreen";
+
+import gemImageSrc from "../assets/gem/gem.png"
+const gemImage = new Image;
+gemImage.src = gemImageSrc;
+
+import sharinganImageSrc from "../assets/ability/sharingan.png"
+import lowerInventory from "../util/lowerInventory";
+const sharinganImage = new Image;
+sharinganImage.src = sharinganImageSrc;
 //import heroConstants from "../constants/heroCopnstants";
 //loading map background
 const mapImage = new Image;
@@ -263,46 +272,46 @@ function createType1() {
         500
     );
 }
-//function creating lower inventory
-function lowerInventory(ctx: CanvasRenderingContext2D) {
-    const weponsNumber = 6;
-    ctx.strokeStyle = "white"
-    ctx.fillStyle = "rgba(40,200,40,0.1)"
-    ctx.fillRect(
-        -mainConstants.mapPosition.x + canvas.width * 0.2,
-        -mainConstants.mapPosition.y + canvas.height * 0.8,
-        canvas.width * 0.6,
-        canvas.width * 0.08
-    )
-    ctx.strokeRect(
-        -mainConstants.mapPosition.x + canvas.width * 0.2,
-        -mainConstants.mapPosition.y + canvas.height * 0.8,
-        canvas.width * 0.6,
-        canvas.width * 0.08
-    )
-    ctx.fillStyle = "rgba(200,200,200,0.8)"
-    for (let i = 0; i < weponsNumber; i++) {
-        ctx.fillRect(
-            -mainConstants.mapPosition.x + canvas.width * ((0.2 + 0.1 * i) + 0.025),
-            -mainConstants.mapPosition.y + canvas.height * (0.8 + 0.03),
-            canvas.width * 0.05,
-            canvas.width * 0.05
-        )
-        if (mainConstants.weaponArray[i]) {
-            ctx.drawImage(
-                mainConstants.weaponArray[i]!.gunImage,
-                -mainConstants.mapPosition.x + canvas.width * ((0.2 + 0.1 * i) + 0.025),
-                -mainConstants.mapPosition.y + canvas.height * (0.8 + 0.03),
-                canvas.width * 0.05,
-                canvas.width * 0.05
-            )
+// //function creating lower inventory
+// function lowerInventory(ctx: CanvasRenderingContext2D) {
+//     const weponsNumber = 6;
+//     ctx.strokeStyle = "white"
+//     ctx.fillStyle = "rgba(40,200,40,0.1)"
+//     ctx.fillRect(
+//         -mainConstants.mapPosition.x + canvas.width * 0.2,
+//         -mainConstants.mapPosition.y + canvas.height * 0.8,
+//         canvas.width * 0.6,
+//         canvas.width * 0.08
+//     )
+//     ctx.strokeRect(
+//         -mainConstants.mapPosition.x + canvas.width * 0.2,
+//         -mainConstants.mapPosition.y + canvas.height * 0.8,
+//         canvas.width * 0.6,
+//         canvas.width * 0.08
+//     )
+//     ctx.fillStyle = "rgba(200,200,200,0.8)"
+//     for (let i = 0; i < weponsNumber; i++) {
+//         ctx.fillRect(
+//             -mainConstants.mapPosition.x + canvas.width * ((0.2 + 0.1 * i) + 0.025),
+//             -mainConstants.mapPosition.y + canvas.height * (0.8 + 0.03),
+//             canvas.width * 0.05,
+//             canvas.width * 0.05
+//         )
+//         if (mainConstants.weaponArray[i]) {
+//             ctx.drawImage(
+//                 mainConstants.weaponArray[i]!.gunImage,
+//                 -mainConstants.mapPosition.x + canvas.width * ((0.2 + 0.1 * i) + 0.025),
+//                 -mainConstants.mapPosition.y + canvas.height * (0.8 + 0.03),
+//                 canvas.width * 0.05,
+//                 canvas.width * 0.05
+//             )
 
-        }
+//         }
 
 
-    }
+//     }
 
-}
+// }
 //reset
 function resetGame() {
     stateConstants.ingame = false;
@@ -331,7 +340,6 @@ function resetGame() {
 }
 //function that handles all display
 function displayAll(ctx: CanvasRenderingContext2D) {
-
     //Map background
     ctx.drawImage(
         mapImage,
@@ -339,7 +347,6 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         mapConstants.displayPosition.y,
         window.innerWidth * mapConstants.mapSizeMultiplier,
         window.innerHeight * mapConstants.mapSizeMultiplier
-
     );
     //drawmap
     map.draw(ctx);
@@ -371,7 +378,12 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         if (boss.healthpoint <= 0) {
             resetWaveChange();
             resetGame();
-            aboutScreen(ctx);
+            loadInfoScreen(
+                ctx,
+                "gameWin",
+                "<= return Home",
+                homeScreen
+            );
         }
     }
     //draw hero
@@ -420,16 +432,84 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         'Life line'
     )
     //show gemcount
-    const gemString = `Gems: ${hero.gemCount}`
-    dropDownMsg(
-        ctx,
-        gemString,
-        new Point(
-            -canvas.width * 0.4 - mainConstants.mapPosition.x,
-            (canvas.height / 5 -
-                mainConstants.mapPosition.y)),
-        "1rem Eater"
+    const gemString = `x ${hero.gemCount}`
+    ctx.drawImage(
+        gemImage,
+        gemSprite[1][0].position.x,
+        gemSprite[1][0].position.y,
+        gemSprite[1][0].width,
+        gemSprite[1][0].height,
+        canvas.width * 0.05 - mainConstants.mapPosition.x,
+        (canvas.height / 5 -
+            mainConstants.mapPosition.y),
+        gemSprite[1][0].width * 0.3,
+        gemSprite[1][0].height * 0.3
+
     );
+    ctx.font = "1rem Eater"
+    ctx.fillStyle = "white"
+    const textMeasure = ctx.measureText(gemString);
+    const textHeight = textMeasure.actualBoundingBoxAscent + textMeasure.actualBoundingBoxDescent;
+    ctx.fillText(
+        gemString,
+        canvas.width * 0.05 - mainConstants.mapPosition.x + gemSprite[1][0].width * 0.5,
+        (canvas.height / 5 -
+            mainConstants.mapPosition.y) + textHeight * 1.5,
+    );
+    //showAbilityTimer
+    ctx.drawImage(
+        sharinganImage,
+        canvas.width * 0.05 - mainConstants.mapPosition.x,
+        (canvas.height / 5 -
+            mainConstants.mapPosition.y) + gemSprite[1][0].height*0.5,
+        gemSprite[1][0].width * 0.4,
+        gemSprite[1][0].height * 0.4
+    );
+    const timeRemainingForAbility = ((new Date).getTime() - hero.abilityTime.getTime()) / (15 * 1000);
+    if (timeRemainingForAbility < 1 && !hero.abilityInUse) {
+        ctx.beginPath();
+        ctx.fillStyle = "rgba(240,240,240,0.6)"
+        ctx.arc(
+            (canvas.width * 0.05 - mainConstants.mapPosition.x) + gemSprite[1][0].width * 0.2,
+            (canvas.height / 5 - mainConstants.mapPosition.y) + gemSprite[1][0].height*0.5 + gemSprite[1][0].height * 0.2,
+            gemSprite[1][0].width * 0.2,
+            0,
+            2 * Math.PI * (1 - timeRemainingForAbility)
+        );
+        ctx.fill();
+
+    } else {
+        ctx.beginPath();
+        ctx.strokeStyle = 'blue';
+        ctx.fillStyle = "rgba(240,240,240,0.6)"
+        ctx.arc(
+            (canvas.width * 0.05 - mainConstants.mapPosition.x) + gemSprite[1][0].width * 0.2,
+            (canvas.height / 5 - mainConstants.mapPosition.y) + gemSprite[1][0].height*0.5 + gemSprite[1][0].height * 0.2,
+            gemSprite[1][0].width * 0.2,
+            0,
+            2 * Math.PI
+        );
+        ctx.stroke();
+
+    }
+    
+    //show stamina
+    if (hero.staminaUse){
+         progressBar(
+        ctx,
+        new Point(canvas.width * 0.05 -
+            mainConstants.mapPosition.x,
+            (canvas.height / 5 - mainConstants.mapPosition.y) + gemSprite[1][0].height*1.5),
+        hero.stamina,
+        heroConstants.stamina,
+        canvas.width * 0.1,
+        canvas.height * 0.02,
+        'Stamina',
+        "1rem Arial"
+    )
+    }
+   
+
     //show essence
     progressBar(
         ctx,
@@ -491,7 +571,12 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     if (hero.healthpoint <= 0) {
         resetWaveChange();
         resetGame();
-        aboutScreen(ctx);
+        loadInfoScreen(
+            ctx,
+            "gameOver",
+            "return Home",
+            homeScreen
+        );
         //gameOver(ctx);
     }
     //drawing bullets

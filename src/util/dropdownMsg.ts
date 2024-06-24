@@ -11,7 +11,6 @@ export default function dropDownMsg(
                 mainConstants.mapPosition.x),
             (canvas.height / 2 -
                 mainConstants.mapPosition.y)
-
         ),
     font: string = '5rem ShadowOfTheDeadOver',
     color:string="#4caf50"
@@ -25,9 +24,5 @@ export default function dropDownMsg(
         canvas.width / 2,
         0
     );
-
     ctx.translate(-position.x, -position.y)
-
-
-
 }

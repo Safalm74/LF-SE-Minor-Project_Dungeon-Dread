@@ -13,11 +13,11 @@ import heroConstants from "../constants/heroConstants";
 import fireImageSrc from "../assets/ability/amaterasu.png"
 import amaterasuSprite from "../sprites/amaterasuSprite";
 import Boss from "./boss";
+
 const fireImage = new Image;
 fireImage.src = fireImageSrc;
 const heroImage = new Image;
 heroImage.src = hero;
-
 
 export default class Hero extends Entity {
     isMoving: boolean = false;
@@ -30,6 +30,10 @@ export default class Hero extends Entity {
     abilityInUse: boolean = false;
     inRangeEnemies: (GruntType1 | GruntType2 | GruntType4 | Boss)[] = [];
     abilityTime: Date = new Date;
+    stamina: number = heroConstants.stamina
+    staminaInterval: any;
+    healthInterval: any;
+    staminaUse:boolean=false;
 
     gemCount: number = 0;
     essenceCount: number = 0;
@@ -44,12 +48,11 @@ export default class Hero extends Entity {
     ability() {
         if (!this.abilityInUse && //checking i f hero is already using ability
             ((new Date).getTime() - //checking time to use ability
-                this.abilityTime.getTime() > 15*1000) &&
+                this.abilityTime.getTime() > 15 * 1000) &&
             this.essenceCount
         ) {
-            this.abilityTime = new Date;
             this.abilityInUse = true;
-            heroConstants.amaterasuSound.currentTime=2;
+            heroConstants.amaterasuSound.currentTime = 2;
             heroConstants.amaterasuSound.play();
             this.inRangeEnemies = gruntType1Array.filter(
                 (obj) => {
@@ -76,16 +79,36 @@ export default class Hero extends Entity {
                     this.abilityInUse = false;
                 },
                 this.abilityDurability * (this.essenceCount / heroConstants.maxEssence));
-        
-                this.essenceCount=0;
-            }
+            this.abilityTime = new Date;
+            this.essenceCount = 0;
+        }
     }
     reheal() {
-        setInterval(() => {
+        this.healthInterval = setInterval(() => {
             if (this.healthpoint < 50) {
-                this.healthpoint += 3
+                if (!heroConstants.heavyBreath.played) {
+                    heroConstants.heavyBreath.play();
+                }
+                this.healthpoint += 3;
             }
+
         }, 5000)
+        this.staminaInterval = setInterval(
+            () => {
+                if (this.stamina < heroConstants.stamina) {
+                    this.stamina += 1;
+                }
+                this.staminaUse=false;
+            }, 2000
+
+        );
+    }
+    run() {
+        this.staminaUse=true;
+        if (this.stamina > 0) {
+            this.velocity = new Point(7, 7);
+            this.stamina -= 0.1;
+        }
     }
 
     checkCollision() {
@@ -106,8 +129,8 @@ export default class Hero extends Entity {
 
         );
         return { collided, collidedObj };
-
     }
+
     updateWeaponPosition() {
         this.weaponPositions = [
             new Point(this.position.x + this.weaponOffset + this.width, this.position.y),
@@ -117,7 +140,6 @@ export default class Hero extends Entity {
             new Point(this.position.x + this.weaponOffset + this.width, this.position.y + this.height),
             new Point(this.position.x - this.weaponOffset, this.position.y + this.height),
         ];
-
     }
     moveLeft(left: boolean, ctx: CanvasRenderingContext2D) {
         const velocity = left ? this.velocity.x : -1 * this.velocity.x;
@@ -135,7 +157,6 @@ export default class Hero extends Entity {
             ctx.translate(positionOffsetX, positionOffsetY);
         }
         this.updateWeaponPosition();
-
     }
     moveUp(up: boolean, ctx: CanvasRenderingContext2D) {
         const velocity = up ? this.velocity.y : -1 * this.velocity.y;
@@ -175,21 +196,22 @@ export default class Hero extends Entity {
                 );
 
                 obj.healthpoint -= this.abilityDamage;
-
-
             }
         );
 
         const lookingDirection = this.lookingLeft ? heroSprite.positionLeft : heroSprite.positionRight;
         if (this.isMoving) {
-            const staggerFrame = 5;
-            let position = Math.floor(this.spritePosition / staggerFrame) % lookingDirection.length;
+            const staggerFrame = (20/this.velocity.x) * 0.9;
+            let position = (Math.floor(this.spritePosition / staggerFrame) % (lookingDirection.length - 1)) + 1;
+
+            this.width = heroSprite.positionLeft[position].width * window.innerHeight / 1200;
+            this.height = heroSprite.positionLeft[position].height * window.innerHeight / 1200;
             ctx.drawImage(
                 heroImage,
-                lookingDirection[position].x,
-                lookingDirection[position].y,
-                heroSprite.width,
-                heroSprite.height,
+                lookingDirection[position].position.x,
+                lookingDirection[position].position.y,
+                lookingDirection[position].width,
+                lookingDirection[position].height,
                 this.position.x,
                 this.position.y,
                 this.width,
@@ -197,23 +219,20 @@ export default class Hero extends Entity {
             );
         }
         else {
+            this.width = heroSprite.positionLeft[0].width * window.innerHeight / 1200;
+            this.height = heroSprite.positionLeft[0].height * window.innerHeight / 1200;
             ctx.drawImage(
                 heroImage,
-                lookingDirection[0].x,
-                lookingDirection[0].y,
-                heroSprite.width,
-                heroSprite.height,
+                lookingDirection[0].position.x,
+                lookingDirection[0].position.y,
+                lookingDirection[0].width,
+                lookingDirection[0].height,
                 this.position.x,
                 this.position.y,
                 this.width,
                 this.height
             );
         }
-
-        if (this.healthpoint < 0) {
-            // homeScreen(ctx)
-        }
-
         this.spritePosition++
     }
 

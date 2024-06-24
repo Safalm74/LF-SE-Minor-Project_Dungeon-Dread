@@ -82,7 +82,7 @@ export default class Bullet implements IBullet {
         ctx.strokeStyle = "gold";
         ctx.moveTo(this.startPoint.x, this.startPoint.y);
         ctx.lineTo(this.endPoint.x, this.endPoint.y);
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 3;
         ctx.stroke();
 
     }

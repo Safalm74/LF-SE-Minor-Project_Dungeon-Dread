@@ -13,13 +13,13 @@ import upcounter from "../util/upcounter";
 const spwanImage = new Image;
 spwanImage.src = spwan;
 
-spwanImage.onload=upcounter;
+spwanImage.onload = upcounter;
 
 export default class GruntType2 extends Entity {
     isSpwaned: boolean = false;
     attackInterval: any = null;
     attackRadius: number = 400;
-    
+
     update() {
         const distance = Math.sqrt(
             (this.position.x - hero.position.x) ** 2 +
@@ -39,7 +39,7 @@ export default class GruntType2 extends Entity {
             -unitVector.y * magnitudeVelocity
         )
 
-        if (distance > 2000) {
+        if (distance > 200) {
             clearInterval(this.attackInterval)
             this.attackInterval = null;
             this.position.x += resultantVelocity.x;
@@ -55,8 +55,9 @@ export default class GruntType2 extends Entity {
             this.attackInterval = setInterval(
                 () => {
                     if (hero) {
-                        const trackingEnemyObjPosition = new Point( 
-                            hero.position.x ,
+
+                        const trackingEnemyObjPosition = new Point(
+                            hero.position.x,
                             hero.position.y)
                         const vector = this.position.pointDifference(trackingEnemyObjPosition);
                         const magnitude = this.position.distanceBetween(trackingEnemyObjPosition);
@@ -68,10 +69,11 @@ export default class GruntType2 extends Entity {
                             new Point(this.position.x + this.width / 2, this.position.y + this.width / 2),
                             this.damage,
                             new Point(
-                                -unitVector.x * weaponRangeConstants.bulletVelocity*0.3,
-                                -unitVector.y * weaponRangeConstants.bulletVelocity*0.3),
+                                -unitVector.x * weaponRangeConstants.bulletVelocity * 0.3,
+                                -unitVector.y * weaponRangeConstants.bulletVelocity * 0.3),
                             this.position,
                         );
+
                         spitArray.push(spitObj);
                     }
 
@@ -98,8 +100,8 @@ export default class GruntType2 extends Entity {
             lookingDirection.position[position].height,
             this.position.x,
             this.position.y,
-            lookingDirection.position[position].width*gruntConstants.type2.width,
-            lookingDirection.position[position].height*gruntConstants.type2.height,
+            lookingDirection.position[position].width * gruntConstants.type2.width,
+            lookingDirection.position[position].height * gruntConstants.type2.height,
         );
         this.spritePosition++
     }

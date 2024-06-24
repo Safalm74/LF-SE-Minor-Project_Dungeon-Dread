@@ -6,11 +6,13 @@ export default function progressBar(
     total:number,
     width:number,
     height:number,
-    message: string=''
+    message: string='',
+    font:string='2rem ShadowOfTheDead',
+    color:string="#4caf50"
 ){
     //writing Message:
-    ctx.font ='2rem ShadowOfTheDead';
-    ctx.fillStyle="#4caf50"
+    ctx.font =font;
+    ctx.fillStyle=color;
     ctx.fillText(
         message,
         position.x,
@@ -19,6 +21,7 @@ export default function progressBar(
     //calculation progress bar width
     const barWidth=Math.floor((current/total)*width);
     //outline
+    ctx.strokeStyle="black"
     ctx.strokeRect(position.x,position.y,width,height)
     //background empty bar
     ctx.fillStyle="rgba(200,200,200,0.5)";

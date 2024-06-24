@@ -155,6 +155,12 @@ function upgradeWeapon() {
             0.1
         mainConstants.weaponArray[selectedPosition]!.level++;
         hero.gemCount -= mainConstants.weaponArray[selectedPosition]!.cost * 0.1
+    } else {
+        if (mainConstants.denySound) {
+            mainConstants.denySound.pause();
+            mainConstants.denySound.currentTime = 0;
+        }
+        mainConstants.denySound.play();
     }
 }
 function buyCard(

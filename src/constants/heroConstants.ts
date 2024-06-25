@@ -44,7 +44,7 @@ type HeroConstants = {
     sharingan: HTMLImageElement
 }
 const heroConstants: HeroConstants = {
-    heroTotalHealth: 200,
+    heroTotalHealth: 120,
     width: heroSprite.positionLeft[0].width * window.innerHeight / 1400,
     height: heroSprite.positionLeft[0].height * window.innerHeight / 1400,
     velocity: new Point(5, 5),

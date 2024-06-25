@@ -82,8 +82,11 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         "keypress"
         ,
         () => {
-            stateConstants.firstPageFlag = false;
-            homeScreen(ctx)
+            if (stateConstants.firstPageFlag) {
+                stateConstants.firstPageFlag = false;
+                homeScreen(ctx)
+            }
+
         }
     )
     ctx.font = "3rem Eater"

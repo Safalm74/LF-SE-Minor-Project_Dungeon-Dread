@@ -536,7 +536,6 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         (spitObj) => {
             spitObj.draw(ctx);
         }
-
     );
     //drawing gems
     gemArray.forEach(
@@ -616,7 +615,6 @@ function resetWaveChange() {
     }
     //reset health
     hero.healthpoint = mainConstants.heroTotalHealth;
-
     //clearing all arrays
     bulletArray = [];
     gruntArray = [];

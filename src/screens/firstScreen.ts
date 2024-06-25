@@ -19,8 +19,10 @@ function firstScreenbtnsclicked(
     ctx: CanvasRenderingContext2D
 ) {
     ClickedPosition = new Point(
-        -mainConstants.mapPosition.x + ClickedPosition.x,
-        -mainConstants.mapPosition.y + ClickedPosition.y
+        -mainConstants.mapPosition.x +
+        ClickedPosition.x,
+        -mainConstants.mapPosition.y +
+        ClickedPosition.y
     );
     if (
         startbtnSize &&
@@ -35,14 +37,12 @@ function firstScreenbtnsclicked(
 }
 //function that handles all displays
 function displayAll(ctx: CanvasRenderingContext2D) {
-
     // clearing screen 
     ctx.clearRect(
         -mainConstants.mapPosition.x,
         -mainConstants.mapPosition.y,
         canvas.width,
         canvas.height);
-
     //fill background image
     ctx.drawImage(
         screenConstants.backGroundImage,
@@ -64,7 +64,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         gameNameSize.actualBoundingBoxDescent
     );
     //start game
-    let startbtnColor:string="red";
+    let startbtnColor: string = "red";
     window.addEventListener(
         'mousemove',
         (e) => {
@@ -78,17 +78,25 @@ function displayAll(ctx: CanvasRenderingContext2D) {
             ) ? "blue" : "red"
         }
     )
+    window.addEventListener(
+        "keypress"
+        ,
+        () => {
+            stateConstants.firstPageFlag = false;
+            homeScreen(ctx)
+        }
+    )
     ctx.font = "3rem Eater"
     startBtnPosition = new Point(
-        canvas.width * 0.5 - ctx.measureText("Click Me").width / 2,
+        canvas.width * 0.5 - ctx.measureText("Press any button").width / 2,
         -mainConstants.mapPosition.y +
         canvas.height * 0.8)
     startbtnSize = Btn(ctx,
-         "Click Me", 
-         startBtnPosition,
-         "4rem bold Eater ",
-         startbtnColor
-        );
+        "Press any button",
+        startBtnPosition,
+        "4rem bold Eater",
+        startbtnColor
+    );
 }
 function homeMainLoop(ctx: CanvasRenderingContext2D) {
     //clear canvas
@@ -102,7 +110,6 @@ function homeMainLoop(ctx: CanvasRenderingContext2D) {
     }
 }
 export { firstScreenbtnsclicked }
-
 export default function firstScreen(ctx: CanvasRenderingContext2D) {
     stateConstants.firstPageFlag = true;
     if (mainConstants.homeSound) {

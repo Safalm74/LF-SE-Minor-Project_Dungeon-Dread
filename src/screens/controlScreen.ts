@@ -25,6 +25,7 @@ function controlBtnClicked(
         controlbtnSize
     )) {
         stateConstants.aboutScreenFlag=false;
+        console.log(stateConstants)
         homeScreen(ctx);
     }
 }

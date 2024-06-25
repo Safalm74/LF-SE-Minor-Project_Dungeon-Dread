@@ -165,6 +165,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         gameNameSize.actualBoundingBoxDescent
     );
     //start game
+    startbtnColor="red"
     window.addEventListener(
         'mousemove',
         (e) => {
@@ -236,10 +237,10 @@ function homeMainLoop(ctx: CanvasRenderingContext2D) {
         });
     }
 }
-
 export { btnsclicked }
 export default function homeScreen(ctx: CanvasRenderingContext2D) {
     stateConstants.homeScreenFlag = true;
+    stateConstants.controlScreenFlag=false;
     if (!stateConstants.ismute) {
         if (mainConstants.homeSound) {
             mainConstants.homeSound.pause();

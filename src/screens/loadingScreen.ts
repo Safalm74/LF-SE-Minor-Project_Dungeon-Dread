@@ -9,8 +9,6 @@ import progressBar from "../util/bar";
 import { canvas } from "../main";
 //screens
 import firstScreen from "./firstScreen";
-
-
 //function that handles all displays
 function displayAll(ctx: CanvasRenderingContext2D) {
     // clearing screen 
@@ -21,7 +19,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         canvas.height);
 
     //fill background image
-    ctx.fillStyle="rgba(40,40,240,1)";
+    ctx.fillStyle = "rgba(40,40,240,1)";
     ctx.fillRect(
         -mainConstants.mapPosition.x,
         -mainConstants.mapPosition.y,
@@ -34,9 +32,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         -mainConstants.mapPosition.y,
         canvas.width,
         canvas.height
-
     );
-  
     //Game Name
     const GameName = "DUNGEON DREAD"
     ctx.font = "3rem ShadowOfTheDeadOver"
@@ -54,19 +50,19 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     progressBar(
         ctx,
         new Point(
-            canvas.width*0.3,
-            canvas.height*0.5
+            canvas.width * 0.3,
+            canvas.height * 0.5
         ),
         stateConstants.assetsLoaded,
         18,
-        canvas.width*0.4,
+        canvas.width * 0.4,
         10,
         `Loading... `,
         "4rem Arial",
         "white"
     );
-    if(stateConstants.assetsLoaded>=18){
-        stateConstants.loadingScreen=false;
+    if (stateConstants.assetsLoaded >= 18) {
+        stateConstants.loadingScreen = false;
         firstScreen(ctx)
     }
 }
@@ -81,8 +77,6 @@ function homeMainLoop(ctx: CanvasRenderingContext2D) {
         });
     }
 }
-
-
 export default function loadingScreen(ctx: CanvasRenderingContext2D) {
     stateConstants.loadingScreen = true;
     if (!stateConstants.ismute) {

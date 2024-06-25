@@ -13,7 +13,7 @@ npm run dev
 ### Prerequisites:
 
 - Operating System: Ubuntu, Windows
-- Hardware requirement: laptop or desktop
+- Hardware requirement: Laptop or Desktop (with keyboard and mouse)
 
 [PlayGame](https://safalm74.github.io/LF-SE-Minor-Project_Dungeon-Dread/) 
 
@@ -44,4 +44,3 @@ Hero is a ninja with supernatural powers. He levitates weapons with telepathy po
 ###### Mouse Controls
 - Select weapon position to buy and upgrade
 - navigate to pages
-```

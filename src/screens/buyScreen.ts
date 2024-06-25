@@ -106,6 +106,12 @@ let buyBtnsclicked = (
                             new Audio(gunConstants.pistol.soundSrc)
                         );
                         hero.gemCount -= gunConstants.pistol.cost;
+                    } else {
+                        if (mainConstants.denySound) {
+                            mainConstants.denySound.pause();
+                            mainConstants.denySound.currentTime = 0;
+                        }
+                        mainConstants.denySound.play();
                     }
                     break;
                 case 1:
@@ -123,6 +129,12 @@ let buyBtnsclicked = (
                             new Audio(gunConstants.smg.soundSrc)
                         );
                         hero.gemCount -= gunConstants.smg.cost;
+                    } else {
+                        if (mainConstants.denySound) {
+                            mainConstants.denySound.pause();
+                            mainConstants.denySound.currentTime = 0;
+                        }
+                        mainConstants.denySound.play();
                     }
                     break;
                 case 2:
@@ -140,6 +152,12 @@ let buyBtnsclicked = (
                             new Audio(gunConstants.vandal.soundSrc)
                         );
                         hero.gemCount -= gunConstants.vandal.cost;
+                    } else {
+                        if (mainConstants.denySound) {
+                            mainConstants.denySound.pause();
+                            mainConstants.denySound.currentTime = 0;
+                        }
+                        mainConstants.denySound.play();
                     }
                     break;
                 case 3:
@@ -157,6 +175,12 @@ let buyBtnsclicked = (
                             new Audio(gunConstants.hunter.soundSrc)
                         );
                         hero.gemCount -= gunConstants.hunter.cost;
+                    } else {
+                        if (mainConstants.denySound) {
+                            mainConstants.denySound.pause();
+                            mainConstants.denySound.currentTime = 0;
+                        }
+                        mainConstants.denySound.play();
                     }
                     break;
             }

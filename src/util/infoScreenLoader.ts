@@ -1,5 +1,6 @@
 //constants
 import screenConstants from "../constants/screenConstants"
+import stateConstants from "../constants/stateConstants"
 //screens
 import infoScreen from "../screens/infoScreen"
 type screenParameters = {
@@ -75,7 +76,7 @@ export default function loadInfoScreen(
         fun);
     setTimeout(
         () => {
-            if (sound) {
+            if (sound && !stateConstants.ismute) {
                 screenConstants.prevSoundHolder = sound;
 
                 sound.play();

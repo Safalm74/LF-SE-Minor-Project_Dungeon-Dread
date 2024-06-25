@@ -77,7 +77,7 @@ const gunConstants: GunConstants = {
             heroConstants.width * 0.01,
         image: vandalImage,
         fireRate: 7,
-        cost: 2500,
+        cost: 2000,
         soundSrc:vandalSoundSrc
     },
     hunter:{
@@ -88,7 +88,7 @@ const gunConstants: GunConstants = {
             heroConstants.width * 0.01,
         image: hunterImage,
         fireRate: 7,
-        cost: 3500,
+        cost: 2500,
         soundSrc:hunterSoundSrc
     }
 }

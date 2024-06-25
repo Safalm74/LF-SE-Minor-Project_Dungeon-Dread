@@ -73,8 +73,14 @@ export default function loadInfoScreen(
         InfoScreenData[page].msg,
         btnName,
         fun);
-    if (sound) {
-        screenConstants.prevSoundHolder = sound;
-        sound.play();
-    }
+    setTimeout(
+        () => {
+            if (sound) {
+                screenConstants.prevSoundHolder = sound;
+
+                sound.play();
+            }
+        }
+        , 800
+    );
 }

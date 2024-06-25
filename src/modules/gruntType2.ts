@@ -10,7 +10,7 @@ import spwanSprite from "../sprites/spwanSprite";
 import gruntType2Sprite from "../sprites/grunt[Type2]Sprite";
 //objs
 import { hero, spitArray } from "../screens/gameScreen";
-
+//spider enemy
 export default class GruntType2 extends Entity {
     isSpwaned: boolean = false;
     attackInterval: any = null;

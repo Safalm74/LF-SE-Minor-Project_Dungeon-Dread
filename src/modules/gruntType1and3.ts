@@ -12,7 +12,7 @@ import gruntType3Sprite from "../sprites/grunt[Type3]sprite";
 //objs
 import { hero } from "../screens/gameScreen";
 import gruntConstants from "../constants/gruntConstants";
-
+//zombie and blue small enemy
 export default class GruntType1and3 extends Entity {
     isSpwaned: boolean = false;
     attackInterval: any = null;

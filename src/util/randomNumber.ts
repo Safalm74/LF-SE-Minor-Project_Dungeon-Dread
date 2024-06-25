@@ -1,4 +1,4 @@
-
+//FUnction to generate random numbers
 export default function getRandomInt(mini: number, maxi: number): number {
     const minCeiled = Math.ceil(mini);
     const maxFloored = Math.floor(maxi);

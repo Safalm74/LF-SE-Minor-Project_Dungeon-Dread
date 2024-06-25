@@ -19,7 +19,7 @@ import { boss, gruntArray } from "../screens/gameScreen";
 export default class Hero extends Entity {
     isMoving: boolean = false;
     speedLimit: number = 3;
-    weaponOffset: number = 10;
+    weaponOffset: number = 15;
     abilityInterval: any = null;
     abilityDamage: number = heroConstants.abilityDamage;
     abilityDurability: number = heroConstants.abilityDurability;

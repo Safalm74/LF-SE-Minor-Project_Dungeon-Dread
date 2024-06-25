@@ -1,22 +1,23 @@
+//modules
 import Point from "../modules/points";
 import Tile from "../modules/tile";
+//image src
 import stoneAndDrum from "../assets/map/stoneandDrum.svg";
-
 import bush from "../assets/map/bush.png";
-import upcounter from "../util/upcounter";
 import gameMap from "../assets/map/map.png"
-//loading map background
+//image src
+import upcounter from "../util/upcounter";
+//images
 const mapImage = new Image;
-mapImage.src = gameMap;
-mapImage.onload = upcounter;
-
 const bushImage = new Image;
-bushImage.src = bush;
-bushImage.onload=upcounter;
 const stoneAndDrumImage = new Image;
+mapImage.src = gameMap;
+bushImage.src = bush;
 stoneAndDrumImage.src = stoneAndDrum;
+//onloads
+mapImage.onload = upcounter;
+bushImage.onload=upcounter;
 stoneAndDrumImage.onload=upcounter;
-
 type MapConstants = {
     tileSize: number;
     mapWidth: number;
@@ -34,8 +35,6 @@ const tileSize = 50;
 const mapWidth = Math.floor(window.innerWidth*10 / tileSize);
 const mapHeight = Math.floor(window.innerHeight*10 / tileSize);
 const mapColor = '#radial-gradient(#a9c0a6,#000)';
-
-
 const mapConstants: MapConstants = {
     tileSize: tileSize,
     mapWidth: mapWidth,

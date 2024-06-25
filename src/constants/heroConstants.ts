@@ -1,33 +1,31 @@
+//modules
 import Point from "../modules/points";
+import hero from "../assets/entity/hero/hero.png";
+//utils
+import upcounter from "../util/upcounter";
+//sprite information
 import heroSprite from "../sprites/hero";
+//sounds src
 import amaterasuSoundSrc from "../assets/sounds/amaterasu.mp3"
 import heavyBreatheSoundSrc from "../assets/sounds/amaterasu.mp3"
-import upcounter from "../util/upcounter";
-
-
+//images src
 import fireImageSrc from "../assets/ability/amaterasu.png"
-import hero from "../assets/entity/hero/hero.png";
 import sharinganImageSrc from "../assets/ability/sharingan.png"
-
+//images
 const sharinganImage = new Image;
-sharinganImage.src = sharinganImageSrc;
-
 const fireImage = new Image;
 const heroImage = new Image;
-
 fireImage.src = fireImageSrc;
+sharinganImage.src = sharinganImageSrc;
 heroImage.src = hero;
-
-
-;
+//sounds
 const heavyBreathSound=new Audio(heavyBreatheSoundSrc)
 const amaterasuSound=new Audio(amaterasuSoundSrc)
+//onloads
 amaterasuSound.onload=upcounter
 fireImage.onload = upcounter;
 heroImage.onload = upcounter;
 heavyBreathSound.onload=upcounter
-
-
 type HeroConstants = {
     heroTotalHealth: number;
     width:number;
@@ -44,7 +42,6 @@ type HeroConstants = {
     amatherasuImage:HTMLImageElement;
     sharingan:HTMLImageElement
 }
-
 const heroConstants: HeroConstants = {
     heroTotalHealth:200,
     width:heroSprite.positionLeft[0].width *window.innerHeight / 1200,
@@ -61,5 +58,4 @@ const heroConstants: HeroConstants = {
     amatherasuImage:fireImage,
     sharingan:sharinganImage
 }
-
 export default heroConstants;

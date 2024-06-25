@@ -1,5 +1,5 @@
+//modules
 import Point from "../modules/points";
-
 type GemType = {
     width: number;
     height: number;
@@ -7,9 +7,7 @@ type GemType = {
 }
 type GemSprite = {
     1: GemType[];
-
 }
-
 const gemSprite: GemSprite = {
     1: [
         {
@@ -39,8 +37,5 @@ const gemSprite: GemSprite = {
             position: new Point(492, 7)
         }
     ]
-
-
 }
-
 export default gemSprite;

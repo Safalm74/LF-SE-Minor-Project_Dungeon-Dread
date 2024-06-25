@@ -15,15 +15,12 @@ type StateConstants = {
     infoScreenFlag:boolean;
 
 }
-
 const stateConstants: StateConstants = {
     ingame: false,
     aboutScreenFlag: false,
     controlScreenFlag: false,
     homeScreenFlag: false,
-    btnPressed: {
-
-    },
+    btnPressed: {},
     wave: 1,
     buyScreenFlag: false,
     ismute: false,
@@ -32,5 +29,4 @@ const stateConstants: StateConstants = {
     loadingScreen:false,
     infoScreenFlag:false
 }
-
 export default stateConstants;

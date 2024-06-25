@@ -1,36 +1,33 @@
-import pestolSprite from "../sprites/pestolSprite";
+//import constants
 import heroConstants from "./heroConstants";
-import smgSprite from "../sprites/smgSprite";
-
-//importing images
+//importing images src
 import pistolImageSrc from "../assets/weapon/gun/pestol.svg";
 import smgImageSrc from "../assets/weapon/gun/smg.png";
 import vandalImageSrc from "../assets/weapon/gun/vandal.png";
 import hunterImageSrc from "../assets/weapon/gun/hunter.png";
-
-//importing sounds
-import gunSoundSrc from "../assets/sounds/gun.mp3"
-import stateConstants from "./stateConstants";
+//importing sounds src
+import pistolSoundSrc from "../assets/sounds/pistolSound.mp3";
+import vandalSoundSrc from  "../assets/sounds/vandalSound.mp3";
+import hunterSoundSrc from "../assets/sounds/hunterSound.mp3"
+import smgSoundSrc from "../assets/sounds/SMGSound.mp3"
+//utils
 import upcounter from "../util/upcounter";
+//sprite
 import vandalSprite from "../sprites/vandalSprite";
 import hunterSprite from "../sprites/hunterStrite";
+import pestolSprite from "../sprites/pestolSprite";
+import smgSprite from "../sprites/smgSprite";
 
-const pistolSound = new Audio(gunSoundSrc);
-
+//images
+const smgImage = new Image;
+const hunterImage=new Image;
+const vandalImage=new Image;
 const pistolImage = new Image;
 pistolImage.src = pistolImageSrc;
-
-const smgImage = new Image;
 smgImage.src = smgImageSrc;
-const vandalImage=new Image;
 vandalImage.src=vandalImageSrc
-const hunterImage=new Image;
 hunterImage.src=hunterImageSrc
-
 //assetsloading
-pistolSound.onload = () => {
-    stateConstants.assetsLoaded++
-}
 pistolImage.onload = upcounter
 smgImage.onload = upcounter
 vandalImage.onload=upcounter
@@ -43,16 +40,12 @@ type gunInst = {
     cost: number;
     soundSrc:string;
 }
-
 type GunConstants = {
     pistol: gunInst;
-    smg: gunInst;
-    sound: HTMLAudioElement;
+    smg: gunInst
     vandal:gunInst;
     hunter:gunInst;
-
 }
-
 const gunConstants: GunConstants = {
     pistol: {
         damage: 3,
@@ -63,30 +56,29 @@ const gunConstants: GunConstants = {
         image: pistolImage,
         fireRate: 2,
         cost: 500,
-        soundSrc:gunSoundSrc
+        soundSrc:pistolSoundSrc
     },
     smg: {
-        damage: 1,
+        damage: 0.5,
         width: smgSprite.width *
             heroConstants.width * 0.01,
         height: smgSprite.height *
             heroConstants.width * 0.01,
         image: smgImage,
-        fireRate: 4,
+        fireRate: 5,
         cost: 1500,
-        soundSrc:gunSoundSrc
+        soundSrc:smgSoundSrc
     },
     vandal:{
-        damage: 3,
+        damage: 1,
         width: vandalSprite.width *
             heroConstants.width * 0.01,
         height: vandalSprite.height *
             heroConstants.width * 0.01,
         image: vandalImage,
-        fireRate: 4,
+        fireRate: 7,
         cost: 2500,
-        soundSrc:gunSoundSrc
-
+        soundSrc:vandalSoundSrc
     },
     hunter:{
         damage: 5,
@@ -95,12 +87,9 @@ const gunConstants: GunConstants = {
         height: hunterSprite.height *
             heroConstants.width * 0.01,
         image: hunterImage,
-        fireRate: 6,
+        fireRate: 7,
         cost: 3500,
-        soundSrc:gunSoundSrc
-
-    },
-    sound: pistolSound
+        soundSrc:hunterSoundSrc
+    }
 }
-
 export default gunConstants;

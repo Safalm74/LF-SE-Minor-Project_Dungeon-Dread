@@ -11,7 +11,7 @@ import gruntType4Sprite from "../sprites/grunt[Type4]Sprite";
 import spwanSprite from "../sprites/spwanSprite";
 //objs
 import { hero } from "../screens/gameScreen";
-
+//green with stick enemy
 export default class GruntType4 extends Entity {
     isSpwaned: boolean = false;
     attackInterval: any = null;

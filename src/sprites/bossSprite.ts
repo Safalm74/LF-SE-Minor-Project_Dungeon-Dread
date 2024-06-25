@@ -1,12 +1,11 @@
+//modules
 import Point from "../modules/points";
-
 type BossSprite = {
     width: number;
     height: number;
     positionLeft: Point[];
     positionRight: Point[];
 }
-
 const bossSprite: BossSprite = {
     width: 226,
     height: 148,
@@ -91,5 +90,4 @@ const bossSprite: BossSprite = {
         new Point(8665, 21)
     ]
 }
-
 export default bossSprite;

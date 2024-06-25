@@ -1,11 +1,10 @@
+//modules
 import Point from "../modules/points";
-
 type attack = {
     width: number;
     height: number;
     position: Point;
 }
-
 type GruntType4Sprite = {
     width: number;
     height: number;
@@ -14,7 +13,6 @@ type GruntType4Sprite = {
     attackRight: attack[];
     attackLeft: attack[];
 }
-
 const gruntType4Sprite: GruntType4Sprite = {
     width: 45,
     height: 55,
@@ -34,33 +32,33 @@ const gruntType4Sprite: GruntType4Sprite = {
         {
             width: 34,
             height: 58,
-            position:new Point(173, 283)
+            position: new Point(173, 283)
         },
         {
             width: 64,
             height: 41,
-            position:new Point(208, 300)
+            position: new Point(208, 300)
         },
         {
             width: 53,
             height: 42,
-            position:new Point(273, 305)
+            position: new Point(273, 305)
         }
     ], attackRight: [
         {
             width: 33,
             height: 58,
-            position:new Point(20, 283)
+            position: new Point(20, 283)
         },
         {
             width: 64,
             height: 41,
-            position:new Point(54, 300)
+            position: new Point(54, 300)
         },
         {
             width: 53,
             height: 41,
-            position:new Point(119, 306)
+            position: new Point(119, 306)
         }
     ]
 }

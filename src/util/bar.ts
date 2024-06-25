@@ -1,3 +1,4 @@
+//modules
 import Point from "../modules/points";
 export default function progressBar(
     ctx:CanvasRenderingContext2D,

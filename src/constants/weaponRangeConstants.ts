@@ -5,7 +5,6 @@ type WeaponRangeConstants={
     pestolFireRate:number
     pestolDamage:number
 }
-
 const weaponRangeConstants: WeaponRangeConstants={
     bulletSize:2,
     bulletVelocity:20,
@@ -13,5 +12,4 @@ const weaponRangeConstants: WeaponRangeConstants={
     pestolFireRate:1,
     pestolDamage:5
 }
-
 export default weaponRangeConstants;

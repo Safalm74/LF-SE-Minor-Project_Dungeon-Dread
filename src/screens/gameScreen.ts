@@ -495,8 +495,6 @@ function displayAll(ctx: CanvasRenderingContext2D) {
             "0.1rem"
         );
     }
-
-    hero.gemCount = 10000
     if (hero.healthpoint <= 0) {
         resetWaveChange();
         resetGame();
@@ -641,63 +639,73 @@ function resetWaveChange() {
 export { hero, gruntArray, bulletArray, spitArray, boss }
 export default function gameMain(
     ctx: CanvasRenderingContext2D) {
-    stateConstants.ingame = true;
-    if (!hero) {
-        createHero();
-    }
-    resetWaveChange();
-    createEnemy();
-    //moving focustohero
-    mainConstants.dropdownInterval = true;
-    setTimeout(
-        () => { mainConstants.dropdownInterval = false; }
-        ,
-        5000
-    );
-    if (mainConstants.dropdownInterval) {
-        dropDownMsg(ctx, `wave : ${stateConstants.wave}`);
-    }
-    //creating boss
-    if (stateConstants.wave >= 5) {
-        boss = new Boss(new Point(
-            getRandomInt(mapConstants.tileSize +
-                mapConstants.displayPosition.x,
-                window.innerWidth * 5 -
-                mapConstants.tileSize),
-            getRandomInt(mapConstants.tileSize +
-                mapConstants.displayPosition.y,
-                window.innerHeight * 5 -
-                mapConstants.tileSize * 2)),
-            "red",
-            true,
-            gruntConstants.boss.healthPoint,
-            gruntConstants.boss.width,
-            gruntConstants.boss.height,
-            gruntConstants.boss.damage,
-            gruntConstants.boss.attackRate,
-            gruntConstants.boss.image,
-            2,
-            gruntConstants.boss.velocity
+    if (!stateConstants.infoScreenFlag) {
+        stateConstants.ingame = true;
+        if (!hero) {
+            createHero();
+        }
+        resetWaveChange();
+        createEnemy();
+        //moving focustohero
+        mainConstants.dropdownInterval = true;
+        setTimeout(
+            () => { mainConstants.dropdownInterval = false; }
+            ,
+            5000
         );
-        mainConstants.maxEnemies = 50;
-        boss.changeSpeed();
-    }
-    if (!stateConstants.ismute) {
-        if (mainConstants.windSound) {
-            mainConstants.windSound.pause();
-            mainConstants.windSound.currentTime = 0;
+        if (mainConstants.dropdownInterval) {
+            dropDownMsg(ctx, `wave : ${stateConstants.wave}`);
         }
-        mainConstants.windSound.play();
-    }
-    mainConstants.weaponArray.forEach(
-        (obj) => {
-            if (obj) {
-                clearInterval(obj.fireInterval);
-                obj.fireInterval = null;
-                obj.detectedEnemy = false;
-                obj.trackingEnemyObj = null;
+
+        if (boss) {
+            clearInterval(boss.attackInterval);
+            boss.attackInterval = null;
+            clearInterval(boss.spitInterval);
+            boss.spitInterval = null;
+        }
+        boss = null;
+        //creating boss
+        if (stateConstants.wave >= 5) {
+            boss = new Boss(new Point(
+                getRandomInt(mapConstants.tileSize +
+                    mapConstants.displayPosition.x,
+                    window.innerWidth * 5 -
+                    mapConstants.tileSize),
+                getRandomInt(mapConstants.tileSize +
+                    mapConstants.displayPosition.y,
+                    window.innerHeight * 5 -
+                    mapConstants.tileSize * 2)),
+                "red",
+                true,
+                gruntConstants.boss.healthPoint,
+                gruntConstants.boss.width,
+                gruntConstants.boss.height,
+                gruntConstants.boss.damage,
+                gruntConstants.boss.attackRate,
+                gruntConstants.boss.image,
+                2,
+                gruntConstants.boss.velocity
+            );
+            mainConstants.maxEnemies = 50;
+            boss.changeSpeed();
+        }
+        if (!stateConstants.ismute) {
+            if (mainConstants.windSound) {
+                mainConstants.windSound.pause();
+                mainConstants.windSound.currentTime = 0;
             }
+            mainConstants.windSound.play();
         }
-    );
-    gameLoop(ctx);
+        mainConstants.weaponArray.forEach(
+            (obj) => {
+                if (obj) {
+                    clearInterval(obj.fireInterval);
+                    obj.fireInterval = null;
+                    obj.detectedEnemy = false;
+                    obj.trackingEnemyObj = null;
+                }
+            }
+        );
+        gameLoop(ctx);
+    }
 }

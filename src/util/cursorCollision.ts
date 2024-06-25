@@ -1,5 +1,8 @@
-import mainConstants from "../constants/mainConstants";
+//modules
 import Point from "../modules/points";
+//constants
+import mainConstants from "../constants/mainConstants";
+//cursor collision checking function
 export default function checkCursorCollision(
     cursorPosiiton: Point,
     BtnPosition: Point,

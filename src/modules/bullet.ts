@@ -4,8 +4,6 @@ import GruntType1 from "./gruntType1and3";
 import GruntType4 from "./gruntType4";
 import GruntType2 from "./gruntType2";
 import Boss from "./boss";
-
-
 interface IBullet {
     startPoint: Point;
     endPoint: Point;
@@ -15,7 +13,7 @@ interface IBullet {
     gunPosition: Point;
 
 }
-
+//draws bullet
 export default class Bullet implements IBullet {
     startPoint: Point;
     endPoint: Point;
@@ -23,7 +21,6 @@ export default class Bullet implements IBullet {
     isHit: boolean = false;
     velocity: Point;
     gunPosition: Point;
-
     constructor(
         startPoint: Point,
         endPoint: Point,
@@ -38,7 +35,6 @@ export default class Bullet implements IBullet {
         this.velocity = velocity;
         this.gunPosition = gunPosition;
     }
-
     checkOnhit(
         objArray: (GruntType1 | GruntType2|GruntType4)[],
         boss:Boss|null=null
@@ -73,7 +69,6 @@ export default class Bullet implements IBullet {
 
         }
     }
-
     draw(ctx: CanvasRenderingContext2D) {
         //updating points
         this.startPoint = this.startPoint.add(this.velocity);
@@ -85,7 +80,5 @@ export default class Bullet implements IBullet {
         ctx.lineTo(this.endPoint.x, this.endPoint.y);
         ctx.lineWidth = 3;
         ctx.stroke();
-
     }
-
 }

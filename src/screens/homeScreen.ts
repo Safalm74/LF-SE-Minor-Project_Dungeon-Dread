@@ -48,7 +48,24 @@ function btnsclicked(
         )) {
         stateConstants.homeScreenFlag = false;
         mainConstants.homeSound.pause();
-        gameMain(ctx)
+        //loading about screen
+        loadInfoScreen(
+            ctx,
+            "story1",
+            "Continue =>",
+            () => {
+                loadInfoScreen(
+                    ctx,
+                    "aboutHero",
+                    "Continue =>",
+                    gameMain,
+                    screenConstants.heroIntroductionSound
+                )
+
+                gameMain(ctx)
+            },
+            screenConstants.story1sound
+        )
     }
     if (controlBtnSize &&
         checkCursorCollision(

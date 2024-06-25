@@ -1,23 +1,33 @@
+//modules
+import Point from "../modules/points";
+//constants
 import heroConstants from "../constants/heroConstants";
 import mainConstants from "../constants/mainConstants";
 import stateConstants from "../constants/stateConstants";
+//objs
 import { ctx } from "../main";
-import Point from "../modules/points";
 import { buyBtnsclicked, upgradeWeapon } from "../screens/buyScreen";
 import { controlBtnClicked } from "../screens/controlScreen";
 import { firstScreenbtnsclicked } from "../screens/firstScreen";
 import { hero } from "../screens/gameScreen";
 import { btnsclicked } from "../screens/homeScreen";
 import { infoScreenBtn } from "../screens/infoScreen";
+import screenConstants from "../constants/screenConstants";
+//functiontohandlesounds
 function handleSounds() {
     stateConstants.ismute = stateConstants.ismute ?
-    false :
-    true
+        false :
+        true
     if (stateConstants.ismute) {
         mainConstants.homeSound.pause();
         mainConstants.homeSound.currentTime = 0;
         mainConstants.windSound.pause();
         mainConstants.windSound.currentTime = 0;
+        if (screenConstants.prevSoundHolder) {
+            screenConstants.prevSoundHolder.pause();
+            mainConstants.windSound.currentTime = 0;
+        }
+
     }
     else {
         if (stateConstants.homeScreenFlag) {
@@ -37,8 +47,7 @@ function handleEvents() {
 
     ) {
         hero.velocity.x = 0.7 * heroConstants.velocity.x
-        hero.velocity.y = 0.7* heroConstants.velocity.y
-
+        hero.velocity.y = 0.7 * heroConstants.velocity.y
     }
     else if (
         (
@@ -49,8 +58,7 @@ function handleEvents() {
                 stateConstants.btnPressed['s'] ||
                 stateConstants.btnPressed['d']
             ))
-    )
-     {
+    ) {
         hero.run();
     }
     else {
@@ -78,11 +86,10 @@ function handleEvents() {
     if (stateConstants.btnPressed[' ']) {
         hero.ability();
     }
-
 }
-
+//exporting to check handles
 export { handleEvents }
-
+//function to define events
 export default function eventhandler() {
     //Defining Event Handlers
     window.addEventListener(
@@ -150,5 +157,4 @@ export default function eventhandler() {
             }
         }
     )
-
 }

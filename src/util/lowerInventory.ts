@@ -1,5 +1,8 @@
-import { canvas } from "../main";
+//constants
 import mainConstants from "../constants/mainConstants";
+//objs
+import { canvas } from "../main";
+//function to displaylowerInventory
 export default function lowerInventory(ctx: CanvasRenderingContext2D) {
     const weponsNumber = 6;
     ctx.strokeStyle = "white"
@@ -17,7 +20,6 @@ export default function lowerInventory(ctx: CanvasRenderingContext2D) {
         canvas.width * 0.08
 
     )
-
     ctx.font = "1rem Arial"
     const lineHeight = 10;
     for (let i = 0; i < weponsNumber; i++) {
@@ -33,7 +35,6 @@ export default function lowerInventory(ctx: CanvasRenderingContext2D) {
                     ctx.fillStyle = "rgba(255,215,0,0.8)";
                     break;
             }
-
         }
         else {
             ctx.fillStyle = "rgba(200,200,200,1)"
@@ -52,7 +53,6 @@ export default function lowerInventory(ctx: CanvasRenderingContext2D) {
                 canvas.width * 0.05,
                 canvas.width * 0.05
             )
-
             ctx.fillStyle = "green"
             ctx.fillRect(
                 -mainConstants.mapPosition.x +
@@ -72,10 +72,6 @@ export default function lowerInventory(ctx: CanvasRenderingContext2D) {
                 -mainConstants.mapPosition.y +
                 canvas.height * (0.8 + 0.03) + lineHeight
             )
-
         }
-
-
     }
-
 }

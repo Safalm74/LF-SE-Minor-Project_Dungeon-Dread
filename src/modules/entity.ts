@@ -1,3 +1,4 @@
+//modules
 import Point from "./points";
 interface IEntity {
     position: Point;
@@ -13,6 +14,7 @@ interface IEntity {
     gruntImage: HTMLImageElement;
     gruntType:number;
 }
+//parent obj for enemies and hero
 export default class Entity implements IEntity {
     position: Point;
     team: "red" | "blue";

@@ -2,19 +2,16 @@
 import Entity from "./entity";
 import Point from "./points";
 import Spit from "./spit";
-
 //constants
 import gruntConstants from "../constants/gruntConstants";
 import weaponRangeConstants from "../constants/weaponRangeConstants";
-
 //utils
 import progressBar from "../util/bar";
-
 //sprite information
 import bossSprite from "../sprites/bossSprite";
-
 //objs and array
 import { hero, spitArray } from "../screens/gameScreen";
+//angler monster
 export default class Boss extends Entity {
     speedToggle: boolean = false;
     attackInterval: any = null;
@@ -45,7 +42,6 @@ export default class Boss extends Entity {
         }
         return false;
     }
-
     update() {//function that moves, attacks
         if (!this.checkCollision()) {
             this.moveTowardsHero();
@@ -66,11 +62,9 @@ export default class Boss extends Entity {
                 );
             }
         }
-
     }
-
     spitTohero() { //spit,another ability of boss
-        if (!this.attackInterval) {
+        if (!this.spitInterval) {
             this.spitInterval = setInterval(
                 () => {
                     /*calculating 
@@ -102,7 +96,6 @@ export default class Boss extends Entity {
                         //pushing to spit obj
                         spitArray.push(spitObj);
                     }
-
                 },
                 1000 / this.attackRate
             );
@@ -120,8 +113,6 @@ export default class Boss extends Entity {
         this.position.x += resultantVelocity.x;
         this.position.y += resultantVelocity.y;
     }
-
-
     draw(ctx: CanvasRenderingContext2D) {
         this.update();
         this.lookingLeft = hero.position.x < //checking looking direction from center of boss
@@ -141,7 +132,6 @@ export default class Boss extends Entity {
             gruntConstants.boss.width;
         this.height = bossSprite.height *
             gruntConstants.boss.height;
-
         ctx.drawImage(
             bossImage,
             lookingDirection[position].x,
@@ -161,8 +151,6 @@ export default class Boss extends Entity {
             200,
             5
         );
-
         this.spritePosition++
     }
-
 }

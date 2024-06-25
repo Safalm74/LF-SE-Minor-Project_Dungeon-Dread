@@ -8,8 +8,6 @@ import mainConstants from "../constants/mainConstants";
 import gemSprite from "../sprites/gemSprite";
 //objs
 import { hero } from "../screens/gameScreen";
-
-
 interface IGem {
     position: Point;
     value: number;
@@ -18,14 +16,13 @@ interface IGem {
     height: number;
 
 }
-
+//gem image
 export default class Gem implements IGem {
     position: Point;
     value: number;
     spritePostion: number = 0;
     width: number;
     height: number;
-
     constructor(
         position: Point,
         value: number,
@@ -38,7 +35,6 @@ export default class Gem implements IGem {
         this.width = width;
         this.height = height;
     }
-
     draw(ctx: CanvasRenderingContext2D) {
         const staggerFrame = 5; //to slowdown animation
         const position = Math.floor( //sprite image position
@@ -81,6 +77,4 @@ export default class Gem implements IGem {
         }
         return true;
     }
-
-
 }

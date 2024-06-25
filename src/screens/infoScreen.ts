@@ -26,6 +26,10 @@ function infoScreenBtn(
         aboutToHomebtnSize
     )) {
         stateConstants.infoScreenFlag=false;
+        if (screenConstants.prevSoundHolder) {
+            screenConstants.prevSoundHolder.pause();
+            screenConstants.prevSoundHolder.currentTime = 0;
+        }
         BtnFunction(ctx);
     }
 }
@@ -66,7 +70,7 @@ function displayAll(ctx: CanvasRenderingContext2D,
         new Point(
             canvas.width * 0.1,
             canvas.height * 0.3),
-        "1rem GloriaHallelujah"
+        "1.5rem Arial"
     );
     aboutToHomeBtnPosition=new Point(
         canvas.width * 0.1,
@@ -107,7 +111,7 @@ export default function infoScreen(ctx: CanvasRenderingContext2D,
     btnName:string,
     BtnPassedFunction:(ctx:CanvasRenderingContext2D)=>void
 ) {
-    BtnFunction=BtnPassedFunction
+    BtnFunction=BtnPassedFunction;
     stateConstants.infoScreenFlag=true;
     ctx.translate(-mainConstants.mapPosition.x, 
         -mainConstants.mapPosition.y);

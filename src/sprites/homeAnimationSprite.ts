@@ -1,5 +1,5 @@
+//modules
 import Point from "../modules/points";
-
 type homeAnimationType = {
     width: number;
     height: number;
@@ -7,9 +7,7 @@ type homeAnimationType = {
 }
 type homeAnimationSprite = {
     1: homeAnimationType[];
-
 }
-
 const homeAnimationSprite: homeAnimationSprite = {
     1: [
         {
@@ -78,8 +76,5 @@ const homeAnimationSprite: homeAnimationSprite = {
             position: new Point(331, 614)
         }
     ]
-
-
 }
-
 export default homeAnimationSprite;

@@ -1,5 +1,6 @@
+//modules
 import Point from "../modules/points"
-
+//btn function
 export default function Btn(
     ctx: CanvasRenderingContext2D,
     msg: string,

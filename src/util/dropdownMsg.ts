@@ -1,7 +1,10 @@
-import mainConstants from "../constants/mainConstants";
-import { canvas } from "../main";
+//modules
 import Point from "../modules/points";
-
+//constants
+import mainConstants from "../constants/mainConstants";
+//objs
+import { canvas } from "../main";
+//dropdownmsg function
 export default function dropDownMsg(
     ctx: CanvasRenderingContext2D,
     msg: string,

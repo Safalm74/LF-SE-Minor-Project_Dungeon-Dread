@@ -24,7 +24,7 @@ const stateConstants: StateConstants = {
     btnPressed: {
 
     },
-    wave: 5,
+    wave: 1,
     buyScreenFlag: false,
     ismute: false,
     firstPageFlag: false,

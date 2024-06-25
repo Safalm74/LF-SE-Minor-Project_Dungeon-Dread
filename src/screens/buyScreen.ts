@@ -11,6 +11,8 @@ import progressBar from "../util/bar";
 //sprite information
 import pestolSprite from "../sprites/pestolSprite";
 import smgSprite from "../sprites/smgSprite";
+import vandalSprite from "../sprites/vandalSprite";
+import hunterSprite from "../sprites/hunterStrite";
 //objs
 import { canvas } from "../main";
 //screens
@@ -121,6 +123,40 @@ let buyBtnsclicked = (
                             new Audio(gunConstants.smg.soundSrc)
                         );
                         hero.gemCount -= gunConstants.smg.cost;
+                    }
+                    break;
+                case 2:
+                    if (hero.gemCount >= gunConstants.vandal.cost) {
+                        mainConstants.weaponArray[selectedPosition] = new Gun(
+                            hero.weaponPositions[selectedPosition],
+                            false,
+                            gunConstants.vandal.damage,
+                            gunConstants.vandal.width,
+                            gunConstants.vandal.height,
+                            gunConstants.vandal.fireRate,
+                            gunConstants.vandal.cost,
+                            gunConstants.vandal.image,
+                            "vandal",
+                            new Audio(gunConstants.vandal.soundSrc)
+                        );
+                        hero.gemCount -= gunConstants.vandal.cost;
+                    }
+                    break;
+                case 3:
+                    if (hero.gemCount >= gunConstants.hunter.cost) {
+                        mainConstants.weaponArray[selectedPosition] = new Gun(
+                            hero.weaponPositions[selectedPosition],
+                            false,
+                            gunConstants.hunter.damage,
+                            gunConstants.hunter.width,
+                            gunConstants.hunter.height,
+                            gunConstants.hunter.fireRate,
+                            gunConstants.hunter.cost,
+                            gunConstants.hunter.image,
+                            "hunter",
+                            new Audio(gunConstants.hunter.soundSrc)
+                        );
+                        hero.gemCount -= gunConstants.hunter.cost;
                     }
                     break;
             }
@@ -248,6 +284,7 @@ function buyPannelLoop(ctx: CanvasRenderingContext2D) {
         canvas.width * 0.1 - mainConstants.mapPosition.x,
         canvas.height * 0.1 - mainConstants.mapPosition.y
     )
+    let gunIndex: number;
     const gunLogoSize = canvas.width * 0.05;
     // clearing screen 
     ctx?.clearRect(
@@ -284,9 +321,10 @@ function buyPannelLoop(ctx: CanvasRenderingContext2D) {
     //innerbox for buy
     ctx.strokeStyle = "green"
     //buycard for pistol
+    gunIndex = 0
     buyCard(
         ctx,
-        0,
+        gunIndex,
         boxWrapperPosition,
         boxWrapperWidth,
         boxWrapperHeight,
@@ -302,9 +340,10 @@ function buyPannelLoop(ctx: CanvasRenderingContext2D) {
 
     );
     //buycard for smg
+    gunIndex = 1
     buyCard(
         ctx,
-        1,
+        gunIndex,
         boxWrapperPosition,
         boxWrapperWidth,
         boxWrapperHeight,
@@ -317,6 +356,43 @@ function buyPannelLoop(ctx: CanvasRenderingContext2D) {
         gunConstants.smg.cost,
         gunConstants.smg.damage,
         gunConstants.smg.fireRate
+    );
+    //buycard for vandal
+    gunIndex = 2
+    buyCard(
+        ctx,
+        gunIndex,
+        boxWrapperPosition,
+        boxWrapperWidth,
+        boxWrapperHeight,
+        gunLogoSize,
+        gunConstants.vandal.image,
+        vandalSprite.positionRight[0],
+        vandalSprite.width,
+        vandalSprite.height,
+        `vandal`,
+        gunConstants.vandal.cost,
+        gunConstants.vandal.damage,
+        gunConstants.vandal.fireRate
+
+    );
+    //buycard for vandal
+    gunIndex = 3
+    buyCard(
+        ctx,
+        gunIndex,
+        boxWrapperPosition,
+        boxWrapperWidth,
+        boxWrapperHeight,
+        gunLogoSize,
+        gunConstants.hunter.image,
+        hunterSprite.positionRight[0],
+        hunterSprite.width,
+        hunterSprite.height,
+        `hunter`,
+        gunConstants.hunter.cost,
+        gunConstants.hunter.damage,
+        gunConstants.vandal.fireRate
 
     );
     //rendering lower inventory

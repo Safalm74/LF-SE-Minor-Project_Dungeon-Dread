@@ -90,7 +90,6 @@ export default function eventhandler() {
         (e) => {
             stateConstants.btnPressed[e.key.toLowerCase()] = true
             if (stateConstants.buyScreenFlag && stateConstants.btnPressed['u']) {
-                console.log('here');
                 upgradeWeapon();
             }
             if (e.key.toLowerCase() === "m") {

@@ -485,6 +485,8 @@ function displayAll(ctx: CanvasRenderingContext2D) {
             "0.1rem"
         );
     }
+
+    hero.gemCount=10000
     if (hero.healthpoint <= 0) {
         resetWaveChange();
         resetGame();
@@ -659,6 +661,7 @@ export default function gameMain(
             2,
             gruntConstants.boss.velocity
         );
+        mainConstants.maxEnemies=50;
         boss.changeSpeed();
     }
     if (!stateConstants.ismute) {

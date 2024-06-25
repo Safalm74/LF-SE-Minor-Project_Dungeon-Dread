@@ -1,27 +1,17 @@
 import Point from "../modules/points";
 
-type SmgSprite={
-    width:number;
-    height:number;
-    positionRight:Point[];
-    positionLeft:Point[];
+type SmgSprite = {
+    width: number;
+    height: number;
+    positionRight: Point[];
+    positionLeft: Point[];
 }
 
-const smgSprite:SmgSprite={
-    width:66,
-    height:38,
-    positionLeft: [
-        new Point(5,31),
-        new Point(67,40),
-        new Point(19,46)
-    ],
-    positionRight: [
-        new Point(90,31),
-        new Point(94,40),
-        new Point(143,46)
-
-    ]
-    
+const smgSprite: SmgSprite = {
+    width: 101,
+    height: 54,
+    positionRight: [new Point(0, 0)],
+    positionLeft: [new Point(101, 54)]
 }
 
 export default smgSprite;

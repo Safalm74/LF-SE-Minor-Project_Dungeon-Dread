@@ -1,8 +1,10 @@
 import stateConstants from "../constants/stateConstants";
 import weaponRangeConstants from "../constants/weaponRangeConstants";
 import { bulletArray } from "../screens/gameScreen";
+import hunterSprite from "../sprites/hunterStrite";
 import pestolSprite from "../sprites/pestolSprite";
 import smgSprite from "../sprites/smgSprite";
+import vandalSprite from "../sprites/vandalSprite";
 import Boss from "./boss";
 import Bullet from "./bullet";
 import GruntType1and3 from "./gruntType1and3";
@@ -17,7 +19,7 @@ interface IGun {
     height: number;
     spritePosition: number;
     cost: number;
-    guntype: "pistol"| "smg"| "sword";
+    guntype: "pistol" | "smg" | "vandal" | "hunter";
 }
 export default class Gun implements IGun {
     position: Point;
@@ -29,14 +31,14 @@ export default class Gun implements IGun {
     fireRate: number;
     cost: number;
     gunImage: HTMLImageElement;
-    guntype: "pistol"| "smg"| "sword";
+    guntype: "pistol" | "smg" | "vandal" | "hunter";
     detectedEnemy: boolean = false;
-    trackingEnemyObj: any= null;
+    trackingEnemyObj: any = null;
     lookingAngle: number = 0;
     shootingPoint: Point = pestolSprite.positionRight[1];
     fireInterval: any = null;
-    level:number=1;
-    sound:HTMLAudioElement;
+    level: number = 1;
+    sound: HTMLAudioElement;
     constructor(
         position: Point,
         lookingLeft: boolean,
@@ -46,8 +48,8 @@ export default class Gun implements IGun {
         firerate: number = 1,
         cost: number = 500,
         gunImg: HTMLImageElement,
-        guntype: "pistol"| "smg"| "sword",
-        sound:HTMLAudioElement
+        guntype: "pistol" | "smg" | "vandal" | "hunter",
+        sound: HTMLAudioElement
     ) {
         this.position = position;
         this.lookingLeft = lookingLeft;
@@ -57,14 +59,14 @@ export default class Gun implements IGun {
         this.gunImage = gunImg;
         this.fireRate = firerate;
         this.cost = cost;
-        this.guntype=guntype;
-        this.sound=sound;
-    }playSound(){
-        if(!stateConstants.ismute){
-            this.sound.volume=0.2
-            if(this.sound){
+        this.guntype = guntype;
+        this.sound = sound;
+    } playSound() {
+        if (!stateConstants.ismute) {
+            this.sound.volume = 0.2
+            if (this.sound) {
                 this.sound.pause();
-                this.sound.currentTime=0;
+                this.sound.currentTime = 0;
             }
             this.sound.play();
         }
@@ -76,7 +78,8 @@ export default class Gun implements IGun {
             (logicalCenter.distanceBetween(obj.position)
                 < weaponRangeConstants.pestol) && !this.detectedEnemy) {
             this.detectedEnemy = true;
-            this.trackingEnemyObj = obj}
+            this.trackingEnemyObj = obj
+        }
         if (this.detectedEnemy && this.trackingEnemyObj) {
             this.lookingAngle = logicalCenter.angle(
                 new Point(
@@ -95,12 +98,12 @@ export default class Gun implements IGun {
             }
 
         }
-        if (this.trackingEnemyObj &&this.trackingEnemyObj.healthpoint<0){
+        if (this.trackingEnemyObj && this.trackingEnemyObj.healthpoint < 0) {
             this.detectedEnemy = false;
             clearInterval(this.fireInterval);
             this.fireInterval = null;
         }
-        
+
 
     }
 
@@ -132,9 +135,9 @@ export default class Gun implements IGun {
             this.fireInterval = setInterval(
                 () => {
                     if (this.trackingEnemyObj) {
-                        const trackingEnemyObjPosition=new Point( // to aim at center of body of zombie
-                            this.trackingEnemyObj.position.x +this.trackingEnemyObj.width/2,
-                            this.trackingEnemyObj.position.y +this.trackingEnemyObj.height/2)
+                        const trackingEnemyObjPosition = new Point( // to aim at center of body of zombie
+                            this.trackingEnemyObj.position.x + this.trackingEnemyObj.width / 2,
+                            this.trackingEnemyObj.position.y + this.trackingEnemyObj.height / 2)
                         const vector = this.shootingPoint.pointDifference(trackingEnemyObjPosition);
                         const magnitude = this.shootingPoint.distanceBetween(trackingEnemyObjPosition);
                         const unitVector = new Point(
@@ -167,12 +170,18 @@ export default class Gun implements IGun {
 
     draw(ctx: CanvasRenderingContext2D) {
         let gunSprite;
-        switch(this.guntype){
+        switch (this.guntype) {
             case "pistol":
-                gunSprite=pestolSprite;
+                gunSprite = pestolSprite;
                 break;
             case "smg":
-                gunSprite=smgSprite;
+                gunSprite = smgSprite;
+                break;
+            case "vandal":
+                gunSprite = vandalSprite;
+                break;
+            case "hunter":
+                gunSprite = hunterSprite;
                 break;
         }
         ctx.translate(this.position.x, this.position.y)
@@ -189,9 +198,9 @@ export default class Gun implements IGun {
 
 
         if (this.trackingEnemyObj && this.position.x > this.trackingEnemyObj!.position.x) {
-            lookingDirectionPosition = lookingDirectionPosition === pestolSprite.positionLeft[0] ?
-                pestolSprite.positionRight[0] :
-                pestolSprite.positionLeft[0]
+            lookingDirectionPosition = lookingDirectionPosition === gunSprite.positionLeft[0] ?
+                gunSprite.positionRight[0] :
+                gunSprite.positionLeft[0]
 
             this.shootingPoint.x = 0;
 
@@ -204,8 +213,8 @@ export default class Gun implements IGun {
             this.gunImage,
             lookingDirectionPosition.x,
             lookingDirectionPosition.y,
-            pestolSprite.width,
-            pestolSprite.height,
+            gunSprite.width,
+            gunSprite.height,
             0,
             0,
             this.width,

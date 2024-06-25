@@ -49,8 +49,8 @@ denySound.volume=0.5;
 const mainConstants: MainConstants = {
     collideableObjs: [],
     heroTotalHealth: 120,
-    waveIntervalTime: 90 * 1000,
-    buyTime:30*1000,
+    waveIntervalTime: 30 * 1000,
+    buyTime:5*1000,
     maxEnemies: 100 * mapConstants.mapSizeMultiplier,
     mapPosition: new Point(0, 0),
     dropdownInterval: null,

@@ -79,7 +79,6 @@ function homeMainLoop(ctx: CanvasRenderingContext2D) {
 export { controlBtnClicked }
 export default function controlScreen(ctx: CanvasRenderingContext2D) {
     stateConstants.controlScreenFlag=true;
-    console.log("in control");
     ctx.translate(-mainConstants.mapPosition.x, 
         -mainConstants.mapPosition.y);
     mainConstants.mapPosition=new Point(0,0)

@@ -130,7 +130,6 @@ export default class Gun implements IGun {
             Math.sin(this.lookingAngle) +
             (this.shootingPoint.y - this.position.y) *
             Math.cos(this.lookingAngle)
-
         if (!this.fireInterval) {
             this.fireInterval = setInterval(
                 () => {

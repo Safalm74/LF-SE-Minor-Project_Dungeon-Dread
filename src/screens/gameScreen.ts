@@ -44,7 +44,7 @@ let spitArray: Spit[] = [];
 //hero obj
 let hero: Hero;
 //boss
-let boss: Boss;
+let boss: Boss | null;
 // create enemy interval
 let createEnemyInterval: any;
 //function to return time difference and detect end of wave
@@ -83,6 +83,7 @@ function removeDeadEnemy() {
         (obj) => {
             if (obj.healthpoint < 0) {
                 clearInterval(obj.attackInterval);
+                obj.attackInterval = null;
                 gemArray.push(
                     new Gem(
                         obj.position,
@@ -246,25 +247,32 @@ function createEnemy() {
 function resetGame() {
     stateConstants.ingame = false;
     clearInterval(hero.abilityInterval);
-    if (boss) {
-        clearInterval(boss.attackInterval);
-    }
-    mainConstants.weaponArray.forEach(
-        (obj) => {
-            if (obj) {
-                clearInterval(obj.fireInterval);
-                obj.detectedEnemy = false;
-                obj.trackingEnemyObj = null;
-            }
-        }
-    );
+    hero.abilityInterval = null
     mainConstants.weaponArray = [];
     stateConstants.wave = 1;
     gruntArray.forEach((obj) => {
         if (obj) {
             clearInterval(obj.attackInterval);
+            obj.attackInterval = null;
         }
     });
+    mainConstants.weaponArray.forEach(
+        (obj) => {
+            if (obj) {
+                clearInterval(obj.fireInterval);
+                obj.fireInterval = null;
+                obj.detectedEnemy = false;
+                obj.trackingEnemyObj = null;
+            }
+        }
+    );
+    if (boss) {
+        clearInterval(boss.attackInterval);
+        boss.attackInterval = null;
+        clearInterval(boss.spitInterval);
+        boss.spitInterval = null;
+    }
+    boss = null;
     createHero();
 }
 //function that handles all display
@@ -295,7 +303,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         mainConstants.maxEnemies = 50
         mainConstants.weaponArray.forEach(
             (wobj) => {
-                if (wobj) {
+                if (boss && wobj) {
                     wobj.detectEnemy(boss)
                 }
             }
@@ -326,12 +334,10 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         1000
     );
     if (hero.healthpoint > 30) {
-
         gradient.addColorStop(0, "rgba(10,10,10,0)")
         gradient.addColorStop(1, "rgba(0,0,0,0.99)")
     }
     else {
-
         gradient.addColorStop(0, "rgba(10,10,10,0)")
         gradient.addColorStop(1, "rgba(200,0,0,0.99)")
     }
@@ -384,7 +390,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         heroConstants.sharingan,
         canvas.width * 0.05 - mainConstants.mapPosition.x,
         (canvas.height / 5 -
-            mainConstants.mapPosition.y) + gemSprite[1][0].height*0.5,
+            mainConstants.mapPosition.y) + gemSprite[1][0].height * 0.5,
         gemSprite[1][0].width * 0.4,
         gemSprite[1][0].height * 0.4
     );
@@ -394,7 +400,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         ctx.fillStyle = "rgba(240,240,240,0.6)"
         ctx.arc(
             (canvas.width * 0.05 - mainConstants.mapPosition.x) + gemSprite[1][0].width * 0.2,
-            (canvas.height / 5 - mainConstants.mapPosition.y) + gemSprite[1][0].height*0.5 + gemSprite[1][0].height * 0.2,
+            (canvas.height / 5 - mainConstants.mapPosition.y) + gemSprite[1][0].height * 0.5 + gemSprite[1][0].height * 0.2,
             gemSprite[1][0].width * 0.2,
             0,
             2 * Math.PI * (1 - timeRemainingForAbility)
@@ -406,7 +412,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         ctx.fillStyle = "rgba(240,240,240,0.6)"
         ctx.arc(
             (canvas.width * 0.05 - mainConstants.mapPosition.x) + gemSprite[1][0].width * 0.2,
-            (canvas.height / 5 - mainConstants.mapPosition.y) + gemSprite[1][0].height*0.5 + gemSprite[1][0].height * 0.2,
+            (canvas.height / 5 - mainConstants.mapPosition.y) + gemSprite[1][0].height * 0.5 + gemSprite[1][0].height * 0.2,
             gemSprite[1][0].width * 0.2,
             0,
             2 * Math.PI
@@ -414,19 +420,19 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         ctx.stroke();
     }
     //show stamina
-    if (hero.staminaUse){
-         progressBar(
-        ctx,
-        new Point(canvas.width * 0.05 -
-            mainConstants.mapPosition.x,
-            (canvas.height / 5 - mainConstants.mapPosition.y) + gemSprite[1][0].height*1.5),
-        hero.stamina,
-        heroConstants.stamina,
-        canvas.width * 0.1,
-        canvas.height * 0.02,
-        'Stamina',
-        "1rem Arial"
-    )
+    if (hero.staminaUse) {
+        progressBar(
+            ctx,
+            new Point(canvas.width * 0.05 -
+                mainConstants.mapPosition.x,
+                (canvas.height / 5 - mainConstants.mapPosition.y) + gemSprite[1][0].height * 1.5),
+            hero.stamina,
+            heroConstants.stamina,
+            canvas.width * 0.1,
+            canvas.height * 0.02,
+            'Stamina',
+            "1rem Arial"
+        )
     }
     //show essence
     progressBar(
@@ -450,9 +456,13 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         stateConstants.wave++;
         mainConstants.weaponArray.forEach(
             (obj) => {
-                clearInterval(obj?.fireInterval);
+                if (obj) {
+                    clearInterval(obj.fireInterval);
+                    obj.fireInterval = null
+                }
             }
         );
+        resetWaveChange();
         buyPannel(ctx);
 
     }
@@ -486,14 +496,14 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         );
     }
 
-    hero.gemCount=10000
+    hero.gemCount = 10000
     if (hero.healthpoint <= 0) {
         resetWaveChange();
         resetGame();
         loadInfoScreen(
             ctx,
             "gameOver",
-            "return Home",
+            "<= return Home",
             homeScreen
         );
         //gameOver(ctx);
@@ -578,20 +588,27 @@ function resetWaveChange() {
     gruntArray.forEach(
         (obj) => {
             clearInterval(obj.attackInterval);
+            obj.attackInterval = null;
         }
     );
     if (boss) {
         clearInterval(boss.attackInterval);
         clearInterval(boss.spitInterval);
+        boss.attackInterval = null;
+        boss.spitInterval = null;
     }
     //reset health
     hero.healthpoint = mainConstants.heroTotalHealth;
+
+    //clearing all arrays
     bulletArray = [];
     gruntArray = [];
     spitArray = [];
     gemArray = [];
+    //clearing creating enemy
     clearInterval(createEnemyInterval);
     createEnemyInterval = null;
+    //assigning new time
     waveStartTime = new Date;
     //if player has no gun
     if (!mainConstants.weaponArray[0]) {
@@ -613,6 +630,7 @@ function resetWaveChange() {
         (obj, i) => {
             if (obj) {
                 clearInterval(obj.fireInterval);
+                obj.fireInterval = null
                 obj.trackingEnemyObj = null;
                 obj.detectedEnemy = false;
                 obj.position = hero.weaponPositions[i];
@@ -661,7 +679,7 @@ export default function gameMain(
             2,
             gruntConstants.boss.velocity
         );
-        mainConstants.maxEnemies=50;
+        mainConstants.maxEnemies = 50;
         boss.changeSpeed();
     }
     if (!stateConstants.ismute) {
@@ -671,5 +689,15 @@ export default function gameMain(
         }
         mainConstants.windSound.play();
     }
+    mainConstants.weaponArray.forEach(
+        (obj) => {
+            if (obj) {
+                clearInterval(obj.fireInterval);
+                obj.fireInterval = null;
+                obj.detectedEnemy = false;
+                obj.trackingEnemyObj = null;
+            }
+        }
+    );
     gameLoop(ctx);
 }

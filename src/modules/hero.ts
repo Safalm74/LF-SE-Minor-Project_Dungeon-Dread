@@ -31,6 +31,7 @@ export default class Hero extends Entity {
     staminaInterval: any;
     healthInterval: any;
     staminaUse: boolean = false;
+    onAttack:boolean=false;
     gemCount: number = 0;
     essenceCount: number = 0;
     weaponPositions: Point[] = [

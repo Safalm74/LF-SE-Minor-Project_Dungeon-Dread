@@ -75,7 +75,6 @@ function homeMainLoop(ctx: CanvasRenderingContext2D) {
         homeMainLoop(ctx)
     });
 }
-
 export { controlBtnClicked }
 export default function controlScreen(ctx: CanvasRenderingContext2D) {
     stateConstants.controlScreenFlag=true;

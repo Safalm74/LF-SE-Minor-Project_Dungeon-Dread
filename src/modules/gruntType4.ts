@@ -56,6 +56,7 @@ export default class GruntType4 extends Entity {
         if (distance > 50) {
             clearInterval(this.attackInterval)
             this.attackInterval = null;
+            hero.onAttack=false;
 
         }
         const unitVector = new Point(
@@ -71,6 +72,7 @@ export default class GruntType4 extends Entity {
             this.position.x += this.velocity.x;
             this.position.y += this.velocity.y;
             this.isAttacking = false;
+            hero.onAttack=false
         }
         else {
             this.isAttacking = true;
@@ -103,6 +105,7 @@ export default class GruntType4 extends Entity {
                 this.spritePosition % //making sure hit damages at instance of hit
                 staggerFrame === 0) {
                 hero.healthpoint -= this.damage;
+                hero.onAttack=true;
             }
             ctx.drawImage(
                 gruntConstants.type3.image,

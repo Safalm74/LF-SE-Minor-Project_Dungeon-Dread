@@ -4,42 +4,33 @@ import type1ImageSrc from "../assets/entity/enemy/grunts/type1.png"
 import type2ImageSrc from "../assets/entity/enemy/grunts/type2.png"
 import bossImageLeftSrc from "../assets/entity/enemy/boss/bossLeft.png"
 import bossImageRightSrc from "../assets/entity/enemy/boss/bossRight.png"
-
+import spwan from "../assets/entity/enemy/spwan.png"
+//sprites
 import gruntType1Sprite from "../sprites/grunt[Type1]Sptite";
 import gruntType3Sprite from "../sprites/grunt[Type3]sprite";
 import Point from "../modules/points";
-
+//utils
 import upcounter from "../util/upcounter";
-
-
-import spwan from "../assets/entity/enemy/spwan.png"
-
+//images
 const spwanImage = new Image;
-spwanImage.src = spwan;
-
-
 const type1Image=new Image;
 const type34Image=new Image;
 const type2Image=new Image;
-
+const bossImageRight = new Image;
+const bossImageLeft = new Image;
+spwanImage.src = spwan;
 type1Image.src=type1ImageSrc;
 type34Image.src=type34ImageSrc;
 type2Image.src=type2ImageSrc;
-const bossImageLeft = new Image;
 bossImageLeft.src = bossImageLeftSrc;
-
-const bossImageRight = new Image;
 bossImageRight.src = bossImageRightSrc;
-
-
+//onloads
 type1Image.onload=upcounter;
 type34Image.onload=upcounter;
 type2Image.onload=upcounter;
 bossImageLeft.onload = upcounter;
 spwanImage.onload = upcounter;
 bossImageRight.onload = upcounter;
-
-
 type gruntInst = {
     healthPoint:number;
     width: number;
@@ -61,7 +52,6 @@ type boss={
     imageLeft:HTMLImageElement;
     imageRight:HTMLImageElement;
 }
-
 type GruntConstants = {
     type1:gruntInst;
     type2:gruntInst;
@@ -71,8 +61,6 @@ type GruntConstants = {
     spwanImage:HTMLImageElement;
 
 }
-
-
 const gruntConstants: GruntConstants = {
 
     type1 :{
@@ -93,7 +81,6 @@ const gruntConstants: GruntConstants = {
         damage:2,
         velocity:new Point(1,1)
     },
-
     type3 :{
         healthPoint:15,
         width: gruntType3Sprite.width * window.innerHeight / 700,
@@ -103,7 +90,6 @@ const gruntConstants: GruntConstants = {
         damage:6,
         velocity:new Point(3,3)
     },
-
     type4 :{
         healthPoint:28,
         width:  window.innerHeight / 500,
@@ -113,7 +99,6 @@ const gruntConstants: GruntConstants = {
         damage:3,
         velocity:new Point(1,1)
     },
-
     boss :{
         healthPoint:800,
         width:  window.innerHeight / 500,
@@ -127,7 +112,5 @@ const gruntConstants: GruntConstants = {
         imageRight:bossImageRight
     },
     spwanImage:spwanImage
-   
 }
-
 export default gruntConstants;

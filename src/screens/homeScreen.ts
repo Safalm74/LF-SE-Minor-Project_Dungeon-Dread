@@ -20,17 +20,18 @@ import gameMain from "./gameScreen";
 //start btn
 let startBtnPosition: Point;
 let startbtnSize: TextMetrics;
+let startbtnColor: string;
 //about btn
 let aboutBtnPosition: Point;
 let aboutBtnSize: TextMetrics;
+let aboutBtnColor: string;
 //about btn
 let controlBtnPosition: Point;
 let controlBtnSize: TextMetrics;
+let controlBtnColor: string;
 //let SpritePosition
 let spritePosition = 0
-//function to check collision position
-
-
+//function to check clicked btn
 function btnsclicked(
     ClickedPosition: Point,
     ctx: CanvasRenderingContext2D
@@ -91,9 +92,7 @@ function btnsclicked(
             homeScreen
         );
     }
-
 }
-
 //display monster
 function displayMonster(ctx: CanvasRenderingContext2D) {
     const position = Math.floor(spritePosition / 8) %
@@ -110,7 +109,6 @@ function displayMonster(ctx: CanvasRenderingContext2D) {
         homeAnimationSprite[1][position].height * canvas.width * 0.001,
     );
     spritePosition++
-
 }
 //function that handles all displays
 function displayAll(ctx: CanvasRenderingContext2D) {
@@ -129,7 +127,6 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         canvas.width,
         canvas.height
     );
-    //
     ctx.fillStyle = "rgba(40,40,40,0.1)"
     ctx.fillRect(
         -mainConstants.mapPosition.x,
@@ -138,19 +135,16 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         canvas.height
 
     );
-
     startBtnPosition = new Point(
         -mainConstants.mapPosition.x +
         canvas.width * 0.01,
         -mainConstants.mapPosition.y +
         canvas.height * 0.4)
-
     controlBtnPosition = new Point(
         -mainConstants.mapPosition.x +
         canvas.width * 0.01,
         -mainConstants.mapPosition.y +
         canvas.height * 0.5)
-
     aboutBtnPosition = new Point(
         -mainConstants.mapPosition.x +
         canvas.width * 0.01,
@@ -171,29 +165,71 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         gameNameSize.actualBoundingBoxDescent
     );
     //start game
+    window.addEventListener(
+        'mousemove',
+        (e) => {
+            startbtnColor = checkCursorCollision(
+                new Point(
+                    e.offsetX,
+                    e.offsetY
+                ),
+                startBtnPosition,
+                startbtnSize
+            ) ? "blue" : "red"
+        }
+    )
     startbtnSize = Btn(ctx, "PLAY",
         startBtnPosition,
         "4rem bold Eater ",
-        "red");
-
+        startbtnColor);
     //about game
-    aboutBtnSize = Btn(ctx, "ABOUT", aboutBtnPosition);
-
+    window.addEventListener(
+        'mousemove',
+        (e) => {
+            aboutBtnColor = checkCursorCollision(
+                new Point(
+                    e.offsetX,
+                    e.offsetY
+                ),
+                aboutBtnPosition,
+                aboutBtnSize
+            ) ? "blue" : "white"
+        }
+    )
+    aboutBtnSize = Btn(ctx,
+        "ABOUT",
+        aboutBtnPosition,
+        "4rem bold Eater ",
+        aboutBtnColor
+    );
     //controls
-    controlBtnSize = Btn(ctx, "INSTRUCTIONS", controlBtnPosition);
+    window.addEventListener(
+        'mousemove',
+        (e) => {
+            controlBtnColor = checkCursorCollision(
+                new Point(
+                    e.offsetX,
+                    e.offsetY
+                ),
+                controlBtnPosition,
+                controlBtnSize
+            ) ? "blue" : "white"
+        }
+    )
+    controlBtnSize = Btn(ctx,
+        "INSTRUCTIONS",
+        controlBtnPosition,
+        "4rem bold Eater ",
+        controlBtnColor);
 
     //displaymonster
     displayMonster(ctx);
-
-
 }
 function homeMainLoop(ctx: CanvasRenderingContext2D) {
     //clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     //calling display handiling function
     displayAll(ctx);
-
     if (stateConstants.homeScreenFlag) {
         requestAnimationFrame(() => {
             homeMainLoop(ctx)
@@ -201,9 +237,7 @@ function homeMainLoop(ctx: CanvasRenderingContext2D) {
     }
 }
 
-
 export { btnsclicked }
-
 export default function homeScreen(ctx: CanvasRenderingContext2D) {
     stateConstants.homeScreenFlag = true;
     if (!stateConstants.ismute) {
@@ -212,8 +246,6 @@ export default function homeScreen(ctx: CanvasRenderingContext2D) {
             mainConstants.homeSound.currentTime = 0;
         }
         mainConstants.homeSound.play()
-
     }
-
     homeMainLoop(ctx)
 }

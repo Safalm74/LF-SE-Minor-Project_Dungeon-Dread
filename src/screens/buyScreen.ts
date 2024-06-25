@@ -234,7 +234,7 @@ function buyCard(
     cost: number,
     damage: number,
     fireRate: number,
-
+    gunCost: number
 
 ) {
     //outer line
@@ -297,6 +297,16 @@ function buyCard(
         boxWrapperWidth * index / 4 + gunLogoSize / 2,
         boxWrapperPosition.y * 1.3 + gunLogoSize + lineHeight * 8.5
     );
+    if (gunCost > hero.gemCount) {
+        //gun hiding box
+        ctx.fillStyle = "rgba(200,200,200,0.45)"
+        ctx.fillRect(
+            boxWrapperPosition.x + boxWrapperWidth * index / 4,
+            boxWrapperPosition.y,
+            boxWrapperWidth / 4,
+            boxWrapperHeight
+        );
+    }
 
 }
 function buyPannelLoop(ctx: CanvasRenderingContext2D) {
@@ -360,7 +370,8 @@ function buyPannelLoop(ctx: CanvasRenderingContext2D) {
         `Pistol`,
         gunConstants.pistol.cost,
         gunConstants.pistol.damage,
-        gunConstants.pistol.fireRate
+        gunConstants.pistol.fireRate,
+        gunConstants.pistol.cost
 
     );
     //buycard for smg
@@ -379,7 +390,8 @@ function buyPannelLoop(ctx: CanvasRenderingContext2D) {
         `SMG`,
         gunConstants.smg.cost,
         gunConstants.smg.damage,
-        gunConstants.smg.fireRate
+        gunConstants.smg.fireRate,
+        gunConstants.smg.cost
     );
     //buycard for vandal
     gunIndex = 2
@@ -397,7 +409,8 @@ function buyPannelLoop(ctx: CanvasRenderingContext2D) {
         `vandal`,
         gunConstants.vandal.cost,
         gunConstants.vandal.damage,
-        gunConstants.vandal.fireRate
+        gunConstants.vandal.fireRate,
+        gunConstants.vandal.cost
 
     );
     //buycard for vandal
@@ -416,7 +429,8 @@ function buyPannelLoop(ctx: CanvasRenderingContext2D) {
         `hunter`,
         gunConstants.hunter.cost,
         gunConstants.hunter.damage,
-        gunConstants.vandal.fireRate
+        gunConstants.vandal.fireRate,
+        gunConstants.hunter.cost
 
     );
     //rendering lower inventory

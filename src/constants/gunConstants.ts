@@ -31,6 +31,7 @@ hunterImage.src=hunterImageSrc
 pistolImage.onload = upcounter
 smgImage.onload = upcounter
 vandalImage.onload=upcounter
+hunterImage.onload=upcounter
 type gunInst = {
     damage: number;
     width: number;

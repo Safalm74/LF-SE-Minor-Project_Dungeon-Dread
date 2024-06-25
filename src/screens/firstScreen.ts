@@ -64,12 +64,31 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         gameNameSize.actualBoundingBoxDescent
     );
     //start game
+    let startbtnColor:string="red";
+    window.addEventListener(
+        'mousemove',
+        (e) => {
+            startbtnColor = checkCursorCollision(
+                new Point(
+                    e.offsetX,
+                    e.offsetY
+                ),
+                startBtnPosition,
+                startbtnSize
+            ) ? "blue" : "red"
+        }
+    )
     ctx.font = "3rem Eater"
     startBtnPosition = new Point(
-        canvas.width * 0.5 - ctx.measureText("ENTER").width / 2,
+        canvas.width * 0.5 - ctx.measureText("Click Me").width / 2,
         -mainConstants.mapPosition.y +
         canvas.height * 0.8)
-    startbtnSize = Btn(ctx, "ENTER", startBtnPosition);
+    startbtnSize = Btn(ctx,
+         "Click Me", 
+         startBtnPosition,
+         "4rem bold Eater ",
+         startbtnColor
+        );
 }
 function homeMainLoop(ctx: CanvasRenderingContext2D) {
     //clear canvas

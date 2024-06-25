@@ -65,19 +65,16 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         "4rem Arial",
         "white"
     );
-    if(stateConstants.assetsLoaded>=16){
+    if(stateConstants.assetsLoaded>=18){
         stateConstants.loadingScreen=false;
         firstScreen(ctx)
     }
-
 }
 function homeMainLoop(ctx: CanvasRenderingContext2D) {
     //clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     //calling display handiling function
     displayAll(ctx);
-
     if (stateConstants.loadingScreen) {
         requestAnimationFrame(() => {
             homeMainLoop(ctx)
@@ -94,8 +91,6 @@ export default function loadingScreen(ctx: CanvasRenderingContext2D) {
             mainConstants.homeSound.currentTime = 0;
         }
         mainConstants.homeSound.play()
-
     }
-
     homeMainLoop(ctx)
 }

@@ -47,7 +47,7 @@ export default class GruntType1and3 extends Entity {
                 this.attackInterval = setInterval(
                     () => {
                         if (hero.healthpoint > 0) {
-
+                            hero.onAttack=true;
                             hero.healthpoint -= this.damage;
                         }
                     },
@@ -57,6 +57,7 @@ export default class GruntType1and3 extends Entity {
         } else {
             clearInterval(this.attackInterval)
             this.attackInterval = null;
+            hero.onAttack=false;
         }
         return { collided, collidedObj, collidedHero };
     }

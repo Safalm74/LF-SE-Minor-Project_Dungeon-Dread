@@ -25,7 +25,8 @@ const amaterasuSound = new Audio(amaterasuSoundSrc)
 amaterasuSound.onload = upcounter
 fireImage.onload = upcounter;
 heroImage.onload = upcounter;
-heavyBreathSound.onload = upcounter
+heavyBreathSound.onload = upcounter;
+sharinganImage.onload=upcounter;
 type HeroConstants = {
     heroTotalHealth: number;
     width: number;

@@ -22,6 +22,8 @@ heroIntroductionSound.onload=upcounter;
 story1Sound.onload=upcounter;
 controlImage.onload=upcounter;
 backGroundImage.onload=upcounter;
+story1Sound.onload=upcounter;
+heroIntroductionSound.onload=upcounter;
 type ScreenConstants = {
     controlImage:HTMLImageElement;
     backGroundImage:HTMLImageElement;

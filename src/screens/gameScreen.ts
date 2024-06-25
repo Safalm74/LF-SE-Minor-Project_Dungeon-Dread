@@ -340,7 +340,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     else {
         gradient.addColorStop(0, "rgba(10,10,10,0)")
         gradient.addColorStop(1, "rgba(200,0,0,0.99)")
-    }
+    }1
     ctx.fillStyle = gradient;
     ctx.fillRect(
         -mainConstants.mapPosition.x,
@@ -433,6 +433,25 @@ function displayAll(ctx: CanvasRenderingContext2D) {
             'Stamina',
             "1rem Arial"
         )
+    }
+    //check hero on attack
+    if (hero.onAttack){
+        const gradientOnAttack = ctx.createRadialGradient(
+        hero.position.x + hero.width / 2,
+        hero.position.y + hero.height / 2,
+        hero.width,
+        hero.position.x + hero.width / 2,
+        hero.position.y + hero.height / 2,
+        1000
+    );
+    gradientOnAttack.addColorStop(0, "rgba(10,10,10,0)")
+    ctx.fillStyle = gradient;
+    ctx.fillRect(
+        -mainConstants.mapPosition.x,
+        -mainConstants.mapPosition.y,
+        canvas.width,
+        canvas.height
+    )
     }
     //show essence
     progressBar(

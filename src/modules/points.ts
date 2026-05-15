@@ -18,7 +18,7 @@ export default class Point implements Ipoint {
     angle(obj: Point) {
         const dx = (this.x - obj.x);
         const dy = (this.y - obj.y);
-        return Math.atan(dy/dx);
+        return Math.atan2(dy, dx);
     }
     add(obj:Point){
         return (new Point(this.x+obj.x,this.y+obj.y))

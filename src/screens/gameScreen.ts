@@ -24,7 +24,9 @@ import dropDownMsg from "../util/dropdownMsg";
 import { handleEvents } from "../util/eventHandler";
 import loadInfoScreen from "../util/infoScreenLoader";
 import lowerInventory from "../util/lowerInventory";
-import { drawTouchControls } from "../util/touchControls";
+import { drawTouchControls, isTouchDevice } from "../util/touchControls";
+import { spawnDamageNumber, drawDamageNumbers, clearDamageNumbers } from "../util/damageNumbers";
+import { triggerShake, applyScreenShake } from "../util/screenShake";
 //sprite information
 import gemSprite from "../sprites/gemSprite";
 //objs
@@ -48,6 +50,15 @@ let hero: Hero;
 let boss: Boss | null;
 // create enemy interval
 let createEnemyInterval: ReturnType<typeof setInterval> | undefined;
+// cached vignette gradient — only recreated when health threshold changes or canvas resizes
+let vignetteGradient: CanvasGradient | null = null;
+let vignetteIsHighHealth: boolean | null = null;
+// max enemies per wave (device-aware)
+const BASE_MAX_ENEMIES = isTouchDevice() ? 6 : 15;
+// previous hero health for damage detection
+let prevHeroHealth = -1;
+// previous enemy health tracking for damage numbers
+const prevEnemyHealth = new WeakMap<object, number>();
 //function to return time difference and detect end of wave
 function remainingTime() {
     const remainingTimems = (new Date).getTime() - waveStartTime.getTime()
@@ -278,6 +289,10 @@ function resetGame() {
 }
 //function that handles all display
 function displayAll(ctx: CanvasRenderingContext2D) {
+    // apply screen shake offset
+    ctx.save();
+    applyScreenShake(ctx);
+
     //Map background
     ctx.drawImage(
         mapConstants.mapImage,
@@ -288,273 +303,210 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     );
     //drawmap
     map.draw(ctx);
-    //draw enemy
-    gruntArray.forEach(
-        (obj) => {
-            if (obj.isSpawned) {
-                obj.draw(ctx);
-            }
-            else {
-                obj.spawn(ctx);
-            }
-        }
-    );
+    //draw enemy (skip entities outside the visible viewport)
+    gruntArray.forEach((obj) => {
+        const sx = obj.position.x + mainConstants.mapPosition.x;
+        const sy = obj.position.y + mainConstants.mapPosition.y;
+        if (sx + obj.width < -50 || sx > canvas.width + 50 ||
+            sy + obj.height < -50 || sy > canvas.height + 50) return;
+        // track damage dealt to enemies for floating numbers (world coords)
+        const prev = prevEnemyHealth.get(obj) ?? obj.healthpoint;
+        const dmg = prev - obj.healthpoint;
+        if (dmg > 0) spawnDamageNumber(new Point(obj.position.x + obj.width / 2, obj.position.y - 10), dmg, false);
+        prevEnemyHealth.set(obj, obj.healthpoint);
+        if (obj.isSpawned) { obj.draw(ctx); } else { obj.spawn(ctx); }
+    });
     if (boss) {
         boss.draw(ctx);
-        mainConstants.maxEnemies = 50
-        mainConstants.weaponArray.forEach(
-            (wobj) => {
-                if (boss && wobj) {
-                    wobj.detectEnemy(boss)
-                }
-            }
-        );
+        mainConstants.maxEnemies = isTouchDevice() ? 2 : 4;
+        mainConstants.weaponArray.forEach((wobj) => {
+            if (boss && wobj) wobj.detectEnemy(boss);
+        });
         if (boss.healthpoint <= 0) {
             resetWaveChange();
             resetGame();
-            loadInfoScreen(
-                ctx,
-                "gameWin",
-                "<= return Home",
-                homeScreen
-            );
+            loadInfoScreen(ctx, "gameWin", "<= return Home", homeScreen);
         }
     }
     //draw hero
     hero.draw(ctx);
+
+    //drawing bullets
+    bulletArray.forEach((bulletObj) => { bulletObj.draw(ctx); });
+    //drawing spit
+    spitArray.forEach((spitObj) => { spitObj.draw(ctx); });
+    //drawing gems (with magnet pull toward hero)
+    gemArray.forEach((obj) => { obj.draw(ctx); });
+
+    mainConstants.weaponArray.forEach((obj, i) => {
+        if (obj) {
+            obj.draw(ctx);
+            obj.position = hero.weaponPositions[i];
+        }
+    });
+
+    // floating damage numbers (drawn in world space, before shake restore)
+    drawDamageNumbers(ctx);
+
+    // detect hero damage for floating numbers + screen shake
+    if (prevHeroHealth >= 0 && hero.healthpoint < prevHeroHealth) {
+        const dmgTaken = prevHeroHealth - hero.healthpoint;
+        spawnDamageNumber(new Point(hero.position.x + hero.width / 2, hero.position.y), dmgTaken, true);
+        triggerShake(dmgTaken > 10 ? 8 : 4, 10);
+    }
+    prevHeroHealth = hero.healthpoint;
+
     if (mainConstants.dropdownInterval) {
         dropDownMsg(ctx, `wave : ${stateConstants.wave}`);
     }
-    //background gradient
-    const gradient = ctx.createRadialGradient(
-        hero.position.x + hero.width / 2,
-        hero.position.y + hero.height / 2,
-        hero.width,
-        hero.position.x + hero.width / 2,
-        hero.position.y + hero.height / 2,
-        1000
-    );
-    if (hero.healthpoint > 30) {
-        gradient.addColorStop(0, "rgba(10,10,10,0)")
-        gradient.addColorStop(1, "rgba(0,0,0,0.99)")
+
+    // pop screen shake, back to pure map transform
+    ctx.restore();
+
+    // vignette gradient — cached; only rebuilt when health threshold or canvas size changes
+    const healthHigh = hero.healthpoint > 30;
+    if (vignetteGradient === null || vignetteIsHighHealth !== healthHigh) {
+        vignetteIsHighHealth = healthHigh;
+        const cx = canvas.width / 2, cy = canvas.height / 2;
+        const outerR = Math.max(canvas.width, canvas.height) * 0.9;
+        vignetteGradient = ctx.createRadialGradient(cx, cy, 60, cx, cy, outerR);
+        vignetteGradient.addColorStop(0, 'rgba(0,0,0,0)');
+        vignetteGradient.addColorStop(1, healthHigh ? 'rgba(0,0,0,0.97)' : 'rgba(170,0,0,0.97)');
     }
-    else {
-        gradient.addColorStop(0, "rgba(10,10,10,0)")
-        gradient.addColorStop(1, "rgba(200,0,0,0.99)")
+    // draw vignette + on-hit flash in screen space
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = vignetteGradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    if (hero.onAttack) {
+        ctx.fillStyle = 'rgba(255,0,0,0.18)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
-    ctx.fillStyle = gradient;
-    ctx.fillRect(
-        -mainConstants.mapPosition.x,
-        -mainConstants.mapPosition.y,
-        canvas.width,
-        canvas.height
-    )
+    ctx.restore();
+
+    // === HUD (drawn in screen space to avoid translation issues) ===
+    const hudX = canvas.width * 0.05 - mainConstants.mapPosition.x;
+    const hudY = canvas.height * 0.05 - mainConstants.mapPosition.y;
+
     //show player health
     progressBar(
         ctx,
-        new Point(canvas.width * 0.05 -
-            mainConstants.mapPosition.x,
-            canvas.height * 0.1 -
-            mainConstants.mapPosition.y),
+        new Point(hudX, hudY + canvas.height * 0.06),
         hero.healthpoint,
         mainConstants.heroTotalHealth,
-        canvas.width * 0.45,
-        canvas.height * 0.03,
+        canvas.width * 0.42,
+        canvas.height * 0.028,
         'Life line'
-    )
+    );
+    //show essence
+    progressBar(
+        ctx,
+        new Point(canvas.width * 0.53 - mainConstants.mapPosition.x, hudY + canvas.height * 0.06),
+        hero.essenceCount,
+        heroConstants.maxEssence,
+        canvas.width * 0.42,
+        canvas.height * 0.028,
+        'Essence'
+    );
     //show gemcount
-    const gemString = `x ${hero.gemCount}`
+    const gemString = `x ${hero.gemCount}`;
+    const gemIconW = gemSprite[1][0].width * 0.28;
+    const gemIconH = gemSprite[1][0].height * 0.28;
+    const gemIconX = hudX;
+    const gemIconY = hudY + canvas.height * 0.14;
     ctx.drawImage(
         mainConstants.gemImage,
-        gemSprite[1][0].position.x,
-        gemSprite[1][0].position.y,
-        gemSprite[1][0].width,
-        gemSprite[1][0].height,
-        canvas.width * 0.05 - mainConstants.mapPosition.x,
-        (canvas.height / 5 -
-            mainConstants.mapPosition.y),
-        gemSprite[1][0].width * 0.3,
-        gemSprite[1][0].height * 0.3
+        gemSprite[1][0].position.x, gemSprite[1][0].position.y,
+        gemSprite[1][0].width, gemSprite[1][0].height,
+        gemIconX, gemIconY, gemIconW, gemIconH
     );
-    ctx.font = "1rem Eater"
-    ctx.fillStyle = "white"
-    const textMeasure = ctx.measureText(gemString);
-    const textHeight = textMeasure.actualBoundingBoxAscent + textMeasure.actualBoundingBoxDescent;
-    ctx.fillText(
-        gemString,
-        canvas.width * 0.05 - mainConstants.mapPosition.x + gemSprite[1][0].width * 0.5,
-        (canvas.height / 5 -
-            mainConstants.mapPosition.y) + textHeight * 1.5,
-    );
+    ctx.save();
+    ctx.font = "bold 0.9rem Eater";
+    ctx.fillStyle = "#ffdd55";
+    ctx.shadowColor = 'rgba(0,0,0,0.8)';
+    ctx.shadowBlur = 4;
+    ctx.fillText(gemString, gemIconX + gemIconW + 4, gemIconY + gemIconH * 0.75);
+    ctx.restore();
+
     //showAbilityTimer
-    ctx.drawImage(
-        heroConstants.sharingan,
-        canvas.width * 0.05 - mainConstants.mapPosition.x,
-        (canvas.height / 5 -
-            mainConstants.mapPosition.y) + gemSprite[1][0].height * 0.5,
-        gemSprite[1][0].width * 0.4,
-        gemSprite[1][0].height * 0.4
-    );
+    const abilityX = hudX + gemIconW + 80;
+    const abilityY = gemIconY;
+    const abilityR = gemIconH * 0.52;
+    ctx.drawImage(heroConstants.sharingan, abilityX - abilityR, abilityY, abilityR * 2, abilityR * 2);
     const timeRemainingForAbility = ((new Date).getTime() - hero.abilityTime.getTime()) / (15 * 1000);
+    ctx.save();
+    ctx.beginPath();
     if (timeRemainingForAbility < 1 && !hero.abilityInUse) {
-        ctx.beginPath();
-        ctx.fillStyle = "rgba(240,240,240,0.6)"
-        ctx.arc(
-            (canvas.width * 0.05 - mainConstants.mapPosition.x) + gemSprite[1][0].width * 0.2,
-            (canvas.height / 5 - mainConstants.mapPosition.y) + gemSprite[1][0].height * 0.5 + gemSprite[1][0].height * 0.2,
-            gemSprite[1][0].width * 0.2,
-            0,
-            2 * Math.PI * (1 - timeRemainingForAbility)
-        );
+        ctx.fillStyle = "rgba(240,240,240,0.55)";
+        ctx.arc(abilityX, abilityY + abilityR, abilityR, -Math.PI / 2, -Math.PI / 2 + 2 * Math.PI * (1 - timeRemainingForAbility));
         ctx.fill();
     } else {
-        ctx.beginPath();
-        ctx.strokeStyle = 'blue';
-        ctx.fillStyle = "rgba(240,240,240,0.6)"
-        ctx.arc(
-            (canvas.width * 0.05 - mainConstants.mapPosition.x) + gemSprite[1][0].width * 0.2,
-            (canvas.height / 5 - mainConstants.mapPosition.y) + gemSprite[1][0].height * 0.5 + gemSprite[1][0].height * 0.2,
-            gemSprite[1][0].width * 0.2,
-            0,
-            2 * Math.PI
-        );
+        ctx.strokeStyle = 'rgba(80,150,255,0.9)';
+        ctx.lineWidth = 2;
+        ctx.arc(abilityX, abilityY + abilityR, abilityR, 0, 2 * Math.PI);
         ctx.stroke();
     }
+    ctx.restore();
+
     //show stamina
     if (hero.staminaUse) {
         progressBar(
             ctx,
-            new Point(canvas.width * 0.05 -
-                mainConstants.mapPosition.x,
-                (canvas.height / 5 - mainConstants.mapPosition.y) + gemSprite[1][0].height * 1.5),
+            new Point(abilityX + abilityR * 2 + 8, gemIconY),
             hero.stamina,
             heroConstants.stamina,
             canvas.width * 0.1,
-            canvas.height * 0.02,
+            canvas.height * 0.022,
             'Stamina',
-            "1rem Arial"
-        )
-    }
-    //check hero on attack
-    if (hero.onAttack) {
-        const gradientOnAttack = ctx.createRadialGradient(
-            hero.position.x + hero.width / 2,
-            hero.position.y + hero.height / 2,
-            hero.width,
-            hero.position.x + hero.width / 2,
-            hero.position.y + hero.height / 2,
-            1000
-        );
-        gradientOnAttack.addColorStop(0, "rgba(10,10,10,0)");
-        gradientOnAttack.addColorStop(1, "rgba(200,0,0,0.5)");
-        ctx.fillStyle = gradientOnAttack;
-        ctx.fillRect(
-            -mainConstants.mapPosition.x,
-            -mainConstants.mapPosition.y,
-            canvas.width,
-            canvas.height
+            "0.85rem Arial"
         );
     }
-    //show essence
-    progressBar(
-        ctx,
-        new Point(canvas.width * 0.95 -
-            canvas.width * 0.4 -
-            mainConstants.mapPosition.x,
-            canvas.height * 0.1 -
-            mainConstants.mapPosition.y),
-        hero.essenceCount,
-        heroConstants.maxEssence,
-        canvas.width * 0.4,
-        canvas.height * 0.03,
-        'Essence'
-    );
+
+    // wave timer / boss indicator
+    if (!boss) {
+        const secRemaining = Math.max(0, Math.floor((mainConstants.waveIntervalTime - remainingTime()) / 1000));
+        const timeStr = `${secRemaining}s`;
+        ctx.save();
+        ctx.font = `bold ${Math.max(14, canvas.width * 0.018)}px Eater`;
+        ctx.fillStyle = secRemaining <= 5 ? '#ff4444' : '#ffdd55';
+        ctx.textAlign = 'center';
+        ctx.shadowColor = 'rgba(0,0,0,0.9)';
+        ctx.shadowBlur = 6;
+        ctx.fillText(`Wave ${stateConstants.wave} · ${timeStr}`, canvas.width / 2 - mainConstants.mapPosition.x, hudY + canvas.height * 0.035);
+        ctx.restore();
+    } else {
+        ctx.save();
+        ctx.font = `bold ${Math.max(16, canvas.width * 0.02)}px Eater`;
+        ctx.fillStyle = '#ff3333';
+        ctx.textAlign = 'center';
+        ctx.shadowColor = 'rgba(255,0,0,0.8)';
+        ctx.shadowBlur = 10;
+        ctx.fillText('⚠ FINAL WAVE ⚠', canvas.width / 2 - mainConstants.mapPosition.x, hudY + canvas.height * 0.035);
+        ctx.restore();
+    }
+
     //changing interval
     if (remainingTime() >= mainConstants.waveIntervalTime &&
         hero.healthpoint > 0 &&
         !boss
     ) {
         stateConstants.wave++;
-        mainConstants.weaponArray.forEach(
-            (obj) => {
-                if (obj) {
-                    clearInterval(obj.fireInterval);
-                    obj.fireInterval = undefined
-                }
+        mainConstants.weaponArray.forEach((obj) => {
+            if (obj) {
+                clearInterval(obj.fireInterval);
+                obj.fireInterval = undefined;
             }
-        );
+        });
         resetWaveChange();
         buyPannel(ctx);
+    }
 
-    }
-    if (!boss) {
-        //Display time remaining
-        const remainingTimeString = `${Math.floor
-            ((mainConstants.waveIntervalTime -
-                remainingTime())
-                / 1000)}`
-        dropDownMsg(
-            ctx,
-            `${remainingTimeString}`,
-            new Point(
-                -(ctx.measureText(remainingTimeString).width / 2 +
-                    mainConstants.mapPosition.x),
-                (canvas.height / 5 -
-                    mainConstants.mapPosition.y)),
-            "0.1rem"
-        );
-    }
-    else {
-        dropDownMsg(
-            ctx,
-            `Final Wave`,
-            new Point(
-                -(ctx.measureText('Final Wave').width / 2 +
-                    mainConstants.mapPosition.x),
-                (canvas.height / 5 -
-                    mainConstants.mapPosition.y)),
-            "0.1rem"
-        );
-    }
     if (hero.healthpoint <= 0) {
         resetWaveChange();
         resetGame();
-        loadInfoScreen(
-            ctx,
-            "gameOver",
-            "<= return Home",
-            homeScreen
-        );
-        //gameOver(ctx);
+        loadInfoScreen(ctx, "gameOver", "<= return Home", homeScreen);
     }
-    //drawing bullets
-    bulletArray.forEach(
-        (bulletObj) => {
-            bulletObj.draw(ctx);
-        }
-    );
-    //drawing spit
-    spitArray.forEach(
-        (spitObj) => {
-            spitObj.draw(ctx);
-        }
-    );
-    //drawing gems
-    gemArray.forEach(
-        (obj) => {
-            obj.draw(ctx);
-        }
-    );
-    mainConstants.weaponArray.forEach(
-        (obj, i) => {
-            if (obj) {
 
-                obj.draw(ctx);
-                obj.position = hero.weaponPositions[i]
-            }
-        }
-    );
-    mainConstants.maxEnemies = 500
     //LowerInventory
     lowerInventory(ctx);
     //Virtual touch controls (only renders on touch devices)
@@ -629,6 +581,16 @@ function resetWaveChange() {
     createEnemyInterval = undefined;
     //assigning new time
     waveStartTime = new Date;
+    //scale enemy count with wave (capped per device type)
+    mainConstants.maxEnemies = Math.min(
+        BASE_MAX_ENEMIES + stateConstants.wave * 2,
+        isTouchDevice() ? 12 : 25
+    );
+    //invalidate cached gradient so it rebuilds at wave start
+    vignetteGradient = null;
+    vignetteIsHighHealth = null;
+    prevHeroHealth = -1;
+    clearDamageNumbers();
     //if player has no gun
     if (!mainConstants.weaponArray[0]) {
         mainConstants.weaponArray[0] = new Gun(
@@ -658,6 +620,10 @@ function resetWaveChange() {
     );
 }
 export { hero, gruntArray, bulletArray, spitArray, boss }
+export function invalidateGradientCache() {
+    vignetteGradient = null;
+    vignetteIsHighHealth = null;
+}
 export default function gameMain(
     ctx: CanvasRenderingContext2D) {
     if (!stateConstants.infoScreenFlag) {

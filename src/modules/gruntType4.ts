@@ -8,13 +8,13 @@ import mainConstants from "../constants/mainConstants";
 import gruntConstants from "../constants/gruntConstants";
 //sprite information
 import gruntType4Sprite from "../sprites/grunt[Type4]Sprite";
-import spwanSprite from "../sprites/spwanSprite";
+import spawnSprite from "../sprites/spawnSprite";
 //objs
 import { hero } from "../screens/gameScreen";
 //green with stick enemy
 export default class GruntType4 extends Entity {
-    isSpwaned: boolean = false;
-    attackInterval: any = null;
+    isSpawned: boolean = false;
+    attackInterval: ReturnType<typeof setInterval> | undefined = undefined;
     isAttacking: boolean = false;
     checkCollision() {
         let collided: boolean = false;
@@ -55,7 +55,7 @@ export default class GruntType4 extends Entity {
             (this.position.y - hero.position.y) ** 2);
         if (distance > 50) {
             clearInterval(this.attackInterval)
-            this.attackInterval = null;
+            this.attackInterval = undefined;
             hero.onAttack=false;
 
         }
@@ -146,16 +146,16 @@ export default class GruntType4 extends Entity {
         }
         this.spritePosition++
     }
-    spwan(ctx: CanvasRenderingContext2D) {
+    spawn(ctx: CanvasRenderingContext2D) {
         const staggerFrame = 10;
         const position = Math.floor(this.spritePosition /
-             staggerFrame) % spwanSprite.position.length;
+             staggerFrame) % spawnSprite.position.length;
         ctx.drawImage(
-            gruntConstants.spwanImage,
-            spwanSprite.position[position].x,
-            spwanSprite.position[position].y,
-            spwanSprite.width,
-            spwanSprite.height,
+            gruntConstants.spawnImage,
+            spawnSprite.position[position].x,
+            spawnSprite.position[position].y,
+            spawnSprite.width,
+            spawnSprite.height,
             this.position.x,
             this.position.y,
             this.width,
@@ -163,7 +163,7 @@ export default class GruntType4 extends Entity {
         );
         this.spritePosition++
         if (position >= 9) {
-            this.isSpwaned = true;
+            this.isSpawned = true;
             this.spritePosition = 0;
         }
     }

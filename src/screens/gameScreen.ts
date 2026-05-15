@@ -24,6 +24,7 @@ import dropDownMsg from "../util/dropdownMsg";
 import { handleEvents } from "../util/eventHandler";
 import loadInfoScreen from "../util/infoScreenLoader";
 import lowerInventory from "../util/lowerInventory";
+import { drawTouchControls } from "../util/touchControls";
 //sprite information
 import gemSprite from "../sprites/gemSprite";
 //objs
@@ -556,6 +557,8 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     mainConstants.maxEnemies = 500
     //LowerInventory
     lowerInventory(ctx);
+    //Virtual touch controls (only renders on touch devices)
+    drawTouchControls(ctx);
 }
 //main Loop function
 function gameLoop(

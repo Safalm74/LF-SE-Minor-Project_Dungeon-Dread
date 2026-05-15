@@ -13,6 +13,7 @@ import { hero } from "../screens/gameScreen";
 import { btnsclicked } from "../screens/homeScreen";
 import { infoScreenBtn } from "../screens/infoScreen";
 import screenConstants from "../constants/screenConstants";
+import { initTouchControls } from "./touchControls";
 //functiontohandlesounds
 function handleSounds() {
     stateConstants.ismute = stateConstants.ismute ?
@@ -39,6 +40,8 @@ function handleSounds() {
     }
 }
 function handleEvents() {
+    // Reset isMoving each frame; set true below only if a key is held
+    hero.isMoving = false;
     if (
         (stateConstants.btnPressed['a'] && stateConstants.btnPressed['w']) ||
         (stateConstants.btnPressed['a'] && stateConstants.btnPressed['s']) ||
@@ -108,7 +111,6 @@ export default function eventhandler() {
         'keyup',
         (e) => {
             stateConstants.btnPressed[e.key.toLowerCase()] = false
-            hero.isMoving = false;
         }
     );
     window.addEventListener(
@@ -156,5 +158,17 @@ export default function eventhandler() {
                 );
             }
         }
-    )
+    );
+    // Fast touch routing for UI screens (avoids 300ms click delay on mobile)
+    window.addEventListener('touchstart', (e) => {
+        if (stateConstants.ingame) return;
+        const touch = e.changedTouches[0];
+        const point = new Point(touch.clientX, touch.clientY);
+        if (stateConstants.firstPageFlag) firstScreenbtnsclicked(point, ctx);
+        if (stateConstants.homeScreenFlag) btnsclicked(point, ctx);
+        if (stateConstants.buyScreenFlag) buyBtnsclicked(point);
+        if (stateConstants.infoScreenFlag) infoScreenBtn(point, ctx);
+        if (stateConstants.controlScreenFlag) controlBtnClicked(point, ctx);
+    }, { passive: true });
+    initTouchControls();
 }

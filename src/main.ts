@@ -15,8 +15,10 @@ if (canvas) {
   loadingScreen(ctx);
 }
 // Resize canvas on orientation change or window resize
+// Import is deferred to avoid circular deps — gameScreen exports the invalidator
 window.addEventListener('resize', () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
+  import('./screens/gameScreen').then(m => m.invalidateGradientCache());
 });
 export { canvas, ctx };

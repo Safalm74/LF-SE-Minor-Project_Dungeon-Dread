@@ -32,6 +32,7 @@ import { canvas } from "../main";
 //screens
 import buyPannel from "./buyScreen";
 import homeScreen from "./homeScreen";
+import { isTouchDevice } from "../util/touchControls";
 //checking time to set next wave
 let waveStartTime: Date;
 //enemy array
@@ -48,6 +49,11 @@ let hero: Hero;
 let boss: Boss | null;
 // create enemy interval
 let createEnemyInterval: ReturnType<typeof setInterval> | undefined;
+// cached vignette gradient — only recreated when health threshold changes or canvas resizes
+let vignetteGradient: CanvasGradient | null = null;
+let vignetteIsHighHealth: boolean | null = null;
+// max enemies per wave (device-aware)
+const BASE_MAX_ENEMIES = isTouchDevice() ? 6 : 15;
 //function to return time difference and detect end of wave
 function remainingTime() {
     const remainingTimems = (new Date).getTime() - waveStartTime.getTime()
@@ -288,9 +294,13 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     );
     //drawmap
     map.draw(ctx);
-    //draw enemy
+    //draw enemy (skip entities outside the visible viewport)
     gruntArray.forEach(
         (obj) => {
+            const sx = obj.position.x + mainConstants.mapPosition.x;
+            const sy = obj.position.y + mainConstants.mapPosition.y;
+            if (sx + obj.width < -50 || sx > canvas.width + 50 ||
+                sy + obj.height < -50 || sy > canvas.height + 50) return;
             if (obj.isSpawned) {
                 obj.draw(ctx);
             }
@@ -301,7 +311,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     );
     if (boss) {
         boss.draw(ctx);
-        mainConstants.maxEnemies = 50
+        mainConstants.maxEnemies = isTouchDevice() ? 2 : 4;
         mainConstants.weaponArray.forEach(
             (wobj) => {
                 if (boss && wobj) {
@@ -325,30 +335,26 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     if (mainConstants.dropdownInterval) {
         dropDownMsg(ctx, `wave : ${stateConstants.wave}`);
     }
-    //background gradient
-    const gradient = ctx.createRadialGradient(
-        hero.position.x + hero.width / 2,
-        hero.position.y + hero.height / 2,
-        hero.width,
-        hero.position.x + hero.width / 2,
-        hero.position.y + hero.height / 2,
-        1000
-    );
-    if (hero.healthpoint > 30) {
-        gradient.addColorStop(0, "rgba(10,10,10,0)")
-        gradient.addColorStop(1, "rgba(0,0,0,0.99)")
+    //vignette gradient — cached; only rebuilt when health threshold or canvas size changes
+    const healthHigh = hero.healthpoint > 30;
+    if (vignetteGradient === null || vignetteIsHighHealth !== healthHigh) {
+        vignetteIsHighHealth = healthHigh;
+        const cx = canvas.width / 2, cy = canvas.height / 2;
+        const outerR = Math.max(canvas.width, canvas.height) * 0.9;
+        vignetteGradient = ctx.createRadialGradient(cx, cy, 60, cx, cy, outerR);
+        vignetteGradient.addColorStop(0, 'rgba(0,0,0,0)');
+        vignetteGradient.addColorStop(1, healthHigh ? 'rgba(0,0,0,0.97)' : 'rgba(170,0,0,0.97)');
     }
-    else {
-        gradient.addColorStop(0, "rgba(10,10,10,0)")
-        gradient.addColorStop(1, "rgba(200,0,0,0.99)")
+    // draw vignette + on-hit flash in screen space (avoids mapPosition offset math)
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = vignetteGradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    if (hero.onAttack) {
+        ctx.fillStyle = 'rgba(255,0,0,0.2)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
-    ctx.fillStyle = gradient;
-    ctx.fillRect(
-        -mainConstants.mapPosition.x,
-        -mainConstants.mapPosition.y,
-        canvas.width,
-        canvas.height
-    )
+    ctx.restore();
     //show player health
     progressBar(
         ctx,
@@ -434,26 +440,6 @@ function displayAll(ctx: CanvasRenderingContext2D) {
             'Stamina',
             "1rem Arial"
         )
-    }
-    //check hero on attack
-    if (hero.onAttack) {
-        const gradientOnAttack = ctx.createRadialGradient(
-            hero.position.x + hero.width / 2,
-            hero.position.y + hero.height / 2,
-            hero.width,
-            hero.position.x + hero.width / 2,
-            hero.position.y + hero.height / 2,
-            1000
-        );
-        gradientOnAttack.addColorStop(0, "rgba(10,10,10,0)");
-        gradientOnAttack.addColorStop(1, "rgba(200,0,0,0.5)");
-        ctx.fillStyle = gradientOnAttack;
-        ctx.fillRect(
-            -mainConstants.mapPosition.x,
-            -mainConstants.mapPosition.y,
-            canvas.width,
-            canvas.height
-        );
     }
     //show essence
     progressBar(
@@ -554,7 +540,6 @@ function displayAll(ctx: CanvasRenderingContext2D) {
             }
         }
     );
-    mainConstants.maxEnemies = 500
     //LowerInventory
     lowerInventory(ctx);
     //Virtual touch controls (only renders on touch devices)
@@ -629,6 +614,14 @@ function resetWaveChange() {
     createEnemyInterval = undefined;
     //assigning new time
     waveStartTime = new Date;
+    //scale enemy count with wave (capped per device type)
+    mainConstants.maxEnemies = Math.min(
+        BASE_MAX_ENEMIES + stateConstants.wave * 2,
+        isTouchDevice() ? 12 : 25
+    );
+    //invalidate cached gradient so it rebuilds at wave start
+    vignetteGradient = null;
+    vignetteIsHighHealth = null;
     //if player has no gun
     if (!mainConstants.weaponArray[0]) {
         mainConstants.weaponArray[0] = new Gun(
@@ -658,6 +651,10 @@ function resetWaveChange() {
     );
 }
 export { hero, gruntArray, bulletArray, spitArray, boss }
+export function invalidateGradientCache() {
+    vignetteGradient = null;
+    vignetteIsHighHealth = null;
+}
 export default function gameMain(
     ctx: CanvasRenderingContext2D) {
     if (!stateConstants.infoScreenFlag) {

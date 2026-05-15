@@ -121,8 +121,8 @@ export default class GruntType1and3 extends Entity {
                 this.gruntImage,
                 lookingDirection[position].x,
                 lookingDirection[position].y,
-                gruntType3Sprite.width,
-                gruntType3Sprite.height,
+                gruntSprite!.width,
+                gruntSprite!.height,
                 this.position.x,
                 this.position.y,
                 this.width,
@@ -132,7 +132,7 @@ export default class GruntType1and3 extends Entity {
         }
     }
     spawn(ctx: CanvasRenderingContext2D) {
-        const staggerFrame = 10;
+        const staggerFrame = 4;
         let position = Math.floor(this.spritePosition /
             staggerFrame) %
             spawnSprite.position.length;

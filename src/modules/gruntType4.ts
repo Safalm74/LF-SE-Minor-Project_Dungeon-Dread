@@ -147,7 +147,7 @@ export default class GruntType4 extends Entity {
         this.spritePosition++
     }
     spawn(ctx: CanvasRenderingContext2D) {
-        const staggerFrame = 10;
+        const staggerFrame = 4;
         const position = Math.floor(this.spritePosition /
              staggerFrame) % spawnSprite.position.length;
         ctx.drawImage(

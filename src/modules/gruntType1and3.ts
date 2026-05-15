@@ -6,16 +6,16 @@ import Hero from "./hero";
 //constants
 import mainConstants from "../constants/mainConstants";
 //sprite information
-import spwanSprite from "../sprites/spwanSprite";
-import gruntType1Sprite from "../sprites/grunt[Type1]Sptite";
-import gruntType3Sprite from "../sprites/grunt[Type3]sprite";
+import spawnSprite from "../sprites/spawnSprite";
+import gruntType1Sprite from "../sprites/grunt[Type1]Sprite";
+import gruntType3Sprite from "../sprites/grunt[Type3]Sprite";
 //objs
 import { hero } from "../screens/gameScreen";
 import gruntConstants from "../constants/gruntConstants";
 //zombie and blue small enemy
 export default class GruntType1and3 extends Entity {
-    isSpwaned: boolean = false;
-    attackInterval: any = null;
+    isSpawned: boolean = false;
+    attackInterval: ReturnType<typeof setInterval> | undefined = undefined;
     checkCollision() { //function to check collision
         let collided: boolean = false;//to identify collision
         let collidedHero: boolean = false;//to flag collided obj is hero
@@ -56,7 +56,7 @@ export default class GruntType1and3 extends Entity {
             }
         } else {
             clearInterval(this.attackInterval)
-            this.attackInterval = null;
+            this.attackInterval = undefined;
             hero.onAttack=false;
         }
         return { collided, collidedObj, collidedHero };
@@ -74,7 +74,7 @@ export default class GruntType1and3 extends Entity {
             (this.position.y - hero.position.y) ** 2);
         if (distance > 50) { //if hero is far clearing attack interval
             clearInterval(this.attackInterval)
-            this.attackInterval = null;
+            this.attackInterval = undefined;
         }
         const unitVector = new Point(
             (this.position.x - hero.position.x) / distance,
@@ -103,7 +103,7 @@ export default class GruntType1and3 extends Entity {
     }
     //drawing grunt
     draw(ctx: CanvasRenderingContext2D) {
-        if (this.isSpwaned) {//display after spwan
+        if (this.isSpawned) {
             let gruntSprite;
             switch (this.gruntType) {
                 case 1:
@@ -131,18 +131,17 @@ export default class GruntType1and3 extends Entity {
             this.spritePosition++
         }
     }
-    //function that draws spwans
-    spwan(ctx: CanvasRenderingContext2D) {
+    spawn(ctx: CanvasRenderingContext2D) {
         const staggerFrame = 10;
         let position = Math.floor(this.spritePosition /
             staggerFrame) %
-            spwanSprite.position.length;
+            spawnSprite.position.length;
         ctx.drawImage(
-            gruntConstants.spwanImage,
-            spwanSprite.position[position].x,
-            spwanSprite.position[position].y,
-            spwanSprite.width,
-            spwanSprite.height,
+            gruntConstants.spawnImage,
+            spawnSprite.position[position].x,
+            spawnSprite.position[position].y,
+            spawnSprite.width,
+            spawnSprite.height,
             this.position.x,
             this.position.y,
             this.width,
@@ -151,7 +150,7 @@ export default class GruntType1and3 extends Entity {
 
         this.spritePosition++
         if (position >= 9) {
-            this.isSpwaned = true;
+            this.isSpawned = true;
             this.spritePosition = 0;
         }
 

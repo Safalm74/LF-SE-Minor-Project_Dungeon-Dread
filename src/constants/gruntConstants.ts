@@ -6,19 +6,19 @@ import bossImageLeftSrc from "../assets/entity/enemy/boss/bossLeft.png"
 import bossImageRightSrc from "../assets/entity/enemy/boss/bossRight.png"
 import spwan from "../assets/entity/enemy/spwan.png"
 //sprites
-import gruntType1Sprite from "../sprites/grunt[Type1]Sptite";
-import gruntType3Sprite from "../sprites/grunt[Type3]sprite";
+import gruntType1Sprite from "../sprites/grunt[Type1]Sprite";
+import gruntType3Sprite from "../sprites/grunt[Type3]Sprite";
 import Point from "../modules/points";
 //utils
 import upcounter from "../util/upcounter";
 //images
-const spwanImage = new Image;
+const spawnImage = new Image;
 const type1Image=new Image;
 const type34Image=new Image;
 const type2Image=new Image;
 const bossImageRight = new Image;
 const bossImageLeft = new Image;
-spwanImage.src = spwan;
+spawnImage.src = spwan;
 type1Image.src=type1ImageSrc;
 type34Image.src=type34ImageSrc;
 type2Image.src=type2ImageSrc;
@@ -29,7 +29,7 @@ type1Image.onload=upcounter;
 type34Image.onload=upcounter;
 type2Image.onload=upcounter;
 bossImageLeft.onload = upcounter;
-spwanImage.onload = upcounter;
+spawnImage.onload = upcounter;
 bossImageRight.onload = upcounter;
 type gruntInst = {
     healthPoint:number;
@@ -58,7 +58,7 @@ type GruntConstants = {
     type3:gruntInst;
     type4:gruntInst;
     boss:boss;
-    spwanImage:HTMLImageElement;
+    spawnImage:HTMLImageElement;
 
 }
 const gruntConstants: GruntConstants = {
@@ -111,6 +111,6 @@ const gruntConstants: GruntConstants = {
         imageLeft:bossImageLeft,
         imageRight:bossImageRight
     },
-    spwanImage:spwanImage
+    spawnImage:spawnImage
 }
 export default gruntConstants;

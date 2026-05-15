@@ -20,7 +20,7 @@ export default class Hero extends Entity {
     isMoving: boolean = false;
     speedLimit: number = 3;
     weaponOffset: number = 10;
-    abilityInterval: any = null;
+    abilityInterval: ReturnType<typeof setInterval> | undefined = undefined;
     abilityDamage: number = heroConstants.abilityDamage;
     abilityDurability: number = heroConstants.abilityDurability;
     abilityRate: number = heroConstants.abilityRate;
@@ -28,8 +28,8 @@ export default class Hero extends Entity {
     inRangeEnemies: (GruntType1 | GruntType2 | GruntType4 | Boss)[] = [];
     abilityTime: Date = new Date;
     stamina: number = heroConstants.stamina
-    staminaInterval: any;
-    healthInterval: any;
+    staminaInterval: ReturnType<typeof setInterval> | undefined = undefined;
+    healthInterval: ReturnType<typeof setInterval> | undefined = undefined;
     staminaUse: boolean = false;
     onAttack:boolean=false;
     gemCount: number = 0;
@@ -43,7 +43,7 @@ export default class Hero extends Entity {
         new Point(this.position.x + this.weaponOffset + this.width, this.position.y),
     ];
     ability() {
-        if (!this.abilityInUse && //checking i f hero is already using ability
+        if (!this.abilityInUse && //checking if hero is already using ability
             ((new Date).getTime() - //checking time to use ability
                 this.abilityTime.getTime() > 15 * 1000) &&
             this.essenceCount

@@ -14,8 +14,8 @@ import smgSoundSrc from "../assets/sounds/SMGSound.mp3"
 import upcounter from "../util/upcounter";
 //sprite
 import vandalSprite from "../sprites/vandalSprite";
-import hunterSprite from "../sprites/hunterStrite";
-import pestolSprite from "../sprites/pestolSprite";
+import hunterSprite from "../sprites/hunterSprite";
+import pistolSprite from "../sprites/pistolSprite";
 import smgSprite from "../sprites/smgSprite";
 
 //images
@@ -50,9 +50,9 @@ type GunConstants = {
 const gunConstants: GunConstants = {
     pistol: {
         damage: 3,
-        width: pestolSprite.width *
+        width: pistolSprite.width *
             heroConstants.width * 0.01,
-        height: pestolSprite.height *
+        height: pistolSprite.height *
             heroConstants.width * 0.01,
         image: pistolImage,
         fireRate: 2,

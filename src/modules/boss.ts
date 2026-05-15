@@ -14,8 +14,8 @@ import { hero, spitArray } from "../screens/gameScreen";
 //angler monster
 export default class Boss extends Entity {
     speedToggle: boolean = false;
-    attackInterval: any = null;
-    spitInterval: any = null;
+    attackInterval: ReturnType<typeof setInterval> | undefined = undefined;
+    spitInterval: ReturnType<typeof setInterval> | undefined = undefined;
 
     changeSpeed() {
         this.spitTohero();
@@ -46,7 +46,7 @@ export default class Boss extends Entity {
         if (!this.checkCollision()) {
             this.moveTowardsHero();
             clearInterval(this.attackInterval)
-            this.attackInterval = null;
+            this.attackInterval = undefined;
         }
         else {
 

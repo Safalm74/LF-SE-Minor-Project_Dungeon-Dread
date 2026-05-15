@@ -6,14 +6,14 @@ import Spit from "./spit";
 import weaponRangeConstants from "../constants/weaponRangeConstants";
 import gruntConstants from "../constants/gruntConstants";
 //sprite information
-import spwanSprite from "../sprites/spwanSprite";
+import spawnSprite from "../sprites/spawnSprite";
 import gruntType2Sprite from "../sprites/grunt[Type2]Sprite";
 //objs
 import { hero, spitArray } from "../screens/gameScreen";
 //spider enemy
 export default class GruntType2 extends Entity {
-    isSpwaned: boolean = false;
-    attackInterval: any = null;
+    isSpawned: boolean = false;
+    attackInterval: ReturnType<typeof setInterval> | undefined = undefined;
     attackRadius: number = 400;
     spitRange: number = 200;
     update() {//movement similar to type1and3
@@ -36,7 +36,7 @@ export default class GruntType2 extends Entity {
         )
         if (distance > this.spitRange) {
             clearInterval(this.attackInterval)
-            this.attackInterval = null;
+            this.attackInterval = undefined;
             this.position.x += resultantVelocity.x;
             this.position.y += resultantVelocity.y;
         } else {
@@ -105,16 +105,16 @@ export default class GruntType2 extends Entity {
         );
         this.spritePosition++
     }
-    spwan(ctx: CanvasRenderingContext2D) {
+    spawn(ctx: CanvasRenderingContext2D) {
         const staggerFrame = 10;
         let position = Math.floor(this.spritePosition /
-            staggerFrame) % spwanSprite.position.length;
+            staggerFrame) % spawnSprite.position.length;
         ctx.drawImage(
-            gruntConstants.spwanImage,
-            spwanSprite.position[position].x,
-            spwanSprite.position[position].y,
-            spwanSprite.width,
-            spwanSprite.height,
+            gruntConstants.spawnImage,
+            spawnSprite.position[position].x,
+            spawnSprite.position[position].y,
+            spawnSprite.width,
+            spawnSprite.height,
             this.position.x,
             this.position.y,
             this.width,
@@ -122,7 +122,7 @@ export default class GruntType2 extends Entity {
         );
         this.spritePosition++
         if (position >= 9) {
-            this.isSpwaned = true;
+            this.isSpawned = true;
             this.spritePosition = 0;
         }
     }

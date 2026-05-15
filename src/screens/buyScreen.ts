@@ -9,10 +9,10 @@ import stateConstants from "../constants/stateConstants";
 import lowerInventory from "../util/lowerInventory";
 import progressBar from "../util/bar";
 //sprite information
-import pestolSprite from "../sprites/pestolSprite";
+import pistolSprite from "../sprites/pistolSprite";
 import smgSprite from "../sprites/smgSprite";
 import vandalSprite from "../sprites/vandalSprite";
-import hunterSprite from "../sprites/hunterStrite";
+import hunterSprite from "../sprites/hunterSprite";
 //objs
 import { canvas } from "../main";
 //screens
@@ -364,9 +364,9 @@ function buyPannelLoop(ctx: CanvasRenderingContext2D) {
         boxWrapperHeight,
         gunLogoSize,
         gunConstants.pistol.image,
-        pestolSprite.positionRight[0],
-        pestolSprite.width,
-        pestolSprite.height,
+        pistolSprite.positionRight[0],
+        pistolSprite.width,
+        pistolSprite.height,
         `Pistol`,
         gunConstants.pistol.cost,
         gunConstants.pistol.damage,

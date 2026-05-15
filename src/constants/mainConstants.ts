@@ -37,7 +37,7 @@ type MainConstants = {
     waveIntervalTime: number;
     maxEnemies: number;
     mapPosition: Point;
-    dropdownInterval: any;
+    dropdownInterval: boolean;
     weaponArray: null[] | Gun[];
     homeSound: HTMLAudioElement;
     windSound: HTMLAudioElement;
@@ -53,7 +53,7 @@ const mainConstants: MainConstants = {
     buyTime: 30 * 1000,
     maxEnemies: 100 * mapConstants.mapSizeMultiplier,
     mapPosition: new Point(0, 0),
-    dropdownInterval: null,
+    dropdownInterval: false,
     weaponArray: [
         null,
         null,

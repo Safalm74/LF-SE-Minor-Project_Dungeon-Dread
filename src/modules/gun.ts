@@ -1,8 +1,8 @@
 import stateConstants from "../constants/stateConstants";
 import weaponRangeConstants from "../constants/weaponRangeConstants";
 import { bulletArray } from "../screens/gameScreen";
-import hunterSprite from "../sprites/hunterStrite";
-import pestolSprite from "../sprites/pestolSprite";
+import hunterSprite from "../sprites/hunterSprite";
+import pistolSprite from "../sprites/pistolSprite";
 import smgSprite from "../sprites/smgSprite";
 import vandalSprite from "../sprites/vandalSprite";
 import Boss from "./boss";
@@ -33,10 +33,10 @@ export default class Gun implements IGun {
     gunImage: HTMLImageElement;
     guntype: "pistol" | "smg" | "vandal" | "hunter";
     detectedEnemy: boolean = false;
-    trackingEnemyObj: any = null;
+    trackingEnemyObj: GruntType1and3 | GruntType2 | GruntType4 | Boss | null = null;
     lookingAngle: number = 0;
-    shootingPoint: Point = pestolSprite.positionRight[1];
-    fireInterval: any = null;
+    shootingPoint: Point = pistolSprite.positionRight[1];
+    fireInterval: ReturnType<typeof setInterval> | undefined = undefined;
     level: number = 1;
     sound: HTMLAudioElement;
     constructor(
@@ -94,14 +94,14 @@ export default class Gun implements IGun {
                 > weaponRangeConstants.pestol) {
                 this.detectedEnemy = false;
                 clearInterval(this.fireInterval);
-                this.fireInterval = null;
+                this.fireInterval = undefined;
             }
 
         }
         if (this.trackingEnemyObj && this.trackingEnemyObj.healthpoint < 0) {
             this.detectedEnemy = false;
             clearInterval(this.fireInterval);
-            this.fireInterval = null;
+            this.fireInterval = undefined;
         }
 
 
@@ -171,7 +171,7 @@ export default class Gun implements IGun {
         let gunSprite;
         switch (this.guntype) {
             case "pistol":
-                gunSprite = pestolSprite;
+                gunSprite = pistolSprite;
                 break;
             case "smg":
                 gunSprite = smgSprite;

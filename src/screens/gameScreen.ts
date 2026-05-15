@@ -46,7 +46,7 @@ let hero: Hero;
 //boss
 let boss: Boss | null;
 // create enemy interval
-let createEnemyInterval: any;
+let createEnemyInterval: ReturnType<typeof setInterval> | undefined;
 //function to return time difference and detect end of wave
 function remainingTime() {
     const remainingTimems = (new Date).getTime() - waveStartTime.getTime()
@@ -83,7 +83,7 @@ function removeDeadEnemy() {
         (obj) => {
             if (obj.healthpoint < 0) {
                 clearInterval(obj.attackInterval);
-                obj.attackInterval = null;
+                obj.attackInterval = undefined;
                 gemArray.push(
                     new Gem(
                         obj.position,
@@ -247,20 +247,20 @@ function createEnemy() {
 function resetGame() {
     stateConstants.ingame = false;
     clearInterval(hero.abilityInterval);
-    hero.abilityInterval = null
+    hero.abilityInterval = undefined
     mainConstants.weaponArray = [];
     stateConstants.wave = 1;
     gruntArray.forEach((obj) => {
         if (obj) {
             clearInterval(obj.attackInterval);
-            obj.attackInterval = null;
+            obj.attackInterval = undefined;
         }
     });
     mainConstants.weaponArray.forEach(
         (obj) => {
             if (obj) {
                 clearInterval(obj.fireInterval);
-                obj.fireInterval = null;
+                obj.fireInterval = undefined;
                 obj.detectedEnemy = false;
                 obj.trackingEnemyObj = null;
             }
@@ -268,9 +268,9 @@ function resetGame() {
     );
     if (boss) {
         clearInterval(boss.attackInterval);
-        boss.attackInterval = null;
+        boss.attackInterval = undefined;
         clearInterval(boss.spitInterval);
-        boss.spitInterval = null;
+        boss.spitInterval = undefined;
     }
     boss = null;
     createHero();
@@ -290,11 +290,11 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     //draw enemy
     gruntArray.forEach(
         (obj) => {
-            if (obj.isSpwaned) {
+            if (obj.isSpawned) {
                 obj.draw(ctx);
             }
             else {
-                obj.spwan(ctx);
+                obj.spawn(ctx);
             }
         }
     );
@@ -340,7 +340,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     else {
         gradient.addColorStop(0, "rgba(10,10,10,0)")
         gradient.addColorStop(1, "rgba(200,0,0,0.99)")
-    }1
+    }
     ctx.fillStyle = gradient;
     ctx.fillRect(
         -mainConstants.mapPosition.x,
@@ -435,23 +435,24 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         )
     }
     //check hero on attack
-    if (hero.onAttack){
+    if (hero.onAttack) {
         const gradientOnAttack = ctx.createRadialGradient(
-        hero.position.x + hero.width / 2,
-        hero.position.y + hero.height / 2,
-        hero.width,
-        hero.position.x + hero.width / 2,
-        hero.position.y + hero.height / 2,
-        1000
-    );
-    gradientOnAttack.addColorStop(0, "rgba(10,10,10,0)")
-    ctx.fillStyle = gradient;
-    ctx.fillRect(
-        -mainConstants.mapPosition.x,
-        -mainConstants.mapPosition.y,
-        canvas.width,
-        canvas.height
-    )
+            hero.position.x + hero.width / 2,
+            hero.position.y + hero.height / 2,
+            hero.width,
+            hero.position.x + hero.width / 2,
+            hero.position.y + hero.height / 2,
+            1000
+        );
+        gradientOnAttack.addColorStop(0, "rgba(10,10,10,0)");
+        gradientOnAttack.addColorStop(1, "rgba(200,0,0,0.5)");
+        ctx.fillStyle = gradientOnAttack;
+        ctx.fillRect(
+            -mainConstants.mapPosition.x,
+            -mainConstants.mapPosition.y,
+            canvas.width,
+            canvas.height
+        );
     }
     //show essence
     progressBar(
@@ -477,7 +478,7 @@ function displayAll(ctx: CanvasRenderingContext2D) {
             (obj) => {
                 if (obj) {
                     clearInterval(obj.fireInterval);
-                    obj.fireInterval = null
+                    obj.fireInterval = undefined
                 }
             }
         );
@@ -604,14 +605,14 @@ function resetWaveChange() {
     gruntArray.forEach(
         (obj) => {
             clearInterval(obj.attackInterval);
-            obj.attackInterval = null;
+            obj.attackInterval = undefined;
         }
     );
     if (boss) {
         clearInterval(boss.attackInterval);
         clearInterval(boss.spitInterval);
-        boss.attackInterval = null;
-        boss.spitInterval = null;
+        boss.attackInterval = undefined;
+        boss.spitInterval = undefined;
     }
     //reset health
     hero.healthpoint = mainConstants.heroTotalHealth;
@@ -622,7 +623,7 @@ function resetWaveChange() {
     gemArray = [];
     //clearing creating enemy
     clearInterval(createEnemyInterval);
-    createEnemyInterval = null;
+    createEnemyInterval = undefined;
     //assigning new time
     waveStartTime = new Date;
     //if player has no gun
@@ -645,7 +646,7 @@ function resetWaveChange() {
         (obj, i) => {
             if (obj) {
                 clearInterval(obj.fireInterval);
-                obj.fireInterval = null
+                obj.fireInterval = undefined
                 obj.trackingEnemyObj = null;
                 obj.detectedEnemy = false;
                 obj.position = hero.weaponPositions[i];
@@ -676,9 +677,9 @@ export default function gameMain(
 
         if (boss) {
             clearInterval(boss.attackInterval);
-            boss.attackInterval = null;
+            boss.attackInterval = undefined;
             clearInterval(boss.spitInterval);
-            boss.spitInterval = null;
+            boss.spitInterval = undefined;
         }
         boss = null;
         //creating boss
@@ -717,7 +718,7 @@ export default function gameMain(
             (obj) => {
                 if (obj) {
                     clearInterval(obj.fireInterval);
-                    obj.fireInterval = null;
+                    obj.fireInterval = undefined;
                     obj.detectedEnemy = false;
                     obj.trackingEnemyObj = null;
                 }

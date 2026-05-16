@@ -8,7 +8,6 @@ import stateConstants from "../constants/stateConstants";
 import { ctx } from "../main";
 import { buyBtnsclicked, upgradeWeapon } from "../screens/buyScreen";
 import { controlBtnClicked } from "../screens/controlScreen";
-import { firstScreenbtnsclicked } from "../screens/firstScreen";
 import { hero } from "../screens/gameScreen";
 import { btnsclicked } from "../screens/homeScreen";
 import { infoScreenBtn } from "../screens/infoScreen";
@@ -116,14 +115,6 @@ export default function eventhandler() {
     window.addEventListener(
         'click',
         (e) => {
-            if (stateConstants.firstPageFlag) {
-                firstScreenbtnsclicked(
-                    new Point(
-                        e.offsetX,
-                        e.offsetY),
-                    ctx
-                );
-            }
             if (stateConstants.homeScreenFlag) {
                 btnsclicked(
                     new Point(
@@ -164,7 +155,6 @@ export default function eventhandler() {
         if (stateConstants.ingame) return;
         const touch = e.changedTouches[0];
         const point = new Point(touch.clientX, touch.clientY);
-        if (stateConstants.firstPageFlag) firstScreenbtnsclicked(point, ctx);
         if (stateConstants.homeScreenFlag) btnsclicked(point, ctx);
         if (stateConstants.buyScreenFlag) buyBtnsclicked(point);
         if (stateConstants.infoScreenFlag) infoScreenBtn(point, ctx);

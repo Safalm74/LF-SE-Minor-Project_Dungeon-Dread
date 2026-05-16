@@ -54,7 +54,7 @@ let createEnemyInterval: ReturnType<typeof setInterval> | undefined;
 let vignetteGradient: CanvasGradient | null = null;
 let vignetteIsHighHealth: boolean | null = null;
 // max enemies per wave (device-aware)
-const BASE_MAX_ENEMIES = isTouchDevice() ? 6 : 15;
+const BASE_MAX_ENEMIES = isTouchDevice() ? 8 : 18;
 // previous hero health for damage detection
 let prevHeroHealth = -1;
 // previous enemy health tracking for damage numbers
@@ -96,10 +96,12 @@ function removeDeadEnemy() {
             if (obj.healthpoint < 0) {
                 clearInterval(obj.attackInterval);
                 obj.attackInterval = undefined;
+                // gem value scales with wave so kills stay rewarding with fewer enemies
+                const gemValue = 30 + stateConstants.wave * 15;
                 gemArray.push(
                     new Gem(
                         obj.position,
-                        16,
+                        gemValue,
                         gemSprite[1][0].width * 0.2,
                         gemSprite[1][0].height * 0.2,
                     )
@@ -584,7 +586,7 @@ function resetWaveChange() {
     //scale enemy count with wave (capped per device type)
     mainConstants.maxEnemies = Math.min(
         BASE_MAX_ENEMIES + stateConstants.wave * 2,
-        isTouchDevice() ? 12 : 25
+        isTouchDevice() ? 18 : 35
     );
     //invalidate cached gradient so it rebuilds at wave start
     vignetteGradient = null;

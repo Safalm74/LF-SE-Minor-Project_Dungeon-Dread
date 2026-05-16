@@ -85,7 +85,7 @@ export default class Gem implements IGem {
             }
             hero.gemCount += this.value;
             if (hero.essenceCount < heroConstants.maxEssence) {
-                hero.essenceCount += 1;
+                hero.essenceCount += 3;
             }
             return false;
         }

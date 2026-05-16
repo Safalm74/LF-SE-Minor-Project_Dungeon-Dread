@@ -3,64 +3,94 @@ import screenConstants from "../constants/screenConstants"
 import stateConstants from "../constants/stateConstants"
 //screens
 import infoScreen from "../screens/infoScreen"
+
 type screenParameters = {
-    heading: string,
-    msg: string
+    heading: string;
+    msg: string;
 }
+
 type InfoScreenParameter = {
-    about: screenParameters,
-    gameOver: screenParameters,
-    gameWin: screenParameters,
-    story1: screenParameters,
-    aboutHero: screenParameters
+    about: screenParameters;
+    gameOver: screenParameters;
+    gameWin: screenParameters;
+    story1: screenParameters;
+    aboutHero: screenParameters;
 }
-//loadingScreen(ctx)
+
 const InfoScreenData: InfoScreenParameter = {
     about: {
-        heading: "About",
-        msg: `The world in Dungeon Dread has multiple dungeons 
-            where zombies/monsters exist. The dungeon boss controls them. 
-            Our main character is a zombie/monster hunter. 
-            Initially, our character is equipped with 
-            a weaker weapon. As he kills zombies and collects 
-            rewards, the character can buy weapons at the end 
-            of the wave. The boss appears at the final wave. 
-            The game's objective is to survive each wave and defeat 
-            the boss. Boss is much stronger than a regular monster/zombie. Stronger in the sense 
-            of higher damage and higher health. After defeating the boss, 
-            the dungeon's remaining monsters/zombies disappear and the dungeon 
-            is free of monsters/zombies.`
+        heading: "About  —  Dungeon Dread",
+        msg:
+`In a world where dungeons breed evil, one village stands between the darkness and oblivion.
+
+The dungeon near the village has awakened. Its lord — an ancient demon — commands an army of the dead, the monstrous, and the shadow-touched.
+
+You are the village's last hope: a ninja hunter with supernatural ability and a grudge against the dark.
+
+Kill enemies to collect spirit gems. Spend gems in the armory between waves to upgrade your arsenal. Build essence from kills and unleash Amaterasu — a fire that burns through the undead.
+
+Survive five waves. Defeat the Dungeon Lord. Save the village.`
     },
     gameOver: {
-        heading: "Game Over",
-        msg: `
-        You failed the mission. The villagers were attacked by the monsters`
+        heading: "You Fell",
+        msg:
+`The darkness was too great.
+
+The Dungeon Lord's forces overwhelmed you — and without the hunter, the village gate crumbled.
+
+The villagers fled into the night. The dungeon won.
+
+But the story isn't over. Rise again.`
     },
     gameWin: {
-        heading: "You Win",
-        msg: `You defended the village`
+        heading: "The Dungeon Falls",
+        msg:
+`The Dungeon Lord lets out one final, earth-shaking roar — then dissolves into shadow.
+
+With his destruction, the hold over his army breaks instantly. Every zombie crumbles to dust. Every spider retreats into the deep. The crypt goes still.
+
+You walk out of the dungeon into morning light. The village bells are ringing.
+
+The chief greets you at the gate. No words are exchanged — none are needed.
+
+The dungeon is free.`
     },
     story1: {
-        heading: "Attack of Angler Monster",
-        msg: ` 
-        Once upon a time, there was a peaceful village. But one day suddenly monsters started appearing in 
-        the village. The chief was worried about the village. With his research assistant, there was a dungeon
-        near the village from where monsters started appearing.so the chief requested the monster hunter to clear
-        the dungeon and save the village.`,
+        heading: "The Village in Danger",
+        msg:
+`The village of Karuvar has stood for five centuries — through war, drought, and plague.
+
+But three nights ago, something worse arrived.
+
+The ancient dungeon to the east, sealed for a hundred years, broke open. Monsters began pouring from its gates — shambling dead, twisted beasts, things that should not exist.
+
+The village chief summoned the only person who could help: a wandering ninja hunter, legendary for fighting the supernatural.
+
+That hunter is you.
+
+The chief's voice was calm, but his hands weren't: "The dungeon has five depths. Each one darker than the last. At the bottom sleeps the Dungeon Lord — a demon of immense age and power. Destroy him and this ends."
+
+You load your weapons.
+
+Time to descend.`
     },
     aboutHero: {
-        heading: "Introduction to hero",
-        msg: `
-            Hero is a ninja with supernatural powers.
-            He levitates weapons with telepathy power.
-            The hero can use Amaterasu from the essence, 
-            collected from the monster's dead body. 
-            Amaterasu's cooldown is 15s and the max use duration
-            of Amaterasu is 10sec depending upon the essence collected.
-            Another hero's ability is to regenerate when his health point is 
-            lower than 50 hp and regenerates till 50 hp.`
+        heading: "The Hunter",
+        msg:
+`You are no ordinary warrior.
+
+Years of training in forgotten dojos gave you something beyond skill — the ability to levitate weapons with your mind. Your arsenal orbits you like satellites, firing with precision you couldn't achieve by hand.
+
+Your signature ability: Amaterasu. A black, consuming fire drawn from the spiritual essence of your fallen enemies. When unleashed, it burns through any creature in your sight. Use it wisely — it has a 15-second cooldown and burns longer the more essence you've collected.
+
+When gravely wounded, your body begins slow regeneration — but only below half health. Don't rely on it.
+
+Sprint with the Run button to dash through danger, but watch your stamina.
+
+The dungeon does not forgive hesitation.`
     }
 }
+
 export default function loadInfoScreen(
     ctx: CanvasRenderingContext2D,
     page: 'about' | 'gameOver' | 'gameWin' | 'story1' | 'aboutHero',
@@ -73,15 +103,12 @@ export default function loadInfoScreen(
         InfoScreenData[page].heading,
         InfoScreenData[page].msg,
         btnName,
-        fun);
-    setTimeout(
-        () => {
-            if (sound && !stateConstants.ismute) {
-                screenConstants.prevSoundHolder = sound;
-
-                sound.play();
-            }
-        }
-        , 800
+        fun
     );
+    setTimeout(() => {
+        if (sound && !stateConstants.ismute) {
+            screenConstants.prevSoundHolder = sound;
+            sound.play();
+        }
+    }, 800);
 }

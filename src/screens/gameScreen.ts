@@ -27,6 +27,8 @@ import lowerInventory from "../util/lowerInventory";
 import { drawTouchControls, isTouchDevice } from "../util/touchControls";
 import { spawnDamageNumber, drawDamageNumbers, clearDamageNumbers } from "../util/damageNumbers";
 import { triggerShake, applyScreenShake } from "../util/screenShake";
+import { getWaveTheme } from "../constants/waveConstants";
+import { initParticles, drawParticles, triggerWaveIntro, drawWaveIntro, isIntroActive } from "../util/waveAtmosphere";
 //sprite information
 import gemSprite from "../sprites/gemSprite";
 //objs
@@ -50,6 +52,8 @@ let hero: Hero;
 let boss: Boss | null;
 // create enemy interval
 let createEnemyInterval: ReturnType<typeof setInterval> | undefined;
+// wave-themed spawn delay (ms); updated in resetWaveChange
+let currentSpawnMs = 700;
 // cached vignette gradient — only recreated when health threshold changes or canvas resizes
 let vignetteGradient: CanvasGradient | null = null;
 let vignetteIsHighHealth: boolean | null = null;
@@ -146,7 +150,7 @@ function removeBullet() {
 function createEnemy() {
     createEnemyInterval = setInterval(
         () => {
-            if (gruntArray.length < mainConstants.maxEnemies) {
+            if (!isIntroActive() && gruntArray.length < mainConstants.maxEnemies) {
                 const randomNumber = getRandomInt(1, 100);
                 if (stateConstants.wave > 2 && randomNumber < 40) {
                     //creating Type3 enemy
@@ -255,7 +259,7 @@ function createEnemy() {
             }
         }
         ,
-        500
+        currentSpawnMs
     );
 }
 function resetGame() {
@@ -305,6 +309,8 @@ function displayAll(ctx: CanvasRenderingContext2D) {
     );
     //drawmap
     map.draw(ctx);
+    // ambient particles (wave-themed, world space)
+    drawParticles(ctx);
     //draw enemy (skip entities outside the visible viewport)
     gruntArray.forEach((obj) => {
         const sx = obj.position.x + mainConstants.mapPosition.x;
@@ -385,6 +391,9 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
     ctx.restore();
+
+    // wave intro cinematic overlay (screen space, on top of vignette)
+    drawWaveIntro(ctx);
 
     // === HUD (drawn in screen space to avoid translation issues) ===
     const hudX = canvas.width * 0.05 - mainConstants.mapPosition.x;
@@ -593,6 +602,12 @@ function resetWaveChange() {
     vignetteIsHighHealth = null;
     prevHeroHealth = -1;
     clearDamageNumbers();
+    // apply wave-themed map, particles, and intro cinematic
+    const theme = getWaveTheme(stateConstants.wave);
+    currentSpawnMs = theme.enemySpawnMs;
+    map.reinitialize(theme);
+    initParticles(theme);
+    triggerWaveIntro(theme);
     //if player has no gun
     if (!mainConstants.weaponArray[0]) {
         mainConstants.weaponArray[0] = new Gun(

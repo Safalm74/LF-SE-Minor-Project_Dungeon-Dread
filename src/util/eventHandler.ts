@@ -8,7 +8,7 @@ import stateConstants from "../constants/stateConstants";
 import { ctx } from "../main";
 import { buyBtnsclicked, upgradeWeapon } from "../screens/buyScreen";
 import { controlBtnClicked } from "../screens/controlScreen";
-import { hero } from "../screens/gameScreen";
+import { hero, quitToHome } from "../screens/gameScreen";
 import { btnsclicked } from "../screens/homeScreen";
 import { infoScreenBtn } from "../screens/infoScreen";
 import screenConstants from "../constants/screenConstants";
@@ -103,6 +103,13 @@ export default function eventhandler() {
             }
             if (e.key.toLowerCase() === "m") {
                 handleSounds();
+            }
+            if (e.key.toLowerCase() === "p" && stateConstants.ingame) {
+                stateConstants.paused = !stateConstants.paused;
+            }
+            if (e.key === 'Escape' && stateConstants.ingame && stateConstants.paused) {
+                stateConstants.paused = false;
+                quitToHome(ctx);
             }
         }
     );

@@ -5,100 +5,87 @@ import Point from "./points";
 import mapConstants from "../constants/mapConstants";
 import mainConstants from "../constants/mainConstants";
 import getRandomInt from "../util/randomNumber";
+import { WaveTheme } from "../constants/waveConstants";
+
 interface IMap {
     tileSize: number;
     mapWidth: number;
     mapHeight: number;
 }
 
-const collideableMapObsticles: Tile[] = []
 export default class Map implements IMap {
     tileSize: number;
     mapHeight: number;
     mapWidth: number;
-    constructor(
-        tileSize: number
-    ) {
+    private currentTint: string = "rgba(0,0,0,0)";
+
+    constructor(tileSize: number) {
         this.tileSize = tileSize;
         this.mapHeight = Math.floor(window.innerHeight * mapConstants.mapSizeMultiplier / tileSize);
         this.mapWidth = Math.floor(window.innerWidth * mapConstants.mapSizeMultiplier / tileSize);
-        this.initialize();
-        this.collectCollideableobj();
+        this.buildTiles(7, 65);
+        this.rebuildCollideables();
     }
-    collectCollideableobj() {
-        mapConstants.mapTileArray.forEach(
-            (y_obj) => {
-                y_obj.forEach(
-                    (x_obj) => {
-                        if (x_obj.isObstacle) {
-                            mainConstants.collideableObjs.push(x_obj);
-                        }
-                    });
-            }
-        );
+
+    reinitialize(theme: WaveTheme) {
+        this.currentTint = theme.mapTint;
+        mapConstants.mapTileArray = [];
+        this.buildTiles(theme.obstacleChance, theme.drumBias);
+        this.rebuildCollideables();
     }
-    initialize() {
-        for (let y_axis = 0; y_axis < this.mapHeight; y_axis++) {
-            mapConstants.mapTileArray[y_axis] = [];
-            for (let x_axis = 0; x_axis < this.mapWidth; x_axis++) {
-                if (
-                    x_axis === 0 ||
-                    y_axis === 0 ||
-                    y_axis === this.mapHeight - 1 ||
-                    x_axis === this.mapWidth - 1) {
-                    mapConstants.mapTileArray[y_axis][x_axis] = new Tile(
-                        new Point(
-                            x_axis * this.tileSize,
-                            y_axis * this.tileSize),
-                        'bush',
-                        true,
-                        this.tileSize
+
+    private buildTiles(obstacleChance: number, drumBias: number) {
+        for (let y = 0; y < this.mapHeight; y++) {
+            mapConstants.mapTileArray[y] = [];
+            for (let x = 0; x < this.mapWidth; x++) {
+                if (x === 0 || y === 0 || y === this.mapHeight - 1 || x === this.mapWidth - 1) {
+                    mapConstants.mapTileArray[y][x] = new Tile(
+                        new Point(x * this.tileSize, y * this.tileSize),
+                        'bush', true, this.tileSize
                     );
+                    continue;
                 }
-                else {
-                    const randomNumber = getRandomInt(1, 100);
-                    if (randomNumber % 2 == 0 && randomNumber < 10) {
-                        if (randomNumber > 5) {
-                            mapConstants.mapTileArray[y_axis][x_axis] = new Tile(
-                                new Point(
-                                    x_axis * this.tileSize,
-                                    y_axis * this.tileSize),
-                                'drum',
-                                true,
-                                this.tileSize);
-                        }
-                        else {
-                            mapConstants.mapTileArray[y_axis][x_axis] = new Tile(
-                                new Point(
-                                    x_axis * this.tileSize,
-                                    y_axis * this.tileSize),
-                                'stone',
-                                true,
-                                this.tileSize);
-                        }
-                    }
-                    else {
-                        mapConstants.mapTileArray[y_axis][x_axis] = new Tile(
-                            new Point(
-                                x_axis * this.tileSize,
-                                y_axis * this.tileSize),
-                            'empty',
-                            false,
-                            this.tileSize
-                        );
-                    }
+                const r = getRandomInt(1, 100);
+                if (r <= obstacleChance) {
+                    const type = (r <= Math.floor(obstacleChance * drumBias / 100)) ? 'drum' : 'stone';
+                    mapConstants.mapTileArray[y][x] = new Tile(
+                        new Point(x * this.tileSize, y * this.tileSize),
+                        type, true, this.tileSize
+                    );
+                } else {
+                    mapConstants.mapTileArray[y][x] = new Tile(
+                        new Point(x * this.tileSize, y * this.tileSize),
+                        'empty', false, this.tileSize
+                    );
                 }
             }
         }
     }
+
+    private rebuildCollideables() {
+        mainConstants.collideableObjs = [];
+        mapConstants.mapTileArray.forEach(row => {
+            row.forEach(tile => {
+                if (tile.isObstacle) mainConstants.collideableObjs.push(tile);
+            });
+        });
+    }
+
     draw(ctx: CanvasRenderingContext2D) {
-        mapConstants.mapTileArray.forEach(
-            (y_axis_obj) => {
-                y_axis_obj.forEach((x_axis_obj) => {
-                    x_axis_obj.draw(ctx);
-                });
-            }
-        );
+        mapConstants.mapTileArray.forEach(row => {
+            row.forEach(tile => tile.draw(ctx));
+        });
+        // wave-themed atmospheric tint over the map surface
+        if (this.currentTint !== "rgba(0,0,0,0)") {
+            ctx.save();
+            ctx.fillStyle = this.currentTint;
+            ctx.fillRect(
+                mapConstants.displayPosition.x,
+                mapConstants.displayPosition.y,
+                window.innerWidth * mapConstants.mapSizeMultiplier,
+                window.innerHeight * mapConstants.mapSizeMultiplier
+            );
+            ctx.restore();
+        }
     }
 }
-export { collideableMapObsticles }

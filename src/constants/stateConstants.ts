@@ -1,5 +1,6 @@
 type StateConstants = {
     ingame: boolean;
+    paused: boolean;
     buyScreenFlag: boolean;
     aboutScreenFlag: boolean;
     controlScreenFlag: boolean;
@@ -17,6 +18,7 @@ type StateConstants = {
 }
 const stateConstants: StateConstants = {
     ingame: false,
+    paused: false,
     aboutScreenFlag: false,
     controlScreenFlag: false,
     homeScreenFlag: false,

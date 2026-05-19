@@ -16,6 +16,8 @@ import amaterasuSprite from "../sprites/amaterasuSprite";
 import { canvas } from "../main";
 import { boss, gruntArray } from "../screens/gameScreen";
 
+let heavyBreathActive = false;
+
 export default class Hero extends Entity {
     isMoving: boolean = false;
     speedLimit: number = 3;
@@ -49,7 +51,7 @@ export default class Hero extends Entity {
             this.essenceCount
         ) {
             this.abilityInUse = true;
-            heroConstants.amaterasuSound.currentTime = 2;
+            heroConstants.amaterasuSound.currentTime = 0;
             heroConstants.amaterasuSound.play();
             this.inRangeEnemies = gruntArray.filter(
                 (obj) => {
@@ -80,12 +82,20 @@ export default class Hero extends Entity {
     reheal() {
         this.healthInterval = setInterval(() => {
             if (this.healthpoint < 50) {
-                if (!heroConstants.heavyBreath.played) {
+                if (!heavyBreathActive) {
+                    heavyBreathActive = true;
+                    heroConstants.heavyBreath.currentTime = 0;
                     heroConstants.heavyBreath.play();
+                    heroConstants.heavyBreath.onended = () => { heavyBreathActive = false; };
                 }
                 this.healthpoint += 3;
+            } else {
+                if (heavyBreathActive) {
+                    heavyBreathActive = false;
+                    heroConstants.heavyBreath.pause();
+                    heroConstants.heavyBreath.currentTime = 0;
+                }
             }
-
         }, 5000)
         this.staminaInterval = setInterval(
             () => {

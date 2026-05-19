@@ -29,6 +29,7 @@ import { spawnDamageNumber, drawDamageNumbers, clearDamageNumbers } from "../uti
 import { triggerShake, applyScreenShake } from "../util/screenShake";
 import { getWaveTheme } from "../constants/waveConstants";
 import { initParticles, drawParticles, triggerWaveIntro, drawWaveIntro, isIntroActive } from "../util/waveAtmosphere";
+import { resetRunStats, recordKill, setRunWave } from "../util/gameStats";
 //sprite information
 import gemSprite from "../sprites/gemSprite";
 //objs
@@ -61,8 +62,14 @@ let vignetteIsHighHealth: boolean | null = null;
 const BASE_MAX_ENEMIES = isTouchDevice() ? 8 : 18;
 // previous hero health for damage detection
 let prevHeroHealth = -1;
-// previous enemy health tracking for damage numbers
+// previous enemy health tracking for damage numbers and hit flash
 const prevEnemyHealth = new WeakMap<object, number>();
+const enemyFlashEnd = new WeakMap<object, number>();
+// death particle burst
+interface DeathParticle { x: number; y: number; vx: number; vy: number; life: number; color: string; }
+const deathParticles: DeathParticle[] = [];
+// boss enrage flag (triggered at 50% HP)
+let bossEnraged = false;
 //function to return time difference and detect end of wave
 function remainingTime() {
     const remainingTimems = (new Date).getTime() - waveStartTime.getTime()
@@ -100,6 +107,7 @@ function removeDeadEnemy() {
             if (obj.healthpoint < 0) {
                 clearInterval(obj.attackInterval);
                 obj.attackInterval = undefined;
+                recordKill();
                 // gem value scales with wave so kills stay rewarding with fewer enemies
                 const gemValue = 30 + stateConstants.wave * 15;
                 gemArray.push(
@@ -110,6 +118,18 @@ function removeDeadEnemy() {
                         gemSprite[1][0].height * 0.2,
                     )
                 );
+                // death particle burst
+                const cx = obj.position.x + obj.width / 2;
+                const cy = obj.position.y + obj.height / 2;
+                for (let i = 0; i < 10; i++) {
+                    deathParticles.push({
+                        x: cx, y: cy,
+                        vx: (Math.random() - 0.5) * 7,
+                        vy: (Math.random() - 0.5) * 7 - 1.5,
+                        life: 22 + Math.random() * 14,
+                        color: i % 2 === 0 ? 'rgba(255,120,0,' : 'rgba(200,50,0,',
+                    });
+                }
             }
             else {
                 return true;
@@ -264,10 +284,12 @@ function createEnemy() {
 }
 function resetGame() {
     stateConstants.ingame = false;
+    stateConstants.paused = false;
     clearInterval(hero.abilityInterval);
     hero.abilityInterval = undefined
     mainConstants.weaponArray = [];
     stateConstants.wave = 1;
+    resetRunStats();
     gruntArray.forEach((obj) => {
         if (obj) {
             clearInterval(obj.attackInterval);
@@ -293,6 +315,33 @@ function resetGame() {
     boss = null;
     createHero();
 }
+function drawPauseMenu(ctx: CanvasRenderingContext2D) {
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = 'rgba(5,2,15,0.88)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+
+    const titleSize = Math.max(32, Math.min(canvas.width * 0.055, 72));
+    ctx.font = `${titleSize}px ShadowOfTheDeadOver`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.shadowColor = 'rgba(180,80,255,0.9)';
+    ctx.shadowBlur = 24;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('PAUSED', cx, cy - titleSize * 1.1);
+
+    const subSize = Math.max(14, Math.min(canvas.width * 0.022, 26));
+    ctx.font = `${subSize}px Arial`;
+    ctx.fillStyle = 'rgba(210,210,230,0.85)';
+    ctx.shadowBlur = 0;
+    ctx.fillText('Press  P  to resume', cx, cy + subSize * 0.5);
+    ctx.fillText('Press  ESC  to return to main menu', cx, cy + subSize * 2.2);
+
+    ctx.restore();
+}
 //function that handles all display
 function displayAll(ctx: CanvasRenderingContext2D) {
     // apply screen shake offset
@@ -317,15 +366,38 @@ function displayAll(ctx: CanvasRenderingContext2D) {
         const sy = obj.position.y + mainConstants.mapPosition.y;
         if (sx + obj.width < -50 || sx > canvas.width + 50 ||
             sy + obj.height < -50 || sy > canvas.height + 50) return;
-        // track damage dealt to enemies for floating numbers (world coords)
+        // track damage dealt to enemies for floating numbers and hit flash (world coords)
         const prev = prevEnemyHealth.get(obj) ?? obj.healthpoint;
         const dmg = prev - obj.healthpoint;
-        if (dmg > 0) spawnDamageNumber(new Point(obj.position.x + obj.width / 2, obj.position.y - 10), dmg, false);
+        if (dmg > 0) {
+            spawnDamageNumber(new Point(obj.position.x + obj.width / 2, obj.position.y - 10), dmg, false);
+            enemyFlashEnd.set(obj, Date.now() + 80);
+        }
         prevEnemyHealth.set(obj, obj.healthpoint);
         if (obj.isSpawned) { obj.draw(ctx); } else { obj.spawn(ctx); }
+        // white hit flash overlay
+        if ((enemyFlashEnd.get(obj) ?? 0) > Date.now()) {
+            ctx.save();
+            ctx.globalCompositeOperation = 'source-atop';
+            ctx.fillStyle = 'rgba(255,255,255,0.65)';
+            ctx.fillRect(obj.position.x, obj.position.y, obj.width, obj.height);
+            ctx.restore();
+        }
     });
     if (boss) {
+        // enrage at 50% HP: permanently faster and visually tinted
+        if (!bossEnraged && boss.healthpoint <= 400) {
+            bossEnraged = true;
+            boss.velocity = new Point(3.5, 3.5);
+        }
         boss.draw(ctx);
+        if (bossEnraged) {
+            ctx.save();
+            ctx.globalCompositeOperation = 'source-atop';
+            ctx.fillStyle = 'rgba(255,0,0,0.35)';
+            ctx.fillRect(boss.position.x, boss.position.y, boss.width, boss.height);
+            ctx.restore();
+        }
         mainConstants.maxEnemies = isTouchDevice() ? 2 : 4;
         mainConstants.weaponArray.forEach((wobj) => {
             if (boss && wobj) wobj.detectEnemy(boss);
@@ -355,6 +427,18 @@ function displayAll(ctx: CanvasRenderingContext2D) {
 
     // floating damage numbers (drawn in world space, before shake restore)
     drawDamageNumbers(ctx);
+
+    // death particle bursts (world space)
+    ctx.save();
+    for (let i = deathParticles.length - 1; i >= 0; i--) {
+        const p = deathParticles[i];
+        const alpha = Math.min(1, p.life / 20);
+        ctx.fillStyle = `${p.color}${alpha.toFixed(2)})`;
+        ctx.fillRect(p.x - 3, p.y - 3, 6, 6);
+        p.x += p.vx; p.y += p.vy; p.vy += 0.15; p.life--;
+        if (p.life <= 0) deathParticles.splice(i, 1);
+    }
+    ctx.restore();
 
     // detect hero damage for floating numbers + screen shake
     if (prevHeroHealth >= 0 && hero.healthpoint < prevHeroHealth) {
@@ -527,33 +611,38 @@ function displayAll(ctx: CanvasRenderingContext2D) {
 function gameLoop(
     ctx: CanvasRenderingContext2D
 ) {
-    // clearing screen 
+    // clearing screen
     ctx?.clearRect(
         -mainConstants.mapPosition.x,
         -mainConstants.mapPosition.y,
         canvas.width,
         canvas.height);
-    //eventlitner
-    handleEvents();
-    //displaying handles
-    displayAll(ctx);
-    //remove dead enemies
-    removeDeadEnemy();
-    //remove unecessary bullets
-    removeBullet();
-    //collecting gem
-    collectGem();
-    gruntArray.forEach(
-        (obj) => {
-            mainConstants.weaponArray.forEach(
-                (wobj) => {
-                    if (wobj) {
-                        wobj.detectEnemy(obj)
+
+    if (stateConstants.paused) {
+        drawPauseMenu(ctx);
+    } else {
+        //eventlitner
+        handleEvents();
+        //displaying handles
+        displayAll(ctx);
+        //remove dead enemies
+        removeDeadEnemy();
+        //remove unecessary bullets
+        removeBullet();
+        //collecting gem
+        collectGem();
+        gruntArray.forEach(
+            (obj) => {
+                mainConstants.weaponArray.forEach(
+                    (wobj) => {
+                        if (wobj) {
+                            wobj.detectEnemy(obj)
+                        }
                     }
-                }
-            );
-        }
-    );
+                );
+            }
+        );
+    }
     //looping game
     if (stateConstants.ingame) {
         requestAnimationFrame(
@@ -608,6 +697,9 @@ function resetWaveChange() {
     map.reinitialize(theme);
     initParticles(theme);
     triggerWaveIntro(theme);
+    setRunWave(stateConstants.wave);
+    bossEnraged = false;
+    deathParticles.length = 0;
     //if player has no gun
     if (!mainConstants.weaponArray[0]) {
         mainConstants.weaponArray[0] = new Gun(
@@ -637,6 +729,11 @@ function resetWaveChange() {
     );
 }
 export { hero, gruntArray, bulletArray, spitArray, boss }
+export function quitToHome(ctx: CanvasRenderingContext2D) {
+    resetWaveChange();
+    resetGame();
+    homeScreen(ctx);
+}
 export function invalidateGradientCache() {
     vignetteGradient = null;
     vignetteIsHighHealth = null;

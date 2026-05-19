@@ -33,10 +33,10 @@ export default class Spit implements ISpit {
     }
     checkOnhit() {
         if (
-            this.position.x - this.radius > hero.position.x &&
-            this.position.x + this.radius < hero.position.x + hero.width &&
-            this.position.y - this.radius > hero.position.y &&
-            this.position.y + this.radius < hero.position.y + hero.height
+            this.position.x + this.radius > hero.position.x &&
+            this.position.x - this.radius < hero.position.x + hero.width &&
+            this.position.y + this.radius > hero.position.y &&
+            this.position.y - this.radius < hero.position.y + hero.height
         ) {
             this.isHit = true;
             hero.healthpoint -= this.damage;

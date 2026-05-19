@@ -3,6 +3,7 @@ import screenConstants from "../constants/screenConstants"
 import stateConstants from "../constants/stateConstants"
 //screens
 import infoScreen from "../screens/infoScreen"
+import { getRunStats } from "./gameStats"
 
 type screenParameters = {
     heading: string;
@@ -33,27 +34,11 @@ Survive five waves. Defeat the Dungeon Lord. Save the village.`
     },
     gameOver: {
         heading: "You Fell",
-        msg:
-`The darkness was too great.
-
-The Dungeon Lord's forces overwhelmed you — and without the hunter, the village gate crumbled.
-
-The villagers fled into the night. The dungeon won.
-
-But the story isn't over. Rise again.`
+        msg: ""  // built dynamically
     },
     gameWin: {
         heading: "The Dungeon Falls",
-        msg:
-`The Dungeon Lord lets out one final, earth-shaking roar — then dissolves into shadow.
-
-With his destruction, the hold over his army breaks instantly. Every zombie crumbles to dust. Every spider retreats into the deep. The crypt goes still.
-
-You walk out of the dungeon into morning light. The village bells are ringing.
-
-The chief greets you at the gate. No words are exchanged — none are needed.
-
-The dungeon is free.`
+        msg: ""  // built dynamically
     },
     story1: {
         heading: "The Village in Danger",
@@ -91,6 +76,32 @@ The dungeon does not forgive hesitation.`
     }
 }
 
+function buildGameOverMsg(): string {
+    const s = getRunStats();
+    return `The darkness was too great.
+
+The Dungeon Lord's forces overwhelmed you — and without the hunter, the village gate crumbled.
+
+Waves reached: ${s.waveReached}  ·  Enemies slain: ${s.kills}
+
+The villagers fled into the night. The dungeon won.
+
+But the story isn't over. Rise again.`;
+}
+
+function buildGameWinMsg(): string {
+    const s = getRunStats();
+    return `The Dungeon Lord lets out one final, earth-shaking roar — then dissolves into shadow.
+
+With his destruction, the hold over his army breaks instantly. Every zombie crumbles to dust. Every spider retreats into the deep. The crypt goes still.
+
+Waves cleared: ${s.waveReached}  ·  Enemies slain: ${s.kills}
+
+You walk out of the dungeon into morning light. The village bells are ringing.
+
+The dungeon is free.`;
+}
+
 export default function loadInfoScreen(
     ctx: CanvasRenderingContext2D,
     page: 'about' | 'gameOver' | 'gameWin' | 'story1' | 'aboutHero',
@@ -98,13 +109,11 @@ export default function loadInfoScreen(
     fun: (ctx: CanvasRenderingContext2D) => void,
     sound: HTMLAudioElement | null = null
 ) {
-    infoScreen(
-        ctx,
-        InfoScreenData[page].heading,
-        InfoScreenData[page].msg,
-        btnName,
-        fun
-    );
+    const heading = InfoScreenData[page].heading;
+    const msg = page === 'gameOver' ? buildGameOverMsg()
+              : page === 'gameWin'  ? buildGameWinMsg()
+              : InfoScreenData[page].msg;
+    infoScreen(ctx, heading, msg, btnName, fun);
     setTimeout(() => {
         if (sound && !stateConstants.ismute) {
             screenConstants.prevSoundHolder = sound;

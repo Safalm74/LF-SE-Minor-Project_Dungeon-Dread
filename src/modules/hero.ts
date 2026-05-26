@@ -36,6 +36,7 @@ export default class Hero extends Entity {
     onAttack:boolean=false;
     gemCount: number = 0;
     essenceCount: number = 0;
+    private trailPositions: Array<{ x: number; y: number }> = [];
     weaponPositions: Point[] = [
         new Point(this.position.x + this.weaponOffset + this.width, this.position.y),
         new Point(this.position.x - this.weaponOffset, this.position.y),
@@ -176,6 +177,32 @@ export default class Hero extends Entity {
         this.updateWeaponPosition();
         this.position.x = canvas.width / 2 - mainConstants.mapPosition.x;
         this.position.y = canvas.height / 2 - mainConstants.mapPosition.y;
+
+        // Update motion trail
+        if (this.isMoving) {
+            this.trailPositions.unshift({ x: this.position.x, y: this.position.y });
+            if (this.trailPositions.length > 5) this.trailPositions.pop();
+        } else {
+            if (this.trailPositions.length > 0) this.trailPositions.pop();
+        }
+
+        // Draw motion trail (energy blur ovals behind hero)
+        const trailColor = this.abilityInUse ? '#ff8800' : (this.healthpoint < 30 ? '#ff3333' : '#4499ff');
+        this.trailPositions.forEach((pos, i) => {
+            const alpha = ((this.trailPositions.length - i) / (this.trailPositions.length + 2)) * 0.38;
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = trailColor;
+            ctx.beginPath();
+            ctx.ellipse(
+                pos.x + this.width / 2, pos.y + this.height / 2,
+                this.width * 0.30, this.height * 0.38,
+                0, 0, Math.PI * 2
+            );
+            ctx.fill();
+            ctx.restore();
+        });
+
         this.inRangeEnemies.forEach(
             (obj) => {
                 let position = Math.floor(this.spritePosition / 5) %
@@ -196,11 +223,21 @@ export default class Hero extends Entity {
                 obj.healthpoint -= this.abilityDamage;
             }
         );
+        // Hero sprite with dynamic glow (drop-shadow filter works with drawImage)
+        const glowColor = this.abilityInUse
+            ? 'rgba(255,130,0,0.9)'
+            : this.healthpoint < 30
+                ? 'rgba(255,50,50,0.85)'
+                : 'rgba(80,160,255,0.75)';
+        const glowSize = this.abilityInUse ? '14px' : '9px';
+
+        ctx.save();
+        ctx.filter = `drop-shadow(0 0 ${glowSize} ${glowColor})`;
+
         const lookingDirection = this.lookingLeft ? heroSprite.positionLeft : heroSprite.positionRight;
         if (this.isMoving) {
             const staggerFrame = (20 / this.velocity.x) * 0.9;
-            let position = (Math.floor(this.spritePosition / staggerFrame) % (lookingDirection.length - 1)) + 1;
-
+            const position = (Math.floor(this.spritePosition / staggerFrame) % (lookingDirection.length - 1)) + 1;
             this.width = heroSprite.positionLeft[position].width * window.innerHeight / 1200;
             this.height = heroSprite.positionLeft[position].height * window.innerHeight / 1200;
             ctx.drawImage(
@@ -214,8 +251,7 @@ export default class Hero extends Entity {
                 this.width,
                 this.height
             );
-        }
-        else {
+        } else {
             this.width = heroSprite.positionLeft[0].width * window.innerHeight / 1200;
             this.height = heroSprite.positionLeft[0].height * window.innerHeight / 1200;
             ctx.drawImage(
@@ -230,6 +266,8 @@ export default class Hero extends Entity {
                 this.height
             );
         }
-        this.spritePosition++
+
+        ctx.restore();
+        this.spritePosition++;
     }
 }

@@ -6,6 +6,7 @@ import GruntType1and3 from "../modules/gruntType1and3";
 import Bullet from "../modules/bullet";
 import GruntType4 from "../modules/gruntType4";
 import GruntType2 from "../modules/gruntType2";
+import Bot from "../modules/bot";
 import Spit from "../modules/spit";
 import Gem from "../modules/gem";
 import Boss from "../modules/boss";
@@ -40,7 +41,7 @@ import homeScreen from "./homeScreen";
 //checking time to set next wave
 let waveStartTime: Date;
 //enemy array
-let gruntArray: (GruntType1and3 | GruntType2 | GruntType4)[] = [];
+let gruntArray: (GruntType1and3 | GruntType2 | GruntType4 | Bot)[] = [];
 //Bullet array
 let bulletArray: Bullet[] = [];
 //gem array
@@ -250,6 +251,26 @@ function createEnemy() {
                         )
                     );
                 }
+                else if (stateConstants.wave >= 3 && randomNumber < 75) {
+                    // Bot enemy: mechanical, procedurally drawn, appears wave 3+
+                    const botW = Math.max(38, window.innerHeight * 0.058);
+                    const botH = Math.max(48, window.innerHeight * 0.072);
+                    gruntArray.push(
+                        new Bot(
+                            new Point(
+                                getRandomInt(mapConstants.tileSize + mapConstants.displayPosition.x, window.innerWidth * 5 - mapConstants.tileSize),
+                                getRandomInt(mapConstants.tileSize + mapConstants.displayPosition.y, window.innerHeight * 5 - mapConstants.tileSize * 2)),
+                            "red", true,
+                            25 + stateConstants.wave * 5,  // HP scales with wave
+                            botW, botH,
+                            4 + stateConstants.wave,       // damage scales with wave
+                            2,
+                            new Image(),
+                            5,
+                            new Point(2, 2)
+                        )
+                    );
+                }
                 else {
                     //creating Type1 enemy
                     gruntArray.push(
@@ -374,7 +395,19 @@ function displayAll(ctx: CanvasRenderingContext2D) {
             enemyFlashEnd.set(obj, Date.now() + 80);
         }
         prevEnemyHealth.set(obj, obj.healthpoint);
+        // Per-type glow colors for visual distinction
+        const glowMap: Record<number, string> = {
+            1: 'rgba(120,255,80,0.55)',   // zombie — green
+            2: 'rgba(160,60,255,0.55)',   // spitter — purple
+            3: 'rgba(80,180,255,0.55)',   // fast — blue
+            4: 'rgba(255,80,0,0.55)',     // tank — orange
+            5: 'rgba(0,200,255,0.60)',    // bot — cyan
+        };
+        const enemyGlow = glowMap[obj.gruntType] ?? 'rgba(255,80,80,0.5)';
+        ctx.save();
+        ctx.filter = `drop-shadow(0 0 6px ${enemyGlow})`;
         if (obj.isSpawned) { obj.draw(ctx); } else { obj.spawn(ctx); }
+        ctx.restore();
         // white hit flash overlay
         if ((enemyFlashEnd.get(obj) ?? 0) > Date.now()) {
             ctx.save();
